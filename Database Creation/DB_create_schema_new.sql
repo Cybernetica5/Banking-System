@@ -1,55 +1,106 @@
-Create database bank_database;
+-- Create database and use it
+DROP DATABASE IF EXISTS bank_database;
+CREATE DATABASE bank_database;
 USE bank_database;
 
--- Creating `user` table first, as it is referenced by other tables
+-- User table
+DROP TABLE IF EXISTS user;
 CREATE TABLE user (
   user_id INT NOT NULL AUTO_INCREMENT,
   user_name VARCHAR(50),
   password VARCHAR(255),
   email VARCHAR(100),
-  full_name VARCHAR(100),
-  date_of_birth DATE,
-  role ENUM('manager', 'employee', 'customer'),
+  role ENUM('staff', 'customer'),
   PRIMARY KEY (user_id)
 );
 
-
--- Creating `manager` table to resolve foreign key dependencies in `branch`
-CREATE TABLE manager (
-  manager_id INT NOT NULL AUTO_INCREMENT,
+-- Staff table
+DROP TABLE IF EXISTS Staff;
+CREATE TABLE Staff (
+  staff_id INT NOT NULL AUTO_INCREMENT,
   user_id INT,
-  branch_id INT,
-  PRIMARY KEY (manager_id),
+  full_name VARCHAR(100),
+  date_of_birth DATE,
+  NIC VARCHAR(12),
+  role ENUM('manager', 'employee'),
+  PRIMARY KEY (staff_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-  -- FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
 );
 
--- Creating `branch` table, as it is referenced by other tables
-CREATE TABLE branch (
-  branch_id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(100),
-  location VARCHAR(255),
-  manager_id INT,
-  PRIMARY KEY (branch_id),
-  FOREIGN KEY (manager_id) REFERENCES manager(manager_id)
-);
-
--- Creating `customer` table after `user` is created
+-- Customer table
+DROP TABLE IF EXISTS customer;
 CREATE TABLE customer (
   customer_id INT NOT NULL AUTO_INCREMENT,
   user_id INT,
   customer_type ENUM('individual', 'organization'),
-  contact_number VARCHAR(10),
+  mobile_number VARCHAR(10),
+  landline_number VARCHAR(10),
   address VARCHAR(255),
   PRIMARY KEY (customer_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
--- Creating `account` table after `customer` and `branch` are created
+-- Organization table
+DROP TABLE IF EXISTS organization;
+CREATE TABLE organization (
+  customer_id INT,
+  name VARCHAR(100),
+  lisence_number VARCHAR(100),
+  PRIMARY KEY (customer_id),
+  FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+);
+
+-- Individual table
+DROP TABLE IF EXISTS individual;
+CREATE TABLE individual (
+  customer_id INT,
+  full_name VARCHAR(100),
+  date_of_birth DATE,
+  NIC VARCHAR(12),
+  PRIMARY KEY (customer_id),
+  FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+);
+
+-- Branch table
+DROP TABLE IF EXISTS branch;
+CREATE TABLE branch (
+  branch_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100),
+  location VARCHAR(255),
+  manager_id INT,
+  PRIMARY KEY (branch_id)
+);
+
+-- Manager table
+DROP TABLE IF EXISTS manager;
+CREATE TABLE manager (
+  manager_id INT NOT NULL AUTO_INCREMENT,
+  staff_id INT,
+  PRIMARY KEY (manager_id),
+  FOREIGN KEY (staff_id) REFERENCES Staff(staff_id)
+);
+
+-- Employee table
+DROP TABLE IF EXISTS employee;
+CREATE TABLE employee (
+  employee_id INT NOT NULL AUTO_INCREMENT,
+  staff_id INT,
+  branch_id INT,
+  PRIMARY KEY (employee_id),
+  FOREIGN KEY (staff_id) REFERENCES Staff(staff_id),
+  FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
+);
+
+-- Add foreign key to branch table after manager table is created
+ALTER TABLE branch
+ADD FOREIGN KEY (manager_id) REFERENCES manager(manager_id);
+
+-- Account table
+DROP TABLE IF EXISTS account;
 CREATE TABLE account (
   account_id INT NOT NULL AUTO_INCREMENT,
   account_type ENUM('savings', 'checking'),
-  account_number CHAR(15), -- changed to CHAR(15) for fixed length
+  account_number CHAR(15),
   customer_id INT,
   branch_id INT,
   balance DECIMAL(15,2),
@@ -59,7 +110,8 @@ CREATE TABLE account (
   FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
 );
 
--- Creating `savings_plan` table
+-- Savings plan table
+DROP TABLE IF EXISTS savings_plan;
 CREATE TABLE savings_plan (
   savings_plan_id INT NOT NULL AUTO_INCREMENT,
   type ENUM('child', 'teen', 'adult', 'senior'),
@@ -69,7 +121,8 @@ CREATE TABLE savings_plan (
   PRIMARY KEY (savings_plan_id)
 );
 
--- Creating `fd_plan` table
+-- FD plan table
+DROP TABLE IF EXISTS fd_plan;
 CREATE TABLE fd_plan (
   fd_plan_id INT NOT NULL AUTO_INCREMENT,
   duration INT,
@@ -77,7 +130,8 @@ CREATE TABLE fd_plan (
   PRIMARY KEY (fd_plan_id)
 );
 
--- Creating `savings_account` table
+-- Savings account table
+DROP TABLE IF EXISTS savings_account;
 CREATE TABLE savings_account (
   savings_account_id INT NOT NULL AUTO_INCREMENT,
   account_id INT,
@@ -87,7 +141,8 @@ CREATE TABLE savings_account (
   FOREIGN KEY (savings_plan_id) REFERENCES savings_plan(savings_plan_id)
 );
 
--- Creating `fixed_deposit` table
+-- Fixed deposit table
+DROP TABLE IF EXISTS fixed_deposit;
 CREATE TABLE fixed_deposit (
   fd_id INT NOT NULL AUTO_INCREMENT,
   savings_account_id INT,
@@ -100,7 +155,8 @@ CREATE TABLE fixed_deposit (
   FOREIGN KEY (fd_plan_id) REFERENCES fd_plan(fd_plan_id)
 );
 
--- Creating `transaction` table
+-- Transaction table
+DROP TABLE IF EXISTS transaction;
 CREATE TABLE transaction (
   transaction_id INT NOT NULL AUTO_INCREMENT,
   account_id INT,
@@ -112,17 +168,8 @@ CREATE TABLE transaction (
   FOREIGN KEY (account_id) REFERENCES account(account_id)
 );
 
--- Creating `employee` table
-CREATE TABLE employee (
-  employee_id INT NOT NULL AUTO_INCREMENT,
-  user_id INT,
-  branch_id INT,
-  PRIMARY KEY (employee_id),
-  FOREIGN KEY (user_id) REFERENCES user(user_id),
-  FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
-);
-
--- Creating `penalty_types` table
+-- Penalty types table
+DROP TABLE IF EXISTS penalty_types;
 CREATE TABLE penalty_types (
   penalty_type_id INT NOT NULL AUTO_INCREMENT,
   penalty_amount DECIMAL(10,2),
@@ -130,18 +177,21 @@ CREATE TABLE penalty_types (
   PRIMARY KEY (penalty_type_id)
 );
 
--- Creating `customer_log` table
+-- Customer log table
+DROP TABLE IF EXISTS customer_log;
 CREATE TABLE customer_log (
   log_id INT NOT NULL AUTO_INCREMENT,
   customer_id INT,
-  contact_number VARCHAR(10),
+  mobile_number VARCHAR(10),
+  landline_number VARCHAR(10),
   address VARCHAR(255),
   updated_date DATE,
   PRIMARY KEY (log_id),
   FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
 );
 
--- Creating `loan` table
+-- Loan table
+DROP TABLE IF EXISTS loan;
 CREATE TABLE loan (
   loan_id INT NOT NULL AUTO_INCREMENT,
   account_id INT,
@@ -155,7 +205,8 @@ CREATE TABLE loan (
   FOREIGN KEY (account_id) REFERENCES account(account_id)
 );
 
--- Creating `penalty` table
+-- Penalty table
+DROP TABLE IF EXISTS penalty;
 CREATE TABLE penalty (
   penalty_id INT NOT NULL AUTO_INCREMENT,
   penalty_type_id INT,
@@ -163,15 +214,18 @@ CREATE TABLE penalty (
   FOREIGN KEY (penalty_type_id) REFERENCES penalty_types(penalty_type_id)
 );
 
--- Creating `deposit` table
+-- Deposit table
+DROP TABLE IF EXISTS deposit;
 CREATE TABLE deposit (
-  transaction_id INT NOT NULL AUTO_INCREMENT,
+  transaction_id INT,
   branch_id INT,
   PRIMARY KEY (transaction_id),
-  FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id)
+  FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id),
+  FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
 );
 
--- Creating `loan_installment` table
+-- Loan installment table
+DROP TABLE IF EXISTS loan_installment;
 CREATE TABLE loan_installment (
   installment_id INT NOT NULL AUTO_INCREMENT,
   loan_id INT,
@@ -181,15 +235,18 @@ CREATE TABLE loan_installment (
   FOREIGN KEY (loan_id) REFERENCES loan(loan_id)
 );
 
--- Creating `withdrawal` table
+-- Withdrawal table
+DROP TABLE IF EXISTS withdrawal;
 CREATE TABLE withdrawal (
-  transaction_id INT NOT NULL AUTO_INCREMENT,
+  transaction_id INT,
   branch_id INT,
   PRIMARY KEY (transaction_id),
-  FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id)
+  FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id),
+  FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
 );
 
--- Creating `checking_account` table
+-- Checking account table
+DROP TABLE IF EXISTS checking_account;
 CREATE TABLE checking_account (
   checking_account_id INT NOT NULL AUTO_INCREMENT,
   account_id INT,
@@ -197,15 +254,18 @@ CREATE TABLE checking_account (
   FOREIGN KEY (account_id) REFERENCES account(account_id)
 );
 
--- Creating `transfer` table
+-- Transfer table
+DROP TABLE IF EXISTS transfer;
 CREATE TABLE transfer (
-  transaction_id INT NOT NULL AUTO_INCREMENT,
+  transaction_id INT,
   beneficiary_account_id INT,
   PRIMARY KEY (transaction_id),
-  FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id)
+  FOREIGN KEY (transaction_id) REFERENCES transaction(transaction_id),
+  FOREIGN KEY (beneficiary_account_id) REFERENCES account(account_id)
 );
 
--- Creating `loan_payment` table
+-- Loan payment table
+DROP TABLE IF EXISTS loan_payment;
 CREATE TABLE loan_payment (
   payment_id INT NOT NULL AUTO_INCREMENT,
   instalment_id INT,
@@ -218,6 +278,3 @@ CREATE TABLE loan_payment (
   FOREIGN KEY (instalment_id) REFERENCES loan_installment(installment_id),
   FOREIGN KEY (penalty_id) REFERENCES penalty(penalty_id)
 );
-
-ALTER TABLE manager
-ADD FOREIGN KEY (branch_id) REFERENCES branch(branch_id);
