@@ -27,15 +27,6 @@ package-lock.json
 /pnpm-lock.yaml
 /bun.lockb
 
-/src/components/Login
-
-/src/components/user/dashboard
-/src/components/user/account-details
-/src/components/user/money-transfer
-/src/components/user/transaction-history
-
-/src/components/user/settings
-/src/components/user/home
 
 
 
