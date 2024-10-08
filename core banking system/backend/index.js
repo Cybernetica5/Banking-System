@@ -169,4 +169,11 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
+//get transaction history
+app.get("/transaction_History", (req, res) => {
+    const q = "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = 1"
+    db.query(q, (err, data)=>{
+        if(err) return res.json(err)
+        return res.json(data)
+    })
+})
