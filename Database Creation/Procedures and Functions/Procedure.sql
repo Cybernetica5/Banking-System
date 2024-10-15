@@ -46,6 +46,8 @@ BEGIN
     CLOSE cur;
 END
 
+DELIMITER $$
+
 SHOW VARIABLES LIKE 'event_scheduler';
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `add_fd_interest`(IN `fd_id` int)
@@ -61,4 +63,7 @@ BEGIN
     START TRANSACTION;
     UPDATE account SET balance = balance + interest WHERE account_id = p_account_id;
     COMMIT;
-END
+END $$
+
+DELIMITER ;
+
