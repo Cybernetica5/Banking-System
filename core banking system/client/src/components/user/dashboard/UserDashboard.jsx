@@ -14,9 +14,9 @@ import Notification from './notification/Notification';
 import Home from '../home/Home';
 import MoneyTransfer from '../MoneyTransfer/MoneyTransfer1';
 
-import AccountDetails from '../account-details/AccountDetails';
+// import AccountDetails from '../account-details/AccountDetails';
 //import MoneyTransfer from '../money-transfer/MoneyTransfer';
-import TransactionHistory from '../transaction-history/TransactionHistory';
+// import TransactionHistory from '../transaction-history/TransactionHistory';
 import Loans from '../loans/Loans';
 import ApplyLoan from '../loans/ApplyLoan';
 import LoanPayment from '../loans/LoanPayment';
@@ -127,9 +127,9 @@ const DashboardSidebar = () => {
         <Routes>
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
-          <Route path="account-details" element={<AccountDetails />} />
+          {/* <Route path="account-details" element={<AccountDetails />} /> */}
           <Route path="money-transfer" element={<MoneyTransfer />} />
-          <Route path="transaction-history" element={<TransactionHistory />} />
+          {/* <Route path="transaction-history" element={<TransactionHistory />} /> */}
           <Route path="loans" element={<Loans />}>
             <Route path="apply" element={<ApplyLoan />} />
             <Route path="payment" element={<LoanPayment />} />
