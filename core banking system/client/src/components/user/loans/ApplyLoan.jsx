@@ -126,7 +126,7 @@ const ApplyLoan = () => {
             value={loanAmount}
             onChange={(e) => setLoanAmount(e.target.value)}
             required
-            type="number"
+            // type="number"
             inputProps={{
               max: creditLimit, // Set the max limit as the credit limit
             }}
@@ -140,7 +140,7 @@ const ApplyLoan = () => {
             value={loanDuration}
             onChange={(e) => setLoanDuration(e.target.value)}
             required
-            type="number"
+            // type="number"
           />
           <Button
             type="submit"

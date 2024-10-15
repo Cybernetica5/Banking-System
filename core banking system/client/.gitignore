@@ -22,14 +22,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/package-lock.json
+package-lock.json
 /yarn.lock
 /pnpm-lock.yaml
 /bun.lockb
-
-
-
-
 
 
 package-lock.json

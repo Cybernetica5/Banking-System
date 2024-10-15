@@ -35,10 +35,20 @@ CREATE TABLE `account` (
   PRIMARY KEY (`account_id`),
   KEY `customer_id` (`customer_id`),
   KEY `branch_id` (`branch_id`),
-  CONSTRAINT `account_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
-  CONSTRAINT `account_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `account_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `account_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `account`
+--
+
+LOCK TABLES `account` WRITE;
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (1,'savings','SAV-123456789',1,1,5000.00,'active'),(2,'checking','CHK-987654321',2,2,3000.00,'active'),(3,'savings','SAV-246813579',3,3,10000.00,'active'),(4,'checking','CHK-135792468',4,1,2500.00,'active'),(5,'savings','SAV-369258147',5,2,15000.00,'active'),(6,'savings','SAV-741852963',6,3,7500.00,'active');
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary view structure for view `accounts_summary`
@@ -69,9 +79,19 @@ CREATE TABLE `branch` (
   `manager_id` int DEFAULT NULL,
   PRIMARY KEY (`branch_id`),
   KEY `manager_id` (`manager_id`),
-  CONSTRAINT `branch_ibfk_1` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`manager_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `branch_ibfk_1` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`manager_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `branch`
+--
+
+LOCK TABLES `branch` WRITE;
+/*!40000 ALTER TABLE `branch` DISABLE KEYS */;
+INSERT INTO `branch` VALUES (1,'Main Branch','Downtown',1),(2,'North Branch','Uptown',2),(3,'East Branch','Suburb',3);
+/*!40000 ALTER TABLE `branch` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `checking_account`
@@ -85,9 +105,19 @@ CREATE TABLE `checking_account` (
   `account_id` int DEFAULT NULL,
   PRIMARY KEY (`checking_account_id`),
   KEY `account_id` (`account_id`),
-  CONSTRAINT `checking_account_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `checking_account_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `checking_account`
+--
+
+LOCK TABLES `checking_account` WRITE;
+/*!40000 ALTER TABLE `checking_account` DISABLE KEYS */;
+INSERT INTO `checking_account` VALUES (1,2),(2,4);
+/*!40000 ALTER TABLE `checking_account` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `customer`
@@ -105,9 +135,19 @@ CREATE TABLE `customer` (
   `address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customer`
+--
+
+LOCK TABLES `customer` WRITE;
+/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1,5,'individual','1234567890','0123456789','123 Main St, City'),(2,6,'individual','2345678901','0234567890','456 Elm St, Town'),(3,7,'organization','3456789012','0345678901','789 Oak St, Village'),(4,8,'individual','4567890123','0456789012','321 Pine St, County'),(5,9,'organization','5678901234','0567890123','654 Maple St, State'),(6,10,'individual','6789012345','0678901234','987 Cedar St, Country'),(7,16,'individual','7890123456','0789012345','101 Fir St, Region'),(8,17,'individual','8901234567','0890123456','202 Birch St, City'),(9,18,'individual','9012345678','0901234567','303 Spruce St, Town'),(10,19,'organization','0123456789','0012345678','404 Redwood St, Village'),(11,20,'individual','1234567891','0123456790','505 Willow St, County'),(12,21,'individual','2345678910','0234567891','606 Cypress St, State');
+/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `customer_log`
@@ -125,9 +165,19 @@ CREATE TABLE `customer_log` (
   `updated_date` date DEFAULT NULL,
   PRIMARY KEY (`log_id`),
   KEY `customer_id` (`customer_id`),
-  CONSTRAINT `customer_log_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `customer_log_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customer_log`
+--
+
+LOCK TABLES `customer_log` WRITE;
+/*!40000 ALTER TABLE `customer_log` DISABLE KEYS */;
+INSERT INTO `customer_log` VALUES (1,1,'1234567890','0123456789','123 Main St, City','2024-09-01'),(2,2,'2345678901','0234567890','456 Elm St, Town','2024-09-15'),(3,3,'3456789012','0345678901','789 Oak St, Village','2024-09-30');
+/*!40000 ALTER TABLE `customer_log` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `deposit`
@@ -141,10 +191,20 @@ CREATE TABLE `deposit` (
   `branch_id` int DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `branch_id` (`branch_id`),
-  CONSTRAINT `deposit_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`),
-  CONSTRAINT `deposit_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`)
+  CONSTRAINT `deposit_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `deposit_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deposit`
+--
+
+LOCK TABLES `deposit` WRITE;
+/*!40000 ALTER TABLE `deposit` DISABLE KEYS */;
+INSERT INTO `deposit` VALUES (1,1),(5,2),(3,3);
+/*!40000 ALTER TABLE `deposit` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee`
@@ -160,10 +220,20 @@ CREATE TABLE `employee` (
   PRIMARY KEY (`employee_id`),
   KEY `staff_id` (`staff_id`),
   KEY `branch_id` (`branch_id`),
-  CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`),
-  CONSTRAINT `employee_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `employee_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee`
+--
+
+LOCK TABLES `employee` WRITE;
+/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
+INSERT INTO `employee` VALUES (1,3,1),(2,4,2);
+/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `fd_plan`
@@ -177,8 +247,18 @@ CREATE TABLE `fd_plan` (
   `duration` int DEFAULT NULL,
   `Interest_rate` decimal(4,2) DEFAULT NULL,
   PRIMARY KEY (`fd_plan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fd_plan`
+--
+
+LOCK TABLES `fd_plan` WRITE;
+/*!40000 ALTER TABLE `fd_plan` DISABLE KEYS */;
+INSERT INTO `fd_plan` VALUES (1,6,3.50),(2,12,4.00),(3,24,4.50),(4,36,5.00);
+/*!40000 ALTER TABLE `fd_plan` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `fixed_deposit`
@@ -197,10 +277,20 @@ CREATE TABLE `fixed_deposit` (
   PRIMARY KEY (`fd_id`),
   KEY `savings_account_id` (`savings_account_id`),
   KEY `fd_plan_id` (`fd_plan_id`),
-  CONSTRAINT `fixed_deposit_ibfk_1` FOREIGN KEY (`savings_account_id`) REFERENCES `savings_account` (`savings_account_id`),
-  CONSTRAINT `fixed_deposit_ibfk_2` FOREIGN KEY (`fd_plan_id`) REFERENCES `fd_plan` (`fd_plan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fixed_deposit_ibfk_1` FOREIGN KEY (`savings_account_id`) REFERENCES `savings_account` (`savings_account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fixed_deposit_ibfk_2` FOREIGN KEY (`fd_plan_id`) REFERENCES `fd_plan` (`fd_plan_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fixed_deposit`
+--
+
+LOCK TABLES `fixed_deposit` WRITE;
+/*!40000 ALTER TABLE `fixed_deposit` DISABLE KEYS */;
+INSERT INTO `fixed_deposit` VALUES (1,1,10000.00,2,'2024-10-01','2025-10-01'),(2,3,25000.00,3,'2024-09-15','2026-09-15'),(3,4,5000.00,1,'2024-10-05','2025-04-05');
+/*!40000 ALTER TABLE `fixed_deposit` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `individual`
@@ -215,9 +305,19 @@ CREATE TABLE `individual` (
   `date_of_birth` date DEFAULT NULL,
   `NIC` varchar(12) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
-  CONSTRAINT `individual_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
+  CONSTRAINT `individual_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `individual`
+--
+
+LOCK TABLES `individual` WRITE;
+/*!40000 ALTER TABLE `individual` DISABLE KEYS */;
+INSERT INTO `individual` VALUES (1,'Charlie Brown','1995-07-25','950725-1111'),(2,'Diana Ross','1988-11-30','881130-2222'),(4,'Fiona Apple','1992-04-18','920418-3333'),(6,'Helen Mirren','1975-01-05','750105-4444');
+/*!40000 ALTER TABLE `individual` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `loan`
@@ -237,9 +337,19 @@ CREATE TABLE `loan` (
   `status` enum('approved','pending','rejected') DEFAULT NULL,
   PRIMARY KEY (`loan_id`),
   KEY `account_id` (`account_id`),
-  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `loan`
+--
+
+LOCK TABLES `loan` WRITE;
+/*!40000 ALTER TABLE `loan` DISABLE KEYS */;
+INSERT INTO `loan` VALUES (1,1,'personal',10000.00,5.50,'2024-10-01','2025-10-01','approved'),(2,3,'business',50000.00,6.00,'2024-09-15','2026-09-15','approved'),(3,5,'personal',5000.00,5.00,'2024-10-05','2025-04-05','pending');
+/*!40000 ALTER TABLE `loan` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `loan_installment`
@@ -255,9 +365,19 @@ CREATE TABLE `loan_installment` (
   `duration` int DEFAULT '30',
   PRIMARY KEY (`installment_id`),
   KEY `loan_id` (`loan_id`),
-  CONSTRAINT `loan_installment_ibfk_1` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `loan_installment_ibfk_1` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `loan_installment`
+--
+
+LOCK TABLES `loan_installment` WRITE;
+/*!40000 ALTER TABLE `loan_installment` DISABLE KEYS */;
+INSERT INTO `loan_installment` VALUES (1,1,1000.00,30),(2,2,2500.00,30),(3,3,500.00,30);
+/*!40000 ALTER TABLE `loan_installment` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `loan_payment`
@@ -277,10 +397,20 @@ CREATE TABLE `loan_payment` (
   PRIMARY KEY (`payment_id`),
   KEY `instalment_id` (`instalment_id`),
   KEY `penalty_id` (`penalty_id`),
-  CONSTRAINT `loan_payment_ibfk_1` FOREIGN KEY (`instalment_id`) REFERENCES `loan_installment` (`installment_id`),
-  CONSTRAINT `loan_payment_ibfk_2` FOREIGN KEY (`penalty_id`) REFERENCES `penalty` (`penalty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `loan_payment_ibfk_1` FOREIGN KEY (`instalment_id`) REFERENCES `loan_installment` (`installment_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `loan_payment_ibfk_2` FOREIGN KEY (`penalty_id`) REFERENCES `penalty` (`penalty_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `loan_payment`
+--
+
+LOCK TABLES `loan_payment` WRITE;
+/*!40000 ALTER TABLE `loan_payment` DISABLE KEYS */;
+INSERT INTO `loan_payment` VALUES (1,1,1000.00,'2024-11-01','2024-10-28','paid',NULL),(2,2,2500.00,'2024-10-15','2024-10-14','paid',NULL),(3,3,500.00,'2024-11-05',NULL,'unpaid',1);
+/*!40000 ALTER TABLE `loan_payment` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `manager`
@@ -294,9 +424,19 @@ CREATE TABLE `manager` (
   `staff_id` int DEFAULT NULL,
   PRIMARY KEY (`manager_id`),
   KEY `staff_id` (`staff_id`),
-  CONSTRAINT `manager_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `manager_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `manager`
+--
+
+LOCK TABLES `manager` WRITE;
+/*!40000 ALTER TABLE `manager` DISABLE KEYS */;
+INSERT INTO `manager` VALUES (1,1),(2,2),(3,5);
+/*!40000 ALTER TABLE `manager` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `organization`
@@ -310,9 +450,19 @@ CREATE TABLE `organization` (
   `name` varchar(100) DEFAULT NULL,
   `lisence_number` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
-  CONSTRAINT `organization_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
+  CONSTRAINT `organization_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `organization`
+--
+
+LOCK TABLES `organization` WRITE;
+/*!40000 ALTER TABLE `organization` DISABLE KEYS */;
+INSERT INTO `organization` VALUES (3,'ABC Corporation','ORG-12345'),(5,'XYZ Limited','ORG-67890');
+/*!40000 ALTER TABLE `organization` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `penalty`
@@ -326,9 +476,19 @@ CREATE TABLE `penalty` (
   `penalty_type_id` int DEFAULT NULL,
   PRIMARY KEY (`penalty_id`),
   KEY `penalty_type_id` (`penalty_type_id`),
-  CONSTRAINT `penalty_ibfk_1` FOREIGN KEY (`penalty_type_id`) REFERENCES `penalty_types` (`penalty_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `penalty_ibfk_1` FOREIGN KEY (`penalty_type_id`) REFERENCES `penalty_types` (`penalty_type_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `penalty`
+--
+
+LOCK TABLES `penalty` WRITE;
+/*!40000 ALTER TABLE `penalty` DISABLE KEYS */;
+INSERT INTO `penalty` VALUES (1,1),(2,2),(3,3);
+/*!40000 ALTER TABLE `penalty` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `penalty_types`
@@ -342,8 +502,18 @@ CREATE TABLE `penalty_types` (
   `penalty_amount` decimal(10,2) DEFAULT NULL,
   `penalty_type` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`penalty_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `penalty_types`
+--
+
+LOCK TABLES `penalty_types` WRITE;
+/*!40000 ALTER TABLE `penalty_types` DISABLE KEYS */;
+INSERT INTO `penalty_types` VALUES (1,25.00,'Late Payment'),(2,50.00,'Insufficient Funds'),(3,100.00,'Early Withdrawal');
+/*!40000 ALTER TABLE `penalty_types` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `savings_account`
@@ -359,10 +529,20 @@ CREATE TABLE `savings_account` (
   PRIMARY KEY (`savings_account_id`),
   KEY `account_id` (`account_id`),
   KEY `savings_plan_id` (`savings_plan_id`),
-  CONSTRAINT `savings_account_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`),
-  CONSTRAINT `savings_account_ibfk_2` FOREIGN KEY (`savings_plan_id`) REFERENCES `savings_plan` (`savings_plan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `savings_account_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `savings_account_ibfk_2` FOREIGN KEY (`savings_plan_id`) REFERENCES `savings_plan` (`savings_plan_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `savings_account`
+--
+
+LOCK TABLES `savings_account` WRITE;
+/*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
+INSERT INTO `savings_account` VALUES (1,1,3),(2,3,3),(3,5,4),(4,6,2);
+/*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `savings_plan`
@@ -378,8 +558,18 @@ CREATE TABLE `savings_plan` (
   `minimum_balance` decimal(15,2) DEFAULT NULL,
   `age_limit` int DEFAULT NULL,
   PRIMARY KEY (`savings_plan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `savings_plan`
+--
+
+LOCK TABLES `savings_plan` WRITE;
+/*!40000 ALTER TABLE `savings_plan` DISABLE KEYS */;
+INSERT INTO `savings_plan` VALUES (1,'child',3.50,100.00,18),(2,'teen',3.00,500.00,25),(3,'adult',2.50,1000.00,60),(4,'senior',4.00,1000.00,NULL);
+/*!40000 ALTER TABLE `savings_plan` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `staff`
@@ -397,9 +587,19 @@ CREATE TABLE `staff` (
   `role` enum('manager','employee') DEFAULT NULL,
   PRIMARY KEY (`staff_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `staff_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `staff_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `staff`
+--
+
+LOCK TABLES `staff` WRITE;
+/*!40000 ALTER TABLE `staff` DISABLE KEYS */;
+INSERT INTO `staff` VALUES (1,1,'John Doe','1980-05-15','800515-1234','manager'),(2,2,'Jane Smith','1985-09-20','850920-5678','manager'),(3,3,'Bob Johnson','1990-03-10','900310-9012','employee'),(4,4,'Alice Williams','1988-12-05','881205-3456','employee'),(5,11,'Tom Smith','1988-11-15','881115-3456','manager'),(6,12,'Robert Downey','1975-04-04','750404-7890','employee'),(7,13,'Scarlett Johansson','1984-11-22','841122-4567','employee'),(8,14,'Chris Evans','1981-06-13','810613-1122','employee'),(9,15,'Mark Ruffalo','1967-11-22','671122-3344','employee'),(10,22,'Jennifer Lawrence','1990-08-15','900815-9988','employee'),(11,23,'Matt Damon','1970-10-08','701008-5566','employee');
+/*!40000 ALTER TABLE `staff` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `transaction`
@@ -417,9 +617,19 @@ CREATE TABLE `transaction` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `account_id` (`account_id`),
-  CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transaction`
+--
+
+LOCK TABLES `transaction` WRITE;
+/*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
+INSERT INTO `transaction` VALUES (1,1,'deposit',1000.00,'2024-10-01 10:30:00','Initial deposit'),(2,2,'withdrawal',500.00,'2024-10-01 14:45:00','ATM withdrawal'),(3,3,'deposit',5000.00,'2024-10-02 09:15:00','Salary deposit'),(4,4,'transfer',1000.00,'2024-10-02 16:30:00','Transfer to savings'),(5,5,'deposit',2000.00,'2024-10-03 11:00:00','Check deposit'),(6,6,'withdrawal',300.00,'2024-10-03 13:20:00','Cash withdrawal');
+/*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary view structure for view `transaction_history`
@@ -432,7 +642,6 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50001 CREATE VIEW `transaction_history` AS SELECT 
  1 AS `customer_id`,
  1 AS `transaction_id`,
- 1 AS `account_id`,
  1 AS `transaction_type`,
  1 AS `amount`,
  1 AS `date`,
@@ -452,10 +661,20 @@ CREATE TABLE `transfer` (
   `beneficiary_account_id` int DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `beneficiary_account_id` (`beneficiary_account_id`),
-  CONSTRAINT `transfer_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`),
-  CONSTRAINT `transfer_ibfk_2` FOREIGN KEY (`beneficiary_account_id`) REFERENCES `account` (`account_id`)
+  CONSTRAINT `transfer_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `transfer_ibfk_2` FOREIGN KEY (`beneficiary_account_id`) REFERENCES `account` (`account_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer`
+--
+
+LOCK TABLES `transfer` WRITE;
+/*!40000 ALTER TABLE `transfer` DISABLE KEYS */;
+INSERT INTO `transfer` VALUES (4,1);
+/*!40000 ALTER TABLE `transfer` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
@@ -471,8 +690,18 @@ CREATE TABLE `user` (
   `email` varchar(100) DEFAULT NULL,
   `role` enum('staff','customer') DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'john_doe','hashed_password1','john.doe@email.com','staff'),(2,'jane_smith','hashed_password2','jane.smith@email.com','staff'),(3,'bob_johnson','hashed_password3','bob.johnson@email.com','staff'),(4,'alice_williams','hashed_password4','alice.williams@email.com','staff'),(5,'charlie_brown','hashed_password5','charlie.brown@email.com','customer'),(6,'diana_ross','hashed_password6','diana.ross@email.com','customer'),(7,'edward_norton','hashed_password7','edward.norton@email.com','customer'),(8,'fiona_apple','hashed_password8','fiona.apple@email.com','customer'),(9,'george_clooney','hashed_password9','george.clooney@email.com','customer'),(10,'helen_mirren','hashed_password10','helen.mirren@email.com','customer'),(11,'tom_smith','hashed_password11','tom.smith@email.com','staff'),(12,'robert_downey','hashed_password12','robert.downey@email.com','staff'),(13,'scarlett_johansson','hashed_password13','scarlett.johansson@email.com','staff'),(14,'chris_evans','hashed_password14','chris.evans@email.com','staff'),(15,'mark_ruffalo','hashed_password15','mark.ruffalo@email.com','staff'),(16,'julia_roberts','hashed_password16','julia.roberts@email.com','customer'),(17,'brad_pitt','hashed_password17','brad.pitt@email.com','customer'),(18,'angelina_jolie','hashed_password18','angelina.jolie@email.com','customer'),(19,'morgan_freeman','hashed_password19','morgan.freeman@email.com','customer'),(20,'meryl_streep','hashed_password20','meryl.streep@email.com','customer'),(21,'leonardo_dicaprio','hashed_password21','leonardo.dicaprio@email.com','customer'),(22,'jennifer_lawrence','hashed_password22','jennifer.lawrence@email.com','staff'),(23,'matt_damon','hashed_password23','matt.damon@email.com','staff');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `withdrawal`
@@ -486,35 +715,24 @@ CREATE TABLE `withdrawal` (
   `branch_id` int DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `branch_id` (`branch_id`),
-  CONSTRAINT `withdrawal_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`),
-  CONSTRAINT `withdrawal_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`)
+  CONSTRAINT `withdrawal_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `withdrawal_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `withdrawal`
+--
+
+LOCK TABLES `withdrawal` WRITE;
+/*!40000 ALTER TABLE `withdrawal` DISABLE KEYS */;
+INSERT INTO `withdrawal` VALUES (2,2),(6,3);
+/*!40000 ALTER TABLE `withdrawal` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping events for database 'bank_database'
 --
-/*!50106 SET @save_time_zone= @@TIME_ZONE */ ;
-/*!50106 DROP EVENT IF EXISTS `add_fd_interest_event` */;
-DELIMITER ;;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;;
-/*!50003 SET character_set_client  = utf8mb4 */ ;;
-/*!50003 SET character_set_results = utf8mb4 */ ;;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
-/*!50003 SET @saved_time_zone      = @@time_zone */ ;;
-/*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`root`@`localhost`*/ /*!50106 EVENT `add_fd_interest_event` ON SCHEDULE EVERY 1 DAY STARTS '2024-10-01 19:27:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL add_fd_interest() */ ;;
-/*!50003 SET time_zone             = @saved_time_zone */ ;;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;;
-/*!50003 SET character_set_results = @saved_cs_results */ ;;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;;
-DELIMITER ;
-/*!50106 SET TIME_ZONE= @save_time_zone */ ;
 
 --
 -- Dumping routines for database 'bank_database'
@@ -527,7 +745,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `Calculate_interest`(`fd_plan_id` INT, `amount` DECIMAL(15,2)) RETURNS decimal(10,2)
     READS SQL DATA
@@ -551,6 +769,85 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `generate_account_number` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `generate_account_number`(acc_type ENUM('savings', 'checking')) RETURNS char(15) CHARSET utf8mb4
+    DETERMINISTIC
+BEGIN
+    DECLARE prefix CHAR(3);
+    DECLARE last_number INT;
+    DECLARE account_number CHAR(15);
+    DECLARE account_exists INT DEFAULT 1; -- Track if the account number exists
+
+    -- Determine the prefix based on account type
+    IF acc_type = 'savings' THEN
+        SET prefix = 'SAV';
+    ELSEIF acc_type = 'checking' THEN
+        SET prefix = 'CHK';
+    END IF;
+
+    -- Loop to generate a new account number until it is unique
+    WHILE account_exists = 1 DO
+        -- Generate the last number (simulate as a random 9-digit number)
+        SET last_number = FLOOR(100000000 + RAND() * 900000000); -- Generates a 9-digit number
+
+        -- Form the full account number
+        SET account_number = CONCAT(prefix, '-', last_number);
+
+        -- Check if the generated account number already exists in the account table
+        SELECT COUNT(*) INTO account_exists
+        FROM account
+        WHERE account_number = account_number;
+    END WHILE;
+
+    -- Return the unique account number
+    RETURN account_number;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `GetCreditLimit` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `GetCreditLimit`(userId INT) RETURNS decimal(10,2)
+    DETERMINISTIC
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+
+    -- Calculate the sum of all fixed deposits owned by the user
+    SELECT SUM(fd.amount) INTO total
+    FROM fixed_deposit fd
+    JOIN savings_account s ON fd.savings_account_id = s.savings_account_id
+    JOIN account a ON s.account_id = a.account_id
+    JOIN customer c ON a.customer_id = c.customer_id
+    JOIN user u ON c.user_id = u.user_id
+    WHERE u.user_id = userId;
+
+    -- Return the credit limit
+    RETURN total / 2;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP FUNCTION IF EXISTS `is_manager` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -559,7 +856,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `is_manager`(input_user_id INT) RETURNS tinyint(1)
     READS SQL DATA
@@ -591,52 +888,134 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_fd_interest`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_fd_interest`(IN `fd_id` int)
 BEGIN
-    DECLARE done INT DEFAULT FALSE;
-    DECLARE fd_id INT;
-    DECLARE fd_amount DECIMAL(15,2);
-    DECLARE plan_id INT;
-    DECLARE interest DECIMAL(10,2);
-    DECLARE p_account_id INT;
-    DECLARE creation_date DATE;
+	DECLARE `fd_amount` DECIMAL(15,2);
+    DECLARE `plan_id` INT;
+    DECLARE `interest` decimal(10,2);
+    DECLARE `p_account_id` INT;
 
-    DECLARE cur CURSOR FOR 
-        SELECT fd_id, amount, fd_plan_id, creation_date 
-        FROM fixed_deposit
-        WHERE DATEDIFF(CURDATE(), creation_date) >= 30
-        AND MOD(DATEDIFF(CURDATE(), creation_date), 30) = 0;
+	SELECT `amount`, `fd_plan_id` INTO `fd_amount`, `plan_id` FROM `fixed_deposit` as fd WHERE fd.`fd_id` = `fd_id`;
+	SELECT Calculate_interest (plan_id, fd_amount) INTO `interest`;
+    SELECT account_id INTO p_account_id FROM account WHERE account_id IN (SELECT account_id FROM savings_account JOIN fixed_deposit fd USING(savings_account_id) WHERE fd.fd_id = `fd_id`);
+    START TRANSACTION;
+    UPDATE account SET balance = balance + interest WHERE account_id = p_account_id;
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_individual_customer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_individual_customer`(
+    IN branch_id INT,
+    IN full_name VARCHAR(100),
+    IN date_of_birth DATE,
+    IN NIC VARCHAR(12),
+    IN address VARCHAR(255),
+    IN mobile_number VARCHAR(10),
+    IN landline_number VARCHAR(10),
+    IN account_type ENUM('savings', 'checking'),
+    OUT account_number CHAR(15)
+)
+BEGIN
+    DECLARE customer_id INT;
 
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        -- In case of an error, rollback the transaction
+        ROLLBACK;
+        SELECT 'Error occurred during adding individual customer';
+    END;
 
-    OPEN cur;
-    read_loop: LOOP
-        FETCH cur INTO fd_id, fd_amount, plan_id, creation_date;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
+    START TRANSACTION;
 
-        SELECT Calculate_interest(plan_id, fd_amount) INTO interest;
+        -- Insert the customer information into customer table
+        INSERT INTO customer (customer_type, mobile_number, landline_number, address)
+        VALUES ('individual', mobile_number, landline_number, address);
 
-        SELECT account_id INTO p_account_id 
-        FROM account 
-        WHERE account_id IN (
-            SELECT account_id 
-            FROM savings_account 
-            JOIN fixed_deposit fd USING(savings_account_id) 
-            WHERE fd.fd_id = fd_id
-        );
+        -- Get the customer ID of the inserted customer
+        SET customer_id = LAST_INSERT_ID();
 
-        START TRANSACTION;
-        UPDATE account 
-        SET balance = balance + interest 
-        WHERE account_id = p_account_id;
+        INSERT INTO individual (customer_id, full_name , date_of_birth, NIC)
+        VALUES (customer_id, full_name, date_of_birth, NIC);
+
+        -- create a account for the customer
+        CALL create_account(customer_id, branch_id, account_type, @account_number);
+
+
         COMMIT;
-    END LOOP;
+        -- If the transaction is successful, return the account number
+        SET account_number = @account_number; 
 
-    CLOSE cur;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_organization_customer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_organization_customer`(
+    IN branch_id INT,
+    IN name VARCHAR(100),
+    IN license_number VARCHAR(100),
+    IN address VARCHAR(255),
+    IN mobile_number VARCHAR(10),
+    IN landline_number VARCHAR(10),
+    IN account_type ENUM('savings', 'checking'),
+    OUT account_number CHAR(15)
+)
+BEGIN
+    DECLARE customer_id INT;
+
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Error occurred during adding organization customer';
+    END;
+
+    START TRANSACTION;
+
+        -- Insert the customer information into customer table
+        INSERT INTO customer (customer_type, mobile_number, landline_number, address)
+        VALUES ('organization', mobile_number, landline_number, address);
+
+        -- Get the customer ID of the inserted customer
+        SET customer_id = LAST_INSERT_ID();
+
+        INSERT INTO organization (customer_id, name, license_number)
+        VALUES (customer_id, name, license_number);
+
+        -- create a account for the customer
+        CALL create_account(customer_id, branch_id, account_type, @account_number);
+
+        COMMIT;
+        -- If the transaction is successful, return the account number
+        SET account_number = @account_number; 
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -651,21 +1030,21 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `approve_loan`(IN input_loan_id INT, IN manager_user_id INT)
 BEGIN
     DECLARE loan_status VARCHAR(20);
-    
-    START TRANSACTION;
 
     IF is_manager(manager_user_id) THEN
+		START TRANSACTION;
         SELECT status INTO loan_status FROM loan WHERE loan_id = input_loan_id;
 
         IF loan_status = 'pending' THEN
             UPDATE loan
             SET status = 'approved'
             WHERE loan_id = input_loan_id;
+            COMMIT;
         ELSE
 			ROLLBACK;
             SIGNAL SQLSTATE '45000'
@@ -677,6 +1056,366 @@ BEGIN
         SET MESSAGE_TEXT = 'User is not authorized to approve loans';
     END IF;
     
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `create_account` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_account`(
+    IN customer_id INT,
+    IN branch_id INT,
+    IN account_type ENUM('savings', 'checking'),
+    OUT account_number CHAR(15)
+)
+BEGIN
+    DECLARE new_account_number CHAR(15);
+
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        ROLLBACK;
+        SELECT 'Error occurred during account creation';
+    END;
+
+    START TRANSACTION;
+
+        -- Generate a new account number based on the account type
+        SET new_account_number = generate_account_number(account_type);
+
+        -- Insert the new account information into the account table
+        INSERT INTO account (account_type, account_number, customer_id, branch_id, balance, status)
+        VALUES (account_type, new_account_number, customer_id, branch_id, 0.00, 'active');
+
+        COMMIT;
+        SET account_number = new_account_number;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `DepositFunds` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DepositFunds`(
+    IN acc_number VARCHAR(255),
+    IN deposit_amount DECIMAL(15,2),
+    IN branch INT,
+    IN description VARCHAR(255),
+    OUT result VARCHAR(255)
+)
+BEGIN
+    DECLARE current_balance DECIMAL(15,2);
+    DECLARE acc_id INT;
+
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        ROLLBACK;
+        SET result = 'Error occurred during deposit';
+    END;
+
+    START TRANSACTION;
+
+    -- Labeled block to handle procedure exit
+    proc_exit: BEGIN
+
+        -- Get the account ID based on the account number
+        SELECT account_id INTO acc_id FROM account WHERE account_number = acc_number;
+
+        -- Check if the account ID was found
+        IF acc_id IS NULL THEN
+            SET result = 'Account not found';
+            LEAVE proc_exit; -- Exit the procedure if account is not found
+        END IF;
+
+        -- Check the current balance of the account
+        SELECT balance INTO current_balance FROM account WHERE account_id = acc_id;
+
+        -- Update the account balance
+        UPDATE account 
+        SET balance = balance + deposit_amount 
+        WHERE account_id = acc_id;
+        
+        -- Insert the transaction into the transaction table
+        INSERT INTO transaction (account_id, transaction_type, amount, date, description)
+        VALUES (acc_id, 'deposit', deposit_amount, NOW(), description);
+        
+        -- Get the transaction ID of the inserted transaction
+        SET @trans_id = LAST_INSERT_ID();
+        
+        -- Log the deposit into the deposit table (assuming a correct table name)
+        INSERT INTO deposit (transaction_id, branch_id)
+        VALUES (@trans_id, branch);
+
+        COMMIT;
+
+        SET result = 'Deposit successful';
+
+    END proc_exit;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetLoanDetails` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetLoanDetails`(IN userId INT)
+BEGIN
+    SELECT 
+        l.loan_id, 
+        l.loan_type, 
+        l.amount, 
+        l.interest_rate,
+        COALESCE(ply.penalty_amount, 0) AS penalty_amount
+    FROM
+        loan l
+        JOIN account a ON l.account_id = a.account_id
+        JOIN customer c ON a.customer_id = c.customer_id
+        JOIN user u ON c.user_id = u.user_id
+        LEFT JOIN (
+            SELECT 
+                li.loan_id, 
+                lp.instalment_id, 
+                pt.penalty_amount
+            FROM
+                loan_installment li
+                LEFT JOIN loan_payment lp ON li.installment_id = lp.instalment_id
+                LEFT JOIN penalty p ON lp.penalty_id = p.penalty_id
+                LEFT JOIN penalty_types pt ON p.penalty_type_id = pt.penalty_type_id
+        ) AS ply ON l.loan_id = ply.loan_id
+    WHERE
+        u.user_id = userId
+    GROUP BY 
+        l.loan_id, l.loan_type, l.amount, l.interest_rate, ply.penalty_amount;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `MoneyTransfer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MoneyTransfer`(
+    IN sender_account_id INT,
+    IN receiver_account_id INT,
+    IN transfer_amount DECIMAL(10,2)
+)
+BEGIN
+    DECLARE sender_balance DECIMAL(15,2);
+    DECLARE receiver_balance DECIMAL(15,2);
+    DECLARE sender_status ENUM('active','inactive');
+    DECLARE receiver_status ENUM('active','inactive');
+    DECLARE transaction_time  datetime;
+    -- DECLARE insufficient_funds EXCEPTION;
+	
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+    ROLLBACK; -- Roll back the transaction in case of error
+    SELECT 'An error occurred during the transfer. Transaction rolled back.' AS error_message;
+    END;
+
+
+	
+    SELECT NOW() INTO transaction_time;
+	START TRANSACTION;
+    -- Check if both sender and receiver accounts are active and get their balances
+    SELECT balance, status INTO sender_balance, sender_status 
+    FROM account
+    WHERE account_id = sender_account_id;
+    
+
+    SELECT balance, status INTO receiver_balance, receiver_status 
+    FROM account
+    WHERE account_id = receiver_account_id;
+    
+
+    -- Check if sender's account is active and has sufficient balance
+    IF sender_status = 'inactive' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sender account is not active.';
+    ELSEIF sender_balance < transfer_amount THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient funds in sender account.';
+    END IF;
+
+    -- Check if receiver's account is active
+    IF receiver_status ='inactive' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Receiver account is not active.';
+    END IF;
+	
+    
+    -- Perform the transaction: deduct from sender's account and add to receiver's account
+    UPDATE account
+    SET balance = balance - transfer_amount
+    WHERE account_id = sender_account_id;
+
+    UPDATE account
+    SET balance = balance + transfer_amount
+    WHERE account_id = receiver_account_id;
+
+    -- Insert transaction records for sender and receiver, including beneficiary account IDs
+    INSERT INTO transaction(account_id, transaction_type, amount, date, description)
+    VALUES 
+    (sender_account_id, 'transfer', transfer_amount, transaction_time, CONCAT('Transfer to account ', receiver_account_id)),
+    (receiver_account_id, 'deposit', transfer_amount, transaction_time, CONCAT('Transfer from account ', sender_account_id));
+
+COMMIT;
+
+    -- Confirm the transfer
+    SELECT CONCAT('Transfer of ', transfer_amount, ' completed from account ', sender_account_id, ' to account ', receiver_account_id) AS confirmation_message;
+	
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `update_user_info` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_user_info`(
+    IN userId INT,
+    IN new_username VARCHAR(255),
+    IN new_email VARCHAR(255),
+    IN new_address TEXT,
+    IN new_mobile_number VARCHAR(15),
+    IN new_landline_number VARCHAR(15)
+)
+BEGIN
+    -- Update the 'user' table
+    UPDATE user
+    SET user_name = new_username, email = new_email
+    WHERE user_id = userId;
+
+    -- Update the 'customer' table
+    UPDATE customer
+    SET address = new_address, mobile_number = new_mobile_number, landline_number = new_landline_number
+    WHERE user_id = userId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `WithdrawFunds` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `WithdrawFunds`(
+    IN acc_number VARCHAR(255),
+    IN withdraw_amount DECIMAL(15,2),
+    IN branch INT,
+    IN description VARCHAR(255),
+    OUT result VARCHAR(255)
+)
+BEGIN
+    DECLARE current_balance DECIMAL(15,2);
+    DECLARE acc_id INT;
+
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        -- In case of an error, rollback the transaction
+        ROLLBACK;
+        SET result = 'Error occurred during withdrawal';
+    END;
+
+    -- Start the transaction
+    START TRANSACTION;
+
+    -- Labeled block to handle procedure exit
+    proc_exit: BEGIN
+
+        -- Get the account ID based on the account number
+        SELECT account_id INTO acc_id FROM account WHERE account_number = acc_number;
+
+        -- Check if the account ID was found
+        IF acc_id IS NULL THEN
+            SET result = 'Account not found';
+            LEAVE proc_exit; -- Exit the procedure if account is not found
+        END IF;
+
+        -- Check the current balance of the account
+        SELECT balance INTO current_balance FROM account WHERE account_id = acc_id;
+
+        -- Check if sufficient balance is available
+        IF current_balance >= withdraw_amount THEN
+            -- Update the account balance
+            UPDATE account 
+            SET balance = balance - withdraw_amount 
+            WHERE account_id = acc_id;
+            
+            -- Insert the transaction into the transaction table
+            INSERT INTO transaction (account_id, transaction_type, amount, date, description)
+            VALUES (acc_id, 'withdrawal', withdraw_amount, NOW(), description);
+            
+            -- Get the transaction ID of the inserted transaction
+            SET @trans_id = LAST_INSERT_ID();
+            
+            -- Log the withdrawal into the withdrawal table
+            INSERT INTO withdrawal (transaction_id, branch_id)
+            VALUES (@trans_id, branch);
+            
+            -- Commit the transaction after all operations succeed
+            COMMIT;
+
+            -- Success message
+            SET result = 'Withdrawal successful';
+        ELSE
+            -- Insufficient balance message, rollback the transaction
+            ROLLBACK;
+            SET result = 'Insufficient balance for withdrawal';
+        END IF;
+
+    END proc_exit;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -715,7 +1454,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `transaction_history` AS select `c`.`customer_id` AS `customer_id`,`t`.`transaction_id` AS `transaction_id`,`t`.`account_id` AS `account_id`,`t`.`transaction_type` AS `transaction_type`,`t`.`amount` AS `amount`,`t`.`date` AS `date`,`t`.`description` AS `description`,`a`.`account_number` AS `account_number` from ((`customer` `c` join `account` `a` on((`c`.`customer_id` = `a`.`customer_id`))) join `transaction` `t` on((`a`.`account_id` = `t`.`account_id`))) order by `t`.`date` desc */;
+/*!50001 VIEW `transaction_history` AS select `c`.`customer_id` AS `customer_id`,`t`.`transaction_id` AS `transaction_id`,`t`.`transaction_type` AS `transaction_type`,`t`.`amount` AS `amount`,`t`.`date` AS `date`,`t`.`description` AS `description`,`a`.`account_number` AS `account_number` from ((`customer` `c` join `account` `a` on((`c`.`customer_id` = `a`.`customer_id`))) join `transaction` `t` on((`a`.`account_id` = `t`.`account_id`))) order by `t`.`date` desc */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -729,4 +1468,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-02 19:06:16
+-- Dump completed on 2024-10-15 11:19:55
