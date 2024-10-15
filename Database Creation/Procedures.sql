@@ -1,3 +1,5 @@
+DELIMITER $$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MoneyTransfer`(
     IN sender_account_id INT,
     IN receiver_account_id INT,
@@ -65,4 +67,40 @@ COMMIT;
     -- Confirm the transfer
     SELECT CONCAT('Transfer of ', transfer_amount, ' completed from account ', sender_account_id, ' to account ', receiver_account_id) AS confirmation_message;
 	
-END
+END $$
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE GetLoanDetails(IN userId INT)
+BEGIN
+    SELECT 
+        l.loan_id, 
+        l.loan_type, 
+        l.amount, 
+        l.interest_rate,
+        COALESCE(ply.penalty_amount, 0) AS penalty_amount
+    FROM
+        loan l
+        JOIN account a ON l.account_id = a.account_id
+        JOIN customer c ON a.customer_id = c.customer_id
+        JOIN user u ON c.user_id = u.user_id
+        LEFT JOIN (
+            SELECT 
+                li.loan_id, 
+                lp.instalment_id, 
+                pt.penalty_amount
+            FROM
+                loan_installment li
+                LEFT JOIN loan_payment lp ON li.installment_id = lp.instalment_id
+                LEFT JOIN penalty p ON lp.penalty_id = p.penalty_id
+                LEFT JOIN penalty_types pt ON p.penalty_type_id = pt.penalty_type_id
+        ) AS ply ON l.loan_id = ply.loan_id
+    WHERE
+        u.user_id = userId
+    GROUP BY 
+        l.loan_id, l.loan_type, l.amount, l.interest_rate, ply.penalty_amount;
+END //
+
+DELIMITER ;
+
