@@ -54,7 +54,7 @@ SELECT
     a.account_id AS loan_account_id,  
     a.customer_id,
     a.branch_id,
-    b.name,
+    b.name as branch_name,
     b.location
 FROM 
     loan l
@@ -94,16 +94,14 @@ DROP VIEW IF EXISTS branch_transaction_details;
 CREATE VIEW branch_transaction_details AS
 SELECT 
     t.transaction_id, 
-    t.transaction_date, 
+    t.date, 
     t.amount, 
     t.transaction_type,
     a.account_id AS transaction_account_id,  -- Alias for account_id from transaction table
     a.account_number, 
-    c.customer_id, 
-    c.first_name, 
-    c.last_name, 
+    c.customer_id,  
     b.branch_id, 
-    b.branch_name
+    b.name
 FROM transaction t
 JOIN account a ON t.account_id = a.account_id
 JOIN customer c ON a.customer_id = c.customer_id
@@ -111,11 +109,22 @@ JOIN branch b ON a.branch_id = b.branch_id;
 
 
 -- View to get employee details for a relevant branch
+-- DROP VIEW IF EXISTS branch_employee_details;
+-- CREATE VIEW branch_employee_details AS
+-- SELECT employee.*, branch.*
+-- FROM employee
+-- JOIN branch ON employee.branch_id = branch.branch_id;
 DROP VIEW IF EXISTS branch_employee_details;
 CREATE VIEW branch_employee_details AS
-SELECT employee.*, branch.*
-FROM employee
-JOIN branch ON employee.branch_id = branch.branch_id;
+SELECT 
+    e.employee_id, 
+    e.branch_id,  
+    b.name as branch_name,
+    s.full_name
+FROM employee e
+JOIN branch b ON e.branch_id = b.branch_id
+JOIN Staff s ON s.staff_id = e.staff_id;
+
 
 -- View to get customer details relevant to a branch
 DROP VIEW IF EXISTS branch_customer_details;
