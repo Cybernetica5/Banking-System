@@ -3,7 +3,8 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MoneyTransfer`(
     IN sender_account_id INT,
     IN receiver_account_id INT,
-    IN transfer_amount DECIMAL(10,2)
+    IN transfer_amount DECIMAL(10,2),
+    IN description_0 VARCHAR(255)
 )
 BEGIN
     DECLARE sender_balance DECIMAL(15,2);
@@ -59,9 +60,14 @@ BEGIN
     -- Insert transaction records for sender and receiver, including beneficiary account IDs
     INSERT INTO transaction(account_id, transaction_type, amount, date, description)
     VALUES 
-    (sender_account_id, 'transfer', transfer_amount, transaction_time, CONCAT('Transfer to account ', receiver_account_id)),
-    (receiver_account_id, 'deposit', transfer_amount, transaction_time, CONCAT('Transfer from account ', sender_account_id));
+    (sender_account_id, 'transfer', transfer_amount, transaction_time, description_0);
+    -- (receiver_account_id, 'deposit', transfer_amount, transaction_time, CONCAT('Transfer from account ', sender_account_id));
 
+    SET @trans_id = LAST_INSERT_ID();
+
+    INSERT INTO transfer(transaction_id, beneficiary_account_id)
+    VALUES
+    (@trans_id,receiver_account_id);
 COMMIT;
 
     -- Confirm the transfer

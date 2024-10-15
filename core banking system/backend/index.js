@@ -78,6 +78,19 @@ async function login(req, res) {
     }
 }
 
+async function money_transfer(req, res) {
+    const { sender_account_id, receiver_account_id, transfer_amount, description } = req.body;
+
+    const query = `CALL MoneyTransfer(?, ?, ?, ?)`;
+
+    try {
+        const [result] = await db.query(query, [sender_account_id, receiver_account_id, transfer_amount, description]);
+        res.status(200).json({ message: 'Money transfer successful', result });
+    } catch (err) {
+        console.error('Error during money transfer:', err);
+        res.status(500).send('Money transfer failed');
+    }
+}
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
@@ -85,8 +98,9 @@ app.get("/accounts_summary", getAccountSummary);
 app.post("/login", login);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
-
+app.post("/money_transfer", money_transfer);
 // Existing routes...
 app.get("/", (req, res) => {
     res.json("Hello this is the backend");
 });
+

@@ -108,59 +108,40 @@ const ApplyLoan = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-        <Box
-  sx={{
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,  // Adds space between fields
-  }}
->
-  <TextField
-    label="Reason"
-    variant="outlined"
-    fullWidth
-    margin="normal"
-    value={loanReason}
-    onChange={(e) => setLoanReason(e.target.value)}
-    required
-    type="text"
-    InputProps={{ sx: { width: '100%' } }} // Ensures full width
-  />
-
-  <TextField
-    label="Loan Amount"
-    variant="outlined"
-    fullWidth
-    margin="normal"
-    value={loanAmount}
-    onChange={(e) => setLoanAmount(e.target.value)}
-    required
-    type="number"
-    inputProps={{
-      max: creditLimit, // Set max limit
-    }}
-    helperText={
-      <span style={{ whiteSpace: 'nowrap' }}>
-        The maximum loan amount you can apply for is Rs.{creditLimit}
-      </span>
-    }
-    InputProps={{ sx: { width: '100%' } }} // Ensures full width
-  />
-
-  <TextField
-    label="Loan Duration (in months)"
-    variant="outlined"
-    fullWidth
-    margin="normal"
-    value={loanDuration}
-    onChange={(e) => setLoanDuration(e.target.value)}
-    required
-    type="number"
-    InputProps={{ sx: { width: '100%' } }} // Ensures full width
-  />
-</Box>
-
-
+          <TextField
+            label="Reason"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={loanReason}
+            onChange={(e) => setLoanReason(e.target.value)}
+            required
+            type="text"
+          />
+          <TextField
+            label="Loan Amount"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={loanAmount}
+            onChange={(e) => setLoanAmount(e.target.value)}
+            required
+            // type="number"
+            inputProps={{
+              max: creditLimit, // Set the max limit as the credit limit
+            }}
+            helperText={`The maximum loan amount you can apply for is ₦${creditLimit}`}
+          />
+          <TextField
+            label="Loan Duration (in months)"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={loanDuration}
+            onChange={(e) => setLoanDuration(e.target.value)}
+            required
+            // type="number"
+          />
           <Button
             type="submit"
             variant="contained"

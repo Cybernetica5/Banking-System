@@ -38,7 +38,6 @@ INSERT INTO user (user_name, password, email, role) VALUES
 ('fiona_apple', 'hashed_password8', 'fiona.apple@email.com', 'customer'),
 ('george_clooney', 'hashed_password9', 'george.clooney@email.com', 'customer'),
 ('helen_mirren', 'hashed_password10', 'helen.mirren@email.com', 'customer'),
-
 ('tom_smith', 'hashed_password11', 'tom.smith@email.com', 'staff'),
 ('robert_downey', 'hashed_password12', 'robert.downey@email.com', 'staff'),
 ('scarlett_johansson', 'hashed_password13', 'scarlett.johansson@email.com', 'staff'),
@@ -89,7 +88,7 @@ INSERT INTO customer (user_id, customer_type, mobile_number, landline_number, ad
 
 
 -- Insert data into organization table
-INSERT INTO organization (customer_id, name, lisence_number) VALUES
+INSERT INTO organization (customer_id, name, license_number) VALUES
 (3, 'ABC Corporation', 'ORG-12345'),
 (5, 'XYZ Limited', 'ORG-67890');
 

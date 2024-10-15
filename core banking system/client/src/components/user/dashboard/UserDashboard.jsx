@@ -131,9 +131,9 @@ const DashboardSidebar = () => {
         <Routes>
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
-          <Route path="account-details" element={<AccountDetails />} />
+          {/* <Route path="account-details" element={<AccountDetails />} /> */}
           <Route path="money-transfer" element={<MoneyTransfer />} />
-          <Route path="transaction-history" element={<TransactionHistory />} />
+          {/* <Route path="transaction-history" element={<TransactionHistory />} /> */}
           <Route path="loans" element={<Loans />}>
             <Route path="apply" element={<ApplyLoan />} />
             <Route path="payment" element={<LoanPayment />} />
