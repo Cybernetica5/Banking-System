@@ -1,26 +1,21 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faMoneyBillTransfer, faWallet, faClockRotateLeft, faGear, 
-  faHouseUser, faArrowRightFromBracket, faCircleQuestion, 
-  faCaretRight, faSackDollar
+  faMoneyBillTransfer, faWallet, faGear, 
+  faArrowRightFromBracket, faCircleQuestion, 
+  faCaretRight, faSackDollar, faPeopleGroup,
+  faUsers, faFileInvoiceDollar, faCoins
 } from '@fortawesome/free-solid-svg-icons';
 
 import {Routes, Link, useNavigate, Route} from 'react-router-dom';
 import { logout } from '../../../services/auth';
 
-import './UserDashboard.css';
-import Notification from './notification/Notification';
-import Home from '../home/Home';
-import MoneyTransfer from '../MoneyTransfer/MoneyTransfer1';
+import './AdminDashboard.css';
+// import Notification from './notification/Notification';
 
-// import AccountDetails from '../account-details/AccountDetails';
-//import MoneyTransfer from '../money-transfer/MoneyTransfer';
-// import TransactionHistory from '../transaction-history/TransactionHistory';
-import Loans from '../loans/Loans';
-import ApplyLoan from '../loans/ApplyLoan';
-import LoanPayment from '../loans/LoanPayment';
-import LoanDetails from '../loans/LoanDetails';
+import AddCustomers from '../customers/AddCustomers';
+import BranchTransactionReport from '../reports/BranchTransactionReport';
+import Transactions from '../transactions/Transactions';
 import Settings from '../../common/settings/Settings';
 
 const DashboardSidebar = () => {
@@ -29,6 +24,7 @@ const DashboardSidebar = () => {
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const userName = user.username || 'User'; // Fallback to 'User' if username is not found
+  const userType = user.type || 'manager'; // Fallback to 'employee' if type is not found
 
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
 
@@ -38,20 +34,13 @@ const DashboardSidebar = () => {
   };
 
   const menuItems = [
-    { path: '/dashboard/home', icon: faHouseUser, text: 'Home' },
-    { path: '/dashboard/account-details', icon: faWallet, text: 'Account Details' },
-    { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
-    { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
-    { 
-      path: '/dashboard/loans', 
-      icon: faSackDollar, 
-      text: 'Loans',
-      subItems: [
-        { path: '/dashboard/loans/apply', text: 'Apply Loan' },
-        { path: '/dashboard/loans/payment', text: 'Loan Payment' },
-        { path: '/dashboard/loans/details', text: 'Loan Details' },
-      ]
-    },
+    { path: '/admin-dashboard/customers', icon: faUsers, text: 'Customers' },
+    ...(userType === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
+    { path: '/', icon: faWallet, text: 'Accounts' },
+    { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
+    { path: '/', icon: faCoins, text: 'Fixed Deposits' },
+    { path: '/', icon: faSackDollar, text: 'Loans' },
+    ...(userType === 'manager' ? [{ path: '/admin-dashboard/reports', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
   ];
 
   return (
@@ -97,7 +86,7 @@ const DashboardSidebar = () => {
 
           <div className="bottom-content">
             <li className="nav-link">
-              <Link to="/dashboard/settings">
+              <Link to="/admin-dashboard/settings">
                 <FontAwesomeIcon icon={faGear} className='icon'/>
                 <span className="text nav-text">Settings</span>
               </Link>
@@ -121,20 +110,14 @@ const DashboardSidebar = () => {
       <section className="home">
         <div className="top-bar">
           <div className="text">Welcome, {userName}</div>
-          <div className="notification"><Notification/></div>
+          <div className="notification"></div>
         </div>
 
         <Routes>
-          <Route index element={<Home />} />
-          <Route path="home" element={<Home />} />
-          {/* <Route path="account-details" element={<AccountDetails />} /> */}
-          <Route path="money-transfer" element={<MoneyTransfer />} />
-          {/* <Route path="transaction-history" element={<TransactionHistory />} /> */}
-          <Route path="loans" element={<Loans />}>
-            <Route path="apply" element={<ApplyLoan />} />
-            <Route path="payment" element={<LoanPayment />} />
-            <Route path="details" element={<LoanDetails />} />
-          </Route>
+          <Route index element={<AddCustomers />} />
+          <Route path="customers" element={<AddCustomers />} />
+          <Route path="transactions" element={<Transactions />} />
+          <Route path="reports" element={<BranchTransactionReport />} />
           <Route path="settings" element={<Settings />} />
         </Routes>
       </section>
