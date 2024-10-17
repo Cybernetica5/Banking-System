@@ -16,7 +16,7 @@ import MoneyTransfer from '../MoneyTransfer/MoneyTransfer1';
 
 import AccountDetails from '../account-details/AccountDetails';
 //import MoneyTransfer from '../money-transfer/MoneyTransfer';
-import TransactionHistory from '../transaction-history/TransactionHistory';
+import TransactionHistory from '../transaction-history/transaction';
 import Loans from '../loans/Loans';
 import ApplyLoan from '../loans/ApplyLoan';
 import LoanPayment from '../loans/LoanPayment';
