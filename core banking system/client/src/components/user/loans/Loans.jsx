@@ -11,7 +11,7 @@ const Loans = () => {
 
   return (
     <div className="loans-container">
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
         <Tabs value={value} onChange={handleChange} aria-label="loan tabs">
           <Tab label="Apply Loan" component={Link} to="apply" />
           <Tab label="Loan Payment" component={Link} to="payment" />

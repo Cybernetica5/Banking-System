@@ -8,6 +8,7 @@ export default function TransactionHistoryCard() {
   const [transactions, setTransactions] = useState([]); // State to hold transaction data
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for errors
+
   const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : null;
 
   useEffect(() => {

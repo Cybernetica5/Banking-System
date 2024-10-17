@@ -8,7 +8,6 @@
 # Ignore package-lock.json
 package-lock.json
 
-
 # Ignore debug logs
 npm-debug.log*
 yarn-debug.log*

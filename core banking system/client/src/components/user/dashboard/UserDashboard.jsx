@@ -20,7 +20,7 @@ import Loans from '../loans/Loans';
 import ApplyLoan from '../loans/ApplyLoan';
 import LoanPayment from '../loans/LoanPayment';
 import LoanDetails from '../loans/LoanDetails';
-import Settings from '../settings/Settings';
+import Settings from '../../common/settings/Settings';
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);

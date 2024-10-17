@@ -105,7 +105,15 @@ const Settings = () => {
             fullWidth
             margin="normal"
             onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+            sx={{
+              height: '56px', 
+              '& input': { 
+                height: '56px',
+                fontSize: '16px'
+                }
+            }}
           />
+
 
           <Button
             variant="contained"
