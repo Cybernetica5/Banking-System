@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField } from '@mui/material';
+import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField, Box } from '@mui/material';
 import api from '../../../services/api';
 
 const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
@@ -95,7 +95,7 @@ const ApplyLoan = () => {
   }
 
   return (
-    <Card>
+    <Card sx={{width: 969, margin: 'auto', mt: 10}}>
       <CardContent>
         <Typography variant="h5" component="div" gutterBottom>
           Apply for a Loan
