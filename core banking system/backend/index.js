@@ -78,6 +78,19 @@ async function login(req, res) {
     }
 }
 
+async function signup(req, res) {
+    const { account_number, user_name, email, password } = req.body;
+    const query = `CALL register_user(?, ?, ?, ?)`;
+
+    try {
+        const [result] = await db.query(query, [account_number, user_name, email, password]);
+        res.status(200).json({ message: result[0].message });
+    } catch (err) {
+        console.error('Error during registration:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 async function money_transfer(req, res) {
     const { sender_account_id, receiver_account_id, transfer_amount, description } = req.body;
 

@@ -4,6 +4,7 @@ import { register } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+  const [account_number, setAccountNumber] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +14,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await register(username, email, password);
+      const response = await register(account_number, username, email, password);
       if (response.data.success) {
         // Redirect to login page or dashboard after successful registration
         navigate('/login');
@@ -39,6 +40,18 @@ const SignUp = () => {
           Sign Up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="account_number"
+            label="Account Number"
+            name="account_number"
+            autoComplete="account_number"
+            autoFocus
+            value={account_number}
+            onChange={(e) => setAccountNumber(e.target.value)}
+          />
           <TextField
             margin="normal"
             required
