@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './services/Config/database.js';
 import { getLoanDetails, getCreditLimit } from './services/Loan/loan_services.js';
+import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
+import { getTransactionReport } from './services/Reports/report_services.js';
+import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
 
 dotenv.config();
 const app = express();
@@ -51,6 +54,21 @@ async function getAccountSummary(req, res) {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+async function getRecentTransactions(req, res) {
+    const customerId = req.params.customerId;
+
+    const q = "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3";
+
+    try {
+        const [rows] = await db.query(q, [customerId]);
+        res.json({ success: true, data: rows });
+    } catch (err) {
+        console.error('Error fetching recent transactions:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+}
+
 
 async function login(req, res) {
     const { user_name, password } = req.body;
@@ -111,9 +129,40 @@ app.get("/accounts_summary", getAccountSummary);
 app.post("/login", login);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
+
+app.get("/recent_transactions/:customerId", getRecentTransactions);
+
+// Reports
+app.post("/report/transaction", getTransactionReport);
+
+app.post("/add-customer/individual", addIndividualCustomer);
+app.post("/add-customer/organization", addOrganizationCustomer);
+
+// Transactions
+app.post("/deposit", depositFunds);
+app.post("/withdraw", withdrawFunds);
+
 app.post("/money_transfer", money_transfer);
+
 // Existing routes...
 app.get("/", (req, res) => {
     res.json("Hello this is the backend");
 });
+
+
+app.post('/money-transfer', (req, res) => {
+    const { sender_account_id, receiver_account_id, transfer_amount,description} = req.body;
+  
+    const query = `CALL MoneyTransfer(?, ?, ?)`;
+  
+    db.query(query, [sender_account_id, receiver_account_id, transfer_amount,description], (err, result) => {
+      if (err) {
+        console.error('Error during money transfer:', err);
+        res.status(500).send('Money transfer failed');
+      } else {
+        res.status(200).json({ message: 'Money transfer successful', result });
+      }
+    });
+  });
+
 
