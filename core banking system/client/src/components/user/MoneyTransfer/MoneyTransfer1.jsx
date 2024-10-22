@@ -120,7 +120,7 @@ function MoneyTransfer1() {
                         required
                         />
 
-                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="description">Description Details</label>
+                    <label style={{ color: '#5649e6', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="description">Description Details</label>
                     <textarea
                         name="description"
                         id="description"
