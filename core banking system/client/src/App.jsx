@@ -2,9 +2,8 @@ import React from 'react';
 import UserDashboard from './components/user/dashboard/UserDashboard';
 import UserLogin from './components/Login/UserLogin';
 import SignUp from './components/Login/SignUp';
-import Settings from './components/common/settings/Settings';
 import AdminDashboard from './components/admin/dashboard/AdminDashboard';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 function App() {
   return (
