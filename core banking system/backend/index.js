@@ -79,7 +79,19 @@ app.get("/recent_transactions", async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
+//get transaction history
+app.get("/transaction_History", async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
+            [req.query.customer_id]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching recent transactions:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 app.post("/login", async (req, res) => {
     const { user_name, password } = req.body;
     try {
@@ -169,17 +181,4 @@ app.post("/login", async (req, res) => {
     }
 });
 
-//get transaction history
-app.get("/transaction_History", (req, res) => {
-    try{
-        const q = "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = 1"
-    db.query(q, (err, data)=>{
-        if(err) return res.json(err)
-        return res.json(data)
-    })
-    } catch (err) {
-        console.error("Error fetching transactions", err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-    
-})
+
