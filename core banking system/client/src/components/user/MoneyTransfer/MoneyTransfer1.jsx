@@ -101,15 +101,7 @@ function MoneyTransfer1() {
                         <input type="text"  name="bank name" value="Seychelles Trust Bank"></input>
                         <br />
                         <br />
-                        <input
-                            name="branchName"
-                            id="branchName"
-                            value={BranchName}
-                            onChange={(e) => setBranchName(e.target.value)}
-                            placeholder="Branch Name"
-                            required
-                        />   
-
+                       
                     <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="paymentMethod">Payment Details</label>
                     
                     
