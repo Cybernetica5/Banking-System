@@ -11,29 +11,46 @@ import React, { useState } from "react";
 function MoneyTransfer1() {
     const [selectedAccount, setSelectedAccount] = useState("");
     const [beneficiaryName, setBeneficiaryName] = useState("");
-    const [BankName, setBankName] = useState("");
+    const [BankName, setBankName] = useState("Seychells Trust Bank");
     const [BranchName, setBranchName] = useState("");
-    const[currency,setCurrency]=useState("");
     const [beneficiaryAccount, setBeneficiaryAccount] = useState("");
     const [beneficiaryEmail, setBeneficiaryEmail] = useState("");
     const [transferAmount, setTransferAmount] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [description, setDescription] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log(
-            BankName,
-            BranchName,
-            currency,
-            beneficiaryEmail,
-            beneficiaryAccount,
+        const transferDetails = {
+            selectedAccount,
             beneficiaryName,
+          //  bankName,
+         //   branchName,
+            beneficiaryAccount,
+            beneficiaryEmail,
             transferAmount,
             paymentMethod,
-            description
-        );
+            description,
+        };
         // Add your form submission logic here
+    try {
+        const response = await fetch("/api/money-transfer", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(transferDetails),
+        });
+
+        if (response.ok) {
+            console.log("Money transfer successful");
+            // Handle success, show a success message to the user, etc.
+        } else {
+            console.error("Money transfer failed");
+        }
+    } catch (error) {
+        console.error("Error during transfer:", error);
+    }
     };
 
     const handleReset = () => {
@@ -46,7 +63,6 @@ function MoneyTransfer1() {
         setBeneficiaryEmail("");
         setBankName("");
         setBranchName("");
-        setCurrency("");
     };  
 
     return (
@@ -54,22 +70,19 @@ function MoneyTransfer1() {
             <h1>Money Transfer</h1>
             <h2>Other Bank Accounts</h2>
             <fieldset>
-                <form action="#" method="get">
+                <form onSubmit={handleSubmit}>
                     <label htmlFor="selectAccount">Payment To</label>
-                    <select
+                    <br />
+
+                    <input Beneficiary Name
                         name="selectAccount"
                         id="selectAccount"
                         value={selectedAccount}
                         onChange={(e) => setSelectedAccount(e.target.value)}
-                    >
-                        <option value="" disabled>Select the account</option>
-                        <optgroup label="MS Semini Sawbhagya">
-                            <option value="1">0056234178</option>
-                        </optgroup>
-                        <optgroup label="MS Semini Sawbhagya">
-                            <option value="2">7526315989</option>
-                        </optgroup>
-                    </select>
+                        placeholder="Account Number"
+                        required
+                    />
+
 
                     <label htmlFor="beneficiaryAccount">Beneficiary Details</label>
     
@@ -82,6 +95,7 @@ function MoneyTransfer1() {
                         required
                     />
                     <br />
+                    <br />
 
                      <input
                         name="beneficiaryAccount"
@@ -91,6 +105,7 @@ function MoneyTransfer1() {
                         placeholder="To Account"
                         required
                      />   
+                     <br />
                      <br />
                       <input
                         name="beneficiaryEmail"
@@ -103,14 +118,8 @@ function MoneyTransfer1() {
                      <br />
                     <label htmlFor="beneficiaryAccount">Beneficiary Bank Details</label>
     
-                        <input
-                            name="bankName"
-                            id="bankName"
-                            value={BankName}
-                            onChange={(e) => setBankName(e.target.value)}
-                            placeholder="Bank name"
-                            required
-                        />
+                        <input type="text"  name="bank name" value="Seychelles Trust Bank"></input>
+                        <br />
                         <br />
                         <input
                             name="branchName"
@@ -134,20 +143,10 @@ function MoneyTransfer1() {
                         <option value="onetime">Schedule Onetime</option>
                     </select>
                     
-                    <select
-                        name="currency"
-                        id="currency"
-                        value={currency}
-                        onChange={(e) => setCurrency(e.target.value)}
-                        placeholder="Transfer Currency"
-                        required
-                    >
-                        <option value="" disabled>select currency</option>
-                        <option value="LKR">LKR</option>
-                        <option value="$">US $</option>
-                        <option value="&">Euro</option>
-                         
-                    </select>
+                    
+                      <input type="text"  name="currency" value="LKR"></input>
+                      <br />
+                      <br />
 
                         <input
                         type="number"

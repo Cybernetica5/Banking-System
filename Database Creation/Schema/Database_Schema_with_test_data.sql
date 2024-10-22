@@ -46,7 +46,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,'savings','SAV-123456789',1,1,5000.00,'active'),(2,'checking','CHK-987654321',2,2,3000.00,'active'),(3,'savings','SAV-246813579',3,3,10000.00,'active'),(4,'checking','CHK-135792468',4,1,2500.00,'active'),(5,'savings','SAV-369258147',5,2,15000.00,'active'),(6,'savings','SAV-741852963',6,3,7500.00,'active');
+INSERT INTO `account` VALUES (1,'savings','SAV-123456789',1,1,10167.36,'active'),(2,'checking','CHK-987654321',2,2,10000.00,'active'),(3,'savings','SAV-246813579',3,3,10167.36,'active'),(4,'checking','CHK-135792468',4,1,10000.00,'active'),(5,'savings','SAV-369258147',5,2,10217.84,'active'),(6,'savings','SAV-741852963',6,3,10184.18,'active');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,6 +92,131 @@ LOCK TABLES `branch` WRITE;
 INSERT INTO `branch` VALUES (1,'Main Branch','Downtown',1),(2,'North Branch','Uptown',2),(3,'East Branch','Suburb',3);
 /*!40000 ALTER TABLE `branch` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `branch_checking_accounts`
+--
+
+DROP TABLE IF EXISTS `branch_checking_accounts`;
+/*!50001 DROP VIEW IF EXISTS `branch_checking_accounts`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branch_checking_accounts` AS SELECT 
+ 1 AS `checking_account_id`,
+ 1 AS `account_id`,
+ 1 AS `customer_id`,
+ 1 AS `user_id`,
+ 1 AS `customer_type`,
+ 1 AS `mobile_number`,
+ 1 AS `landline_number`,
+ 1 AS `address`,
+ 1 AS `branch_id`,
+ 1 AS `name`,
+ 1 AS `location`,
+ 1 AS `manager_id`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `branch_customer_details`
+--
+
+DROP TABLE IF EXISTS `branch_customer_details`;
+/*!50001 DROP VIEW IF EXISTS `branch_customer_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branch_customer_details` AS SELECT 
+ 1 AS `customer_id`,
+ 1 AS `user_id`,
+ 1 AS `customer_type`,
+ 1 AS `mobile_number`,
+ 1 AS `landline_number`,
+ 1 AS `address`,
+ 1 AS `branch_id`,
+ 1 AS `name`,
+ 1 AS `location`,
+ 1 AS `manager_id`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `branch_employee_details`
+--
+
+DROP TABLE IF EXISTS `branch_employee_details`;
+/*!50001 DROP VIEW IF EXISTS `branch_employee_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branch_employee_details` AS SELECT 
+ 1 AS `employee_id`,
+ 1 AS `branch_id`,
+ 1 AS `branch_name`,
+ 1 AS `full_name`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `branch_loan_details`
+--
+
+DROP TABLE IF EXISTS `branch_loan_details`;
+/*!50001 DROP VIEW IF EXISTS `branch_loan_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branch_loan_details` AS SELECT 
+ 1 AS `loan_id`,
+ 1 AS `amount`,
+ 1 AS `loan_type`,
+ 1 AS `start_date`,
+ 1 AS `end_date`,
+ 1 AS `status`,
+ 1 AS `loan_account_id`,
+ 1 AS `customer_id`,
+ 1 AS `branch_id`,
+ 1 AS `branch_name`,
+ 1 AS `location`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `branch_savings_accounts`
+--
+
+DROP TABLE IF EXISTS `branch_savings_accounts`;
+/*!50001 DROP VIEW IF EXISTS `branch_savings_accounts`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branch_savings_accounts` AS SELECT 
+ 1 AS `savings_account_id`,
+ 1 AS `account_id`,
+ 1 AS `savings_plan_id`,
+ 1 AS `customer_id`,
+ 1 AS `user_id`,
+ 1 AS `customer_type`,
+ 1 AS `mobile_number`,
+ 1 AS `landline_number`,
+ 1 AS `address`,
+ 1 AS `branch_id`,
+ 1 AS `name`,
+ 1 AS `location`,
+ 1 AS `manager_id`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `branch_transaction_details`
+--
+
+DROP TABLE IF EXISTS `branch_transaction_details`;
+/*!50001 DROP VIEW IF EXISTS `branch_transaction_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branch_transaction_details` AS SELECT 
+ 1 AS `transaction_id`,
+ 1 AS `date`,
+ 1 AS `amount`,
+ 1 AS `transaction_type`,
+ 1 AS `transaction_account_id`,
+ 1 AS `account_number`,
+ 1 AS `customer_id`,
+ 1 AS `branch_id`,
+ 1 AS `name`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `checking_account`
@@ -148,6 +273,60 @@ LOCK TABLES `customer` WRITE;
 INSERT INTO `customer` VALUES (1,5,'individual','1234567890','0123456789','123 Main St, City'),(2,6,'individual','2345678901','0234567890','456 Elm St, Town'),(3,7,'organization','3456789012','0345678901','789 Oak St, Village'),(4,8,'individual','4567890123','0456789012','321 Pine St, County'),(5,9,'organization','5678901234','0567890123','654 Maple St, State'),(6,10,'individual','6789012345','0678901234','987 Cedar St, Country'),(7,16,'individual','7890123456','0789012345','101 Fir St, Region'),(8,17,'individual','8901234567','0890123456','202 Birch St, City'),(9,18,'individual','9012345678','0901234567','303 Spruce St, Town'),(10,19,'organization','0123456789','0012345678','404 Redwood St, Village'),(11,20,'individual','1234567891','0123456790','505 Willow St, County'),(12,21,'individual','2345678910','0234567891','606 Cypress St, State');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `log_customer_changes` AFTER INSERT ON `customer` FOR EACH ROW BEGIN
+    INSERT INTO customer_log (customer_id, mobile_number, landline_number, address, updated_date) 
+    VALUES (NEW.customer_id, NEW.mobile_number, NEW.landline_number, NEW.address, CURRENT_TIMESTAMP);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `log_customer_update` AFTER UPDATE ON `customer` FOR EACH ROW BEGIN
+    INSERT INTO customer_log (customer_id, mobile_number, landline_number, address, updated_date) 
+    VALUES (NEW.customer_id, NEW.mobile_number, NEW.landline_number, NEW.address, CURRENT_TIMESTAMP);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `log_customer_delete` AFTER DELETE ON `customer` FOR EACH ROW BEGIN
+    INSERT INTO customer_log (customer_id, mobile_number, landline_number, address, updated_date) 
+    VALUES (OLD.customer_id, NULL, NULL, NULL, CURRENT_TIMESTAMP);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `customer_log`
@@ -256,7 +435,7 @@ CREATE TABLE `fd_plan` (
 
 LOCK TABLES `fd_plan` WRITE;
 /*!40000 ALTER TABLE `fd_plan` DISABLE KEYS */;
-INSERT INTO `fd_plan` VALUES (1,6,3.50),(2,12,4.00),(3,24,4.50),(4,36,5.00);
+INSERT INTO `fd_plan` VALUES (1,6,13.00),(2,12,14.00),(3,36,15.00);
 /*!40000 ALTER TABLE `fd_plan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -288,7 +467,7 @@ CREATE TABLE `fixed_deposit` (
 
 LOCK TABLES `fixed_deposit` WRITE;
 /*!40000 ALTER TABLE `fixed_deposit` DISABLE KEYS */;
-INSERT INTO `fixed_deposit` VALUES (1,1,10000.00,2,'2024-10-01','2025-10-01'),(2,3,25000.00,3,'2024-09-15','2026-09-15'),(3,4,5000.00,1,'2024-10-05','2025-04-05');
+INSERT INTO `fixed_deposit` VALUES (1,1,10000.00,2,'2024-10-01','2025-10-01'),(3,4,5000.00,1,'2024-10-05','2025-04-05');
 /*!40000 ALTER TABLE `fixed_deposit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,7 +746,7 @@ CREATE TABLE `savings_plan` (
 
 LOCK TABLES `savings_plan` WRITE;
 /*!40000 ALTER TABLE `savings_plan` DISABLE KEYS */;
-INSERT INTO `savings_plan` VALUES (1,'child',3.50,100.00,18),(2,'teen',3.00,500.00,25),(3,'adult',2.50,1000.00,60),(4,'senior',4.00,1000.00,NULL);
+INSERT INTO `savings_plan` VALUES (1,'child',12.00,0.00,12),(2,'teen',11.00,500.00,19),(3,'adult',10.00,1000.00,60),(4,'senior',13.00,1000.00,120);
 /*!40000 ALTER TABLE `savings_plan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -733,6 +912,45 @@ UNLOCK TABLES;
 --
 -- Dumping events for database 'bank_database'
 --
+/*!50106 SET @save_time_zone= @@TIME_ZONE */ ;
+/*!50106 DROP EVENT IF EXISTS `add_fd_interest_event` */;
+DELIMITER ;;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;;
+/*!50003 SET character_set_client  = utf8mb4 */ ;;
+/*!50003 SET character_set_results = utf8mb4 */ ;;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
+/*!50003 SET @saved_time_zone      = @@time_zone */ ;;
+/*!50003 SET time_zone             = 'SYSTEM' */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`root`@`localhost`*/ /*!50106 EVENT `add_fd_interest_event` ON SCHEDULE EVERY 1 DAY STARTS '2024-10-15 12:01:52' ON COMPLETION NOT PRESERVE ENABLE DO CALL add_fd_interest() */ ;;
+/*!50003 SET time_zone             = @saved_time_zone */ ;;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;;
+/*!50003 SET character_set_results = @saved_cs_results */ ;;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;;
+/*!50106 DROP EVENT IF EXISTS `add_savings_interest_event` */;;
+DELIMITER ;;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;;
+/*!50003 SET character_set_client  = utf8mb4 */ ;;
+/*!50003 SET character_set_results = utf8mb4 */ ;;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
+/*!50003 SET @saved_time_zone      = @@time_zone */ ;;
+/*!50003 SET time_zone             = 'SYSTEM' */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`root`@`localhost`*/ /*!50106 EVENT `add_savings_interest_event` ON SCHEDULE EVERY 30 DAY STARTS '2024-10-15 13:43:30' ON COMPLETION NOT PRESERVE ENABLE DO CALL add_savings_interest() */ ;;
+/*!50003 SET time_zone             = @saved_time_zone */ ;;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;;
+/*!50003 SET character_set_results = @saved_cs_results */ ;;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;;
+DELIMITER ;
+/*!50106 SET TIME_ZONE= @save_time_zone */ ;
 
 --
 -- Dumping routines for database 'bank_database'
@@ -888,21 +1106,52 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_fd_interest`(IN `fd_id` int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_fd_interest`()
 BEGIN
-	DECLARE `fd_amount` DECIMAL(15,2);
-    DECLARE `plan_id` INT;
-    DECLARE `interest` decimal(10,2);
-    DECLARE `p_account_id` INT;
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE fd_id INT;
+    DECLARE fd_amount DECIMAL(15,2);
+    DECLARE plan_id INT;
+    DECLARE interest DECIMAL(10,2);
+    DECLARE p_account_id INT;
+    DECLARE creation_date DATE;
 
-	SELECT `amount`, `fd_plan_id` INTO `fd_amount`, `plan_id` FROM `fixed_deposit` as fd WHERE fd.`fd_id` = `fd_id`;
-	SELECT Calculate_interest (plan_id, fd_amount) INTO `interest`;
-    SELECT account_id INTO p_account_id FROM account WHERE account_id IN (SELECT account_id FROM savings_account JOIN fixed_deposit fd USING(savings_account_id) WHERE fd.fd_id = `fd_id`);
-    START TRANSACTION;
-    UPDATE account SET balance = balance + interest WHERE account_id = p_account_id;
-    COMMIT;
+    DECLARE cur CURSOR FOR
+        SELECT fd_id, amount, fd_plan_id, creation_date
+        FROM fixed_deposit
+        WHERE DATEDIFF(CURDATE(), creation_date) >= 30
+        AND MOD(DATEDIFF(CURDATE(), creation_date), 30) = 0;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO fd_id, fd_amount, plan_id, creation_date;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SELECT Calculate_interest(plan_id, fd_amount) INTO interest;
+
+        SELECT account_id INTO p_account_id
+        FROM account
+        WHERE account_id IN (
+            SELECT account_id
+            FROM savings_account
+            JOIN fixed_deposit fd USING(savings_account_id)
+            WHERE fd.fd_id = fd_id
+        );
+
+        START TRANSACTION;
+        UPDATE account
+        SET balance = balance + interest
+        WHERE account_id = p_account_id;
+        COMMIT;
+    END LOOP;
+
+    CLOSE cur;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1016,6 +1265,58 @@ BEGIN
         -- If the transaction is successful, return the account number
         SET account_number = @account_number; 
 
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_savings_interest` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_savings_interest`()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE p_account_id INT;
+    DECLARE balance DECIMAL(15,2);
+    DECLARE interest_rate DECIMAL(5,2);
+    DECLARE interest DECIMAL(10,2);
+
+    DECLARE cur CURSOR FOR
+        SELECT a.account_id, a.balance, sp.interest_rate
+        FROM savings_account sa
+        JOIN account a ON sa.account_id = a.account_id
+        JOIN savings_plan sp ON sa.savings_plan_id = sp.savings_plan_id
+        WHERE a.status = 'active' AND a.account_type = 'savings';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO p_account_id, balance, interest_rate;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Calculate interest
+        SET interest = balance * (interest_rate / 1200);
+
+        -- Update account balance
+        START TRANSACTION;
+        UPDATE account
+        SET balance = balance + interest
+        WHERE account_id = p_account_id;
+        COMMIT;
+    END LOOP;
+
+    CLOSE cur;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1442,6 +1743,114 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `branch_checking_accounts`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branch_checking_accounts`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branch_checking_accounts` AS select `checking_account`.`checking_account_id` AS `checking_account_id`,`checking_account`.`account_id` AS `account_id`,`customer`.`customer_id` AS `customer_id`,`customer`.`user_id` AS `user_id`,`customer`.`customer_type` AS `customer_type`,`customer`.`mobile_number` AS `mobile_number`,`customer`.`landline_number` AS `landline_number`,`customer`.`address` AS `address`,`branch`.`branch_id` AS `branch_id`,`branch`.`name` AS `name`,`branch`.`location` AS `location`,`branch`.`manager_id` AS `manager_id` from (((`checking_account` join `account` on((`checking_account`.`account_id` = `account`.`account_id`))) join `customer` on((`account`.`customer_id` = `customer`.`customer_id`))) join `branch` on((`account`.`branch_id` = `branch`.`branch_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `branch_customer_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branch_customer_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branch_customer_details` AS select `customer`.`customer_id` AS `customer_id`,`customer`.`user_id` AS `user_id`,`customer`.`customer_type` AS `customer_type`,`customer`.`mobile_number` AS `mobile_number`,`customer`.`landline_number` AS `landline_number`,`customer`.`address` AS `address`,`branch`.`branch_id` AS `branch_id`,`branch`.`name` AS `name`,`branch`.`location` AS `location`,`branch`.`manager_id` AS `manager_id` from ((`customer` join `account` on((`customer`.`customer_id` = `account`.`customer_id`))) join `branch` on((`account`.`branch_id` = `branch`.`branch_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `branch_employee_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branch_employee_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branch_employee_details` AS select `e`.`employee_id` AS `employee_id`,`e`.`branch_id` AS `branch_id`,`b`.`name` AS `branch_name`,`s`.`full_name` AS `full_name` from ((`employee` `e` join `branch` `b` on((`e`.`branch_id` = `b`.`branch_id`))) join `staff` `s` on((`s`.`staff_id` = `e`.`staff_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `branch_loan_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branch_loan_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branch_loan_details` AS select `l`.`loan_id` AS `loan_id`,`l`.`amount` AS `amount`,`l`.`loan_type` AS `loan_type`,`l`.`start_date` AS `start_date`,`l`.`end_date` AS `end_date`,`l`.`status` AS `status`,`a`.`account_id` AS `loan_account_id`,`a`.`customer_id` AS `customer_id`,`a`.`branch_id` AS `branch_id`,`b`.`name` AS `branch_name`,`b`.`location` AS `location` from ((`loan` `l` join `account` `a` on((`l`.`account_id` = `a`.`account_id`))) join `branch` `b` on((`a`.`branch_id` = `b`.`branch_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `branch_savings_accounts`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branch_savings_accounts`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branch_savings_accounts` AS select `savings_account`.`savings_account_id` AS `savings_account_id`,`savings_account`.`account_id` AS `account_id`,`savings_account`.`savings_plan_id` AS `savings_plan_id`,`customer`.`customer_id` AS `customer_id`,`customer`.`user_id` AS `user_id`,`customer`.`customer_type` AS `customer_type`,`customer`.`mobile_number` AS `mobile_number`,`customer`.`landline_number` AS `landline_number`,`customer`.`address` AS `address`,`branch`.`branch_id` AS `branch_id`,`branch`.`name` AS `name`,`branch`.`location` AS `location`,`branch`.`manager_id` AS `manager_id` from (((`savings_account` join `account` on((`savings_account`.`account_id` = `account`.`account_id`))) join `customer` on((`account`.`customer_id` = `customer`.`customer_id`))) join `branch` on((`account`.`branch_id` = `branch`.`branch_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `branch_transaction_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branch_transaction_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branch_transaction_details` AS select `t`.`transaction_id` AS `transaction_id`,`t`.`date` AS `date`,`t`.`amount` AS `amount`,`t`.`transaction_type` AS `transaction_type`,`a`.`account_id` AS `transaction_account_id`,`a`.`account_number` AS `account_number`,`c`.`customer_id` AS `customer_id`,`b`.`branch_id` AS `branch_id`,`b`.`name` AS `name` from (((`transaction` `t` join `account` `a` on((`t`.`account_id` = `a`.`account_id`))) join `customer` `c` on((`a`.`customer_id` = `c`.`customer_id`))) join `branch` `b` on((`a`.`branch_id` = `b`.`branch_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `transaction_history`
 --
 
@@ -1468,4 +1877,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-15 11:19:55
+-- Dump completed on 2024-10-15 23:44:09
