@@ -6,6 +6,7 @@ import { getLoanDetails, getCreditLimit } from './services/Loan/loan_services.js
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
+import { getAccountDetails } from './services/Accounts/account_services.js';    
 
 dotenv.config();
 const app = express();
@@ -143,6 +144,9 @@ app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);
 
 app.post("/money_transfer", money_transfer);
+
+// Account details
+app.get("/account_details", getAccountDetails);
 
 // Existing routes...
 app.get("/", (req, res) => {
