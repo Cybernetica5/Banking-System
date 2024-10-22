@@ -1,16 +1,21 @@
-// routes/auth.js
-const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const pool = require('/config/database');
+import express, { response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
+import db from '../Config/database.js';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+
+dotenv.config();
 const router = express.Router();
 
-// Input validation middleware
+router.use(cookieParser());
+
 const validateRegistrationInput = [
+  body('account_number').notEmpty(),
+  body('username').notEmpty(),
   body('email').isEmail(),
   body('password').isLength({ min: 6 }),
-  body('username').notEmpty()
 ];
 
 const validateLoginInput = [
@@ -18,32 +23,41 @@ const validateLoginInput = [
   body('password').exists()
 ];
 
-// Registration route
 router.post('/signup', validateRegistrationInput, async (req, res) => {
+  console.log('/////////////Validating registration input///////////////');
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, email, password } = req.body;
+  const { username, email, password, account_number } = req.body;
+  console.log('user', username, email, password, account_number);
 
   try {
-    const [rows] = await pool.execute('SELECT email FROM users WHERE email = ?', [email]);
-    if (rows.length > 0) {
+    const [existingUser] = await db.execute('SELECT email FROM user WHERE email = ?', [email]);
+    if (existingUser.length > 0) {
       return res.status(409).json({ error: 'Email already in use' });
     }
 
+    const [account] = await db.execute('SELECT customer_id FROM account WHERE account_number = ?', [account_number]);
+    if (account.length <= 0) {
+      return res.status(409).json({ error: 'Your account does not exist' });
+    }
+    const customerId = account[0].customer_id;
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    await pool.execute('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)', [username, email, hashedPassword]);
+    await db.execute('CALL register_user(?, ?, ?, ?)', [customerId, username, email, hashedPassword]);
 
     res.status(201).json({ message: 'User registered successfully' });
+    console.log('/////////////User registered successfully///////////////');
   } catch (error) {
+    console.log('/////////////Error registering user///////////////');
     res.status(500).json({ error: 'Error registering user', details: error.message });
   }
 });
 
-// Login route
 router.post('/login', validateLoginInput, async (req, res) => {
+  console.log('/////////////Validating login input///////////////');
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -52,25 +66,61 @@ router.post('/login', validateLoginInput, async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [rows] = await pool.execute('SELECT id, username, email, password_hash FROM users WHERE email = ?', [email]);
-    if (rows.length === 0) {
+    const [user] = await db.execute('SELECT user_id as id, user_name, email, password as password_hash FROM user WHERE email = ?', [email]);
+    if (user.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
+    console.log('User:', user);
 
-    const user = rows[0];
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const [customerId] = await db.execute('SELECT customer_id FROM customer WHERE user_id = ?', [user[0].id]);
+    console.log('Customer ID:', customerId[0]);
+
+    const isMatch = await bcrypt.compare(password, user[0].password_hash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    const refreshToken = jwt.sign({ userId: user[0].id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
-    res.status(200).json({ message: 'Login successful', token });
+    // Store refresh token in the database
+    await db.execute('INSERT INTO refresh_tokens (token, user_id) VALUES (?, ?)', [refreshToken, user[0].id]);
+
+    // Set cookies
+
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.cookie('userId', user[0].id, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.cookie('email', user[0].email, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.cookie('customerId', customerId[0].customer_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
+
+    res.status(200).json({ message: 'Login successful', userId: user[0].id, customerId: customerId[0].customer_id, accessToken, refreshToken });
+    console.log(response);
+    console.log('/////////////Login successful///////////////');
   } catch (error) {
+    console.log('/////////////Error logging in user///////////////');
     res.status(500).json({ error: 'Error logging in user', details: error.message });
   }
 });
 
-module.exports = router;
+router.post('/token', async (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.sendStatus(401);
 
+  try {
+    const [storedToken] = await db.execute('SELECT * FROM refresh_tokens WHERE token = ?', [token]);
+    if (storedToken.length === 0) return res.sendStatus(403);
 
+    jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403);
+
+      const accessToken = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, { expiresIn: '15m' });
+      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+      res.json({ accessToken });
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error refreshing token', details: error.message });
+  }
+});
+
+export default router;

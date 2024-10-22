@@ -15,7 +15,9 @@ const SignUp = () => {
     e.preventDefault();
     try {
       const response = await register(account_number, username, email, password);
-      if (response.data.success) {
+      console.log('Response: ',response);
+      console.log('Response Data: ',response.data);
+      if (response.status === 201) {
         // Redirect to login page or dashboard after successful registration
         navigate('/login');
       } else {
