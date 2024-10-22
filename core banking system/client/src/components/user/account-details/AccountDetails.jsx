@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './AccountDetails.css';
+import api from '../../../services/api';
+
+const customerID = 1;
 
 const AccountDetails = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -9,19 +12,58 @@ const AccountDetails = () => {
     fixedDeposits: []
   });
 
+  // useEffect(() => {
+  //   const fetchAccounts = async () => {
+  //     try {
+  //       const response = await api.post('/account_details', { "customerId": customerID });
+  //       // const response = await fetch('/api/getAccountDetails', customerID);
+  //       console.log(response.data);
+  //       // const data = await response.json();
+  //       // setAccounts(data);
+  //     } catch (error) {
+  //       console.error('Error fetching account details:', error);
+  //     }
+  //   };
+
+  //   fetchAccounts();
+  // }, []);
+
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await fetch('/api/getAccountDetails'); 
-        const data = await response.json();
-        setAccounts(data);
+        const response = await api.post('/account_details', { customerId: customerID });
+        const data = response.data;
+  
+        // Initialize empty arrays
+        const savingAccounts = [];
+        const checkingAccounts = [];
+        const fixedDeposits = [];
+  
+        // Categorize accounts based on accountType
+        data.forEach(account => {
+          if (account.accountType === 'savings') {
+            savingAccounts.push(account);
+          } else if (account.accountType === 'checking') {
+            checkingAccounts.push(account);
+          } else if (account.accountType === 'fixed deposit') {
+            fixedDeposits.push(account);
+          }
+        });
+  
+        // Update state
+        setAccounts({
+          savingAccounts,
+          checkingAccounts,
+          fixedDeposits
+        });
       } catch (error) {
         console.error('Error fetching account details:', error);
       }
     };
-
+  
     fetchAccounts();
   }, []);
+  
 
   const handleSelect = (account) => {
     setSelectedAccount(selectedAccount === account ? null : account);

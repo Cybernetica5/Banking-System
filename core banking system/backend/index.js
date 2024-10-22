@@ -146,7 +146,7 @@ app.post("/withdraw", withdrawFunds);
 app.post("/money_transfer", money_transfer);
 
 // Account details
-app.get("/account_details", getAccountDetails);
+app.post("/account_details", getAccountDetails);
 
 // Existing routes...
 app.get("/", (req, res) => {
