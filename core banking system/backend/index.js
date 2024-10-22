@@ -68,6 +68,19 @@ async function getRecentTransactions(req, res) {
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 }
+async function getTransactionsHistory(req, res) {
+    const customerId = req.params.customerId;
+
+    const q = "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?";
+
+    try {
+        const [rows] = await db.query(q, [customerId]);
+        res.json({ success: true, data: rows });
+    } catch (err) {
+        console.error('Error fetching recent transactions:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+}
 
 
 async function login(req, res) {
@@ -131,6 +144,7 @@ app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 
 app.get("/recent_transactions/:customerId", getRecentTransactions);
+app.get("/transaction_History", getTransactionsHistory);
 
 // Reports
 app.post("/report/transaction", getTransactionReport);
