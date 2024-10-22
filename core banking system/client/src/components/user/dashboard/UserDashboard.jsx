@@ -8,6 +8,7 @@ import {
 
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../../services/auth';
+import Cookies from 'js-cookie';
 
 import './UserDashboard.css';
 import Notification from './notification/Notification';
@@ -28,9 +29,12 @@ const DashboardSidebar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user?.username) {
-      setUserName(user.username);
+    const storedUserId = Cookies.get('userId');
+    const storedEmail = Cookies.get('email');
+    console.log('Stored User ID:', storedUserId);
+    console.log('Stored Email:', storedEmail);
+    if (storedUserId) {
+      setUserName(storedUserId);
     }
   }, []); // Fetch user data once when component mounts
 
