@@ -19,17 +19,34 @@ const UserLogin = () => {
         // Store the user information in cookies
         localStorage.setItem('user', JSON.stringify(response.data));
 
+        if (response.data.role === 'customer') {
+          localStorage.setItem('customerId', response.data.customerId);
+          Cookies.set('userId', response.data.userId, { secure: true, sameSite: 'Strict' });
+          Cookies.set('email', email, { secure: true, sameSite: 'Strict' });
+          Cookies.set('accessToken', response.data.accessToken, { secure: true, sameSite: 'Strict' });
+          Cookies.set('refreshToken', response.data.refreshToken, { secure: true, sameSite: 'Strict' });
+          Cookies.set('customerId', response.data.customerId, { secure: true, sameSite: 'Strict' });
+          
+          console.log('Cookies:', Cookies.get());
+          console.log('Local Storage:', localStorage.getItem('user'));
+          console.log('Navigatning to dashboard');
+          
+          navigate('/dashboard');
+
+        }else if (response.data.role === 'manager' || response.data.role === 'employee') {
+
         Cookies.set('userId', response.data.userId, { secure: true, sameSite: 'Strict' });
         Cookies.set('email', email, { secure: true, sameSite: 'Strict' });
         Cookies.set('accessToken', response.data.accessToken, { secure: true, sameSite: 'Strict' });
         Cookies.set('refreshToken', response.data.refreshToken, { secure: true, sameSite: 'Strict' });
-        Cookies.set('customerId', response.data.customerId, { secure: true, sameSite: 'Strict' });
         
         console.log('Cookies:', Cookies.get());
         console.log('Local Storage:', localStorage.getItem('user'));
         console.log('Navigatning to dashboard');
         
-        navigate('/dashboard');
+        navigate('/admin-dashboard');
+
+        }
       } else {
         setError(response.data.error || 'Invalid email or password');
       }
@@ -98,5 +115,6 @@ const UserLogin = () => {
     </Container>
   );
 };
+
 
 export default UserLogin;
