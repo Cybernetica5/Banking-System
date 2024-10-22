@@ -17,6 +17,7 @@ import AddCustomers from '../customers/AddCustomers';
 import BranchTransactionReport from '../reports/BranchTransactionReport';
 import Transactions from '../transactions/Transactions';
 import Settings from '../../common/settings/Settings';
+import CreateAccount from '../employees/CreateAccount';
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
@@ -120,6 +121,7 @@ const DashboardSidebar = () => {
           <Route path="transactions" element={<Transactions />} />
           <Route path="reports" element={<BranchTransactionReport />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="createaccount" element={<CreateAccount />} />
         </Routes>
       </section>
     </div>

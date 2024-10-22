@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Typography, Card, CardContent, TextField, Button, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 import api from '../../../services/api';
-import './CreateAccount.css';
+//import './CreateAccount.css';
 
 const CreateAccount = () => {
   const [customerType, setCustomerType] = useState('');
