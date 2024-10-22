@@ -12,11 +12,8 @@ function MoneyTransfer1() {
     const [selectedAccount, setSelectedAccount] = useState("");
     const [beneficiaryName, setBeneficiaryName] = useState("");
     const [BankName, setBankName] = useState("Seychells Trust Bank");
-    const [BranchName, setBranchName] = useState("");
     const [beneficiaryAccount, setBeneficiaryAccount] = useState("");
-    const [beneficiaryEmail, setBeneficiaryEmail] = useState("");
     const [transferAmount, setTransferAmount] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
     const [description, setDescription] = useState("");
 
     const handleSubmit = async(e) => {
@@ -24,15 +21,10 @@ function MoneyTransfer1() {
         const transferDetails = {
             selectedAccount,
             beneficiaryName,
-          //  bankName,
-         //   branchName,
             beneficiaryAccount,
-            beneficiaryEmail,
             transferAmount,
-            paymentMethod,
             description,
         };
-        // Add your form submission logic here
     try {
         const response = await fetch("/api/money-transfer", {
             method: "POST",
@@ -44,7 +36,6 @@ function MoneyTransfer1() {
 
         if (response.ok) {
             console.log("Money transfer successful");
-            // Handle success, show a success message to the user, etc.
         } else {
             console.error("Money transfer failed");
         }
@@ -57,12 +48,10 @@ function MoneyTransfer1() {
         setSelectedAccount("");
         setBeneficiaryAccount("");
         setTransferAmount("");
-        setPaymentMethod("");
         setDescription("");
         setBeneficiaryName("");
-        setBeneficiaryEmail("");
         setBankName("");
-        setBranchName("");
+       
     };  
 
     return (
@@ -71,7 +60,7 @@ function MoneyTransfer1() {
             <h2>Other Bank Accounts</h2>
             <fieldset>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="selectAccount">Payment To</label>
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="selectAccount">Payment To</label>
                     <br />
 
                     <input Beneficiary Name
@@ -84,7 +73,7 @@ function MoneyTransfer1() {
                     />
 
 
-                    <label htmlFor="beneficiaryAccount">Beneficiary Details</label>
+<label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="beneficiaryAccount">Beneficiary Details</label>
     
                     <input Beneficiary Name
                         name="beneficiaryName"
@@ -106,17 +95,8 @@ function MoneyTransfer1() {
                         required
                      />   
                      <br />
-                     <br />
-                      <input
-                        name="beneficiaryEmail"
-                        id="beneficiaryEmail"
-                        value={beneficiaryEmail}
-                        onChange={(e) => setBeneficiaryEmail(e.target.value)}
-                        placeholder="Beneficiary Email"
-                        required
-                     />   
-                     <br />
-                    <label htmlFor="beneficiaryAccount">Beneficiary Bank Details</label>
+                     
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="beneficiaryAccount">Beneficiary Bank Details</label>
     
                         <input type="text"  name="bank name" value="Seychelles Trust Bank"></input>
                         <br />
@@ -130,18 +110,8 @@ function MoneyTransfer1() {
                             required
                         />   
 
-                    <label htmlFor="paymentMethod">Payment Details</label>
-                    <select
-                        name="paymentMethod"
-                        id="paymentMethod"
-                        value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                    >
-                        <option value="" disabled>Select the method</option>
-                        <option value="online">Online</option>
-                        <option value="scheduled">Schedule Periodically</option>
-                        <option value="onetime">Schedule Onetime</option>
-                    </select>
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="paymentMethod">Payment Details</label>
+                    
                     
                     
                       <input type="text"  name="currency" value="LKR"></input>
@@ -158,7 +128,7 @@ function MoneyTransfer1() {
                         required
                         />
 
-                    <label htmlFor="description">Description Details</label>
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="description">Description Details</label>
                     <textarea
                         name="description"
                         id="description"
