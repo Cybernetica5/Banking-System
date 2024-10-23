@@ -57,7 +57,6 @@ function MoneyTransfer1() {
     return (
         <div className="App1">
             <h1>Money Transfer</h1>
-            <h2>Other Bank Accounts</h2>
             <fieldset>
                 <form onSubmit={handleSubmit}>
                     <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="selectAccount">Payment To</label>
@@ -131,7 +130,6 @@ function MoneyTransfer1() {
                         placeholder="Enter Description"
                         required
                     ></textarea>
-
                     <button
                         type="reset"
                         onClick={handleReset}
