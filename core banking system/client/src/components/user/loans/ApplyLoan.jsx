@@ -3,6 +3,12 @@ import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Moda
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
 
+const handleAccept = () => {
+  api.post('/loan_details', { status: 'accepted' });
+  console.log('Loan accepted');
+};
+
+
 const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
   const interestRate = 0.1; // Assuming a 10% interest rate
   const totalInterest = loanAmount * interestRate;
@@ -22,11 +28,11 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
             <strong>Transaction Summary</strong>
           </Typography>
           <Typography>Purpose of Loan: {loanReason}</Typography> {/* Display loanReason */}
-          <Typography>Loan Amount: ₦{loanAmount}</Typography>
+          <Typography>Loan Amount: Rs. {loanAmount}</Typography>
           <Typography>Interest Rate: 10%</Typography>
-          <Typography>Monthly Payment: ₦{monthlyPayment.toFixed(2)}</Typography>
+          <Typography>Monthly Payment: Rs .{monthlyPayment.toFixed(2)}</Typography>
           <Typography>No of Payments: {loanDuration}</Typography>
-          <Typography>Total Payback Amount: ₦{totalPaybackAmount.toFixed(2)}</Typography>
+          <Typography>Total Payback Amount: Rs .{totalPaybackAmount.toFixed(2)}</Typography>
 
           <FormControlLabel
             control={<Checkbox />}
@@ -38,7 +44,7 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
             sx={{ mt: 2 }}
           />
 
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleAccept}>
             Accept
           </Button>
           <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 1 }} onClick={onClose}>

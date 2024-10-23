@@ -36,5 +36,21 @@ async function getCreditLimit(req, res) {
     }
 }
 
+async function applyLoan(req, res) {
+    const { customerId, loanAmount, loanDuration, loanReason } = req.body;
+
+    if (!customerId || !loanAmount || !loanDuration || !loanReason) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        const [rows] = await db.query('CALL AddLoan(?, ?, ?, ?)', [userId, loanAmount, loanDuration, loanReason]);
+        res.json({ message: "Loan application submitted successfully" });
+    } catch (err) {
+        console.error('Error applying for loan:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 // Ensure only one export statement
-export { getLoanDetails, getCreditLimit };
+export { getLoanDetails, getCreditLimit, applyLoan };

@@ -17,6 +17,8 @@ import AddCustomers from '../customers/AddCustomers';
 import BranchTransactionReport from '../reports/BranchTransactionReport';
 import Transactions from '../transactions/Transactions';
 import Settings from '../../common/settings/Settings';
+import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits'; // Import the FixedDeposits component
+import cookies from 'js-cookie';
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
@@ -25,13 +27,24 @@ const DashboardSidebar = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   console.log('User:', user);
   const userName = user.username || 'User'; // Fallback to 'User' if username is not found
-  //const userType = user.type || 'employee'; // Fallback to 'employee' if type is not found
   const userRole = user.role || 'employee'; // Fallback to 'employee' if role is not found
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  
+  const handleLogout = async () => {
+    const token = cookies.get('refreshToken');
+    if (!token) {
+      console.error('\\Logout error: Missing token//');
+      return;
+    }
+    console.log('Token:', token);
+    try {
+      console.log('Logout request PROCESSING');
+      await logout(token);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error.response ? error.response.data : error.message);
+      console.error('Token:', token);
+    }
   };
 
   const menuItems = [
@@ -39,7 +52,7 @@ const DashboardSidebar = () => {
     ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/', icon: faWallet, text: 'Accounts' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
-    { path: '/', icon: faCoins, text: 'Fixed Deposits' },
+    { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/', icon: faSackDollar, text: 'Loans' },
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
   ];
@@ -120,6 +133,7 @@ const DashboardSidebar = () => {
           <Route path="transactions" element={<Transactions />} />
           <Route path="reports" element={<BranchTransactionReport />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> {/* Add the route for FixedDeposits */}
         </Routes>
       </section>
     </div>
