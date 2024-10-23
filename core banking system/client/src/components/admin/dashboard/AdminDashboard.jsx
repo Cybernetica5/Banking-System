@@ -38,7 +38,7 @@ const DashboardSidebar = () => {
   const menuItems = [
     { path: '/admin-dashboard/customers', icon: faUsers, text: 'Customers' },
     ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
-    { path: '/', icon: faWallet, text: 'Accounts' },
+    { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
     { path: '/', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/', icon: faSackDollar, text: 'Loans' },
