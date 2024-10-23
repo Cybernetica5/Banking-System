@@ -13,6 +13,8 @@ const CreateAccount = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [branchId, setBranchId] = useState('');
   const [savingsPlanType, setSavingsPlanType] = useState('');
+  const [initialDeposit, setInitialDeposit] = useState('');
+  const [idNumber, setIdNumber] = useState('');
   const [fdDetails, setFdDetails] = useState({
     savingsAccountNumber: '',
     fdAmount: '',
@@ -62,6 +64,8 @@ const CreateAccount = () => {
     setAccountNumber('');
     setBranchId('');
     setSavingsPlanType('');
+    setInitialDeposit('');
+    setIdNumber('');
     setFdDetails({
       savingsAccountNumber: '',
       fdAmount: '',
@@ -73,6 +77,22 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate initial deposit for savings accounts
+    if (accountType === 'savings') {
+      const minDeposit = getMinimumDeposit(savingsPlanType);
+      if (parseFloat(initialDeposit) < minDeposit) {
+        showMessage(`Initial deposit must be at least $${minDeposit}`, 'error');
+        return;
+      }
+    }
+
+    // Validate ID number matches account number
+    if (idNumber !== accountNumber) {
+      showMessage('ID number does not match account number', 'error');
+      return;
+    }
+
     try {
       const accountData = {
         customerType,
@@ -80,6 +100,8 @@ const CreateAccount = () => {
         accountNumber,
         branchId,
         savingsPlanType,
+        initialDeposit,
+        idNumber,
         fdDetails
       };
       const response = await api.post('/create_account', accountData);
@@ -87,6 +109,20 @@ const CreateAccount = () => {
     } catch (error) {
       console.error('Error creating account:', error);
       showMessage('Failed to create account', 'error');
+    }
+  };
+
+  const getMinimumDeposit = (planType) => {
+    switch (planType) {
+      case 'children':
+        return 0;
+      case 'teen':
+        return 500;
+      case 'adult':
+      case 'senior':
+        return 1000;
+      default:
+        return 0;
     }
   };
 
@@ -155,20 +191,37 @@ const CreateAccount = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Branch ID"
+            label="Branch Name"
             value={branchId}
             onChange={(e) => setBranchId(e.target.value)}
           />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="ID Number"
+            value={idNumber}
+            onChange={(e) => setIdNumber(e.target.value)}
+          />
           {accountType === 'savings' && (
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Savings Plan Type</InputLabel>
-              <Select value={savingsPlanType} onChange={(e) => setSavingsPlanType(e.target.value)}>
-                <MenuItem value="children">Children - 12%, no minimum</MenuItem>
-                <MenuItem value="teen">Teen - 11%, $500 minimum</MenuItem>
-                <MenuItem value="adult">Adult (18+) - 10%, $1000 minimum</MenuItem>
-                <MenuItem value="senior">Senior (60+) - 13%, $1000 minimum</MenuItem>
-              </Select>
-            </FormControl>
+            <>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Savings Plan Type</InputLabel>
+                <Select value={savingsPlanType} onChange={(e) => setSavingsPlanType(e.target.value)}>
+                  <MenuItem value="children">Children - 12%, no minimum</MenuItem>
+                  <MenuItem value="teen">Teen - 11%, $500 minimum</MenuItem>
+                  <MenuItem value="adult">Adult (18+) - 10%, $1000 minimum</MenuItem>
+                  <MenuItem value="senior">Senior (60+) - 13%, $1000 minimum</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Initial Deposit"
+                type="number"
+                value={initialDeposit}
+                onChange={(e) => setInitialDeposit(e.target.value)}
+              />
+            </>
           )}
           {accountType === 'fixed_deposit' && (
             <>
