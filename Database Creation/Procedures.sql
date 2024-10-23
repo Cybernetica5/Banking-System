@@ -263,3 +263,14 @@ BEGIN
     END IF;
 END ##
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetPendingLoans`()
+BEGIN
+    SELECT loan_id, account_id, amount, start_date, status
+    FROM loan
+    WHERE status = 'pending';
+END$$
+
+DELIMITER;
