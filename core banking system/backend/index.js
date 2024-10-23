@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './services/Config/database.js';
-import { getLoanDetails, getCreditLimit } from './services/Loan/loan_services.js';
+import { getLoanDetails, getCreditLimit, applyLoan } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import authRoutes from './services/Authentication/login.js';
@@ -13,6 +13,7 @@ import { addIndividualCustomer, addOrganizationCustomer } from './services/Custo
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
 import { getAccountDetails } from './services/Accounts/account_services.js';    
+import { logout } from './services/Authentication/logout.js';
 
 dotenv.config();
 const app = express();
@@ -34,17 +35,7 @@ app.listen(8800, () => {
 });
 
 // Logout route
-app.post('/logout', async (req, res) => {
-    const { token } = req.body;
-    if (!token) return res.sendStatus(400);
 
-    try {
-        await db.execute('DELETE FROM refresh_tokens WHERE token = ?', [token]);
-        res.sendStatus(204);
-    } catch (error) {
-        res.status(500).json({ error: 'Error logging out', details: error.message });
-    }
-});
 
 // Routes
 app.use('/auth', authRoutes);
@@ -59,16 +50,21 @@ app.get("/credit-limit", getCreditLimit);
 
 //app.get("/recent_transactions/:customerId", getRecentTransactions);
 
+
+//Loan
+app.post("/apply_loan", applyLoan);
+
 // Reports
 app.post("/report/transaction", getTransactionReport);
-
 app.post("/add-customer/individual", addIndividualCustomer);
 app.post("/add-customer/organization", addOrganizationCustomer);
+
+//logout
+app.post("/logout", logout);
 
 // Transactions
 app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);
-
 app.post("/money_transfer", money_transfer);
 
 // Account details
