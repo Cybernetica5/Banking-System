@@ -51,14 +51,9 @@ const DashboardSidebar = () => {
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
     { 
-      path: '/dashboard/loans', 
+      path: '/dashboard/loans/apply', 
       icon: faSackDollar, 
       text: 'Loans',
-      subItems: [
-        { path: '/dashboard/loans/apply', text: 'Apply Loan' },
-        { path: '/dashboard/loans/payment', text: 'Loan Payment' },
-        { path: '/dashboard/loans/details', text: 'Loan Details' },
-      ]
     },
   ];
 

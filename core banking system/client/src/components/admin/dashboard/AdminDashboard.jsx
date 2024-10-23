@@ -17,15 +17,17 @@ import AddCustomers from '../customers/AddCustomers';
 import BranchTransactionReport from '../reports/BranchTransactionReport';
 import Transactions from '../transactions/Transactions';
 import Settings from '../../common/settings/Settings';
+import CreateAccount from '../employees/CreateAccount';
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  console.log('User:', user);
   const userName = user.username || 'User'; // Fallback to 'User' if username is not found
-  const userType = user.type || 'manager'; // Fallback to 'employee' if type is not found
-
+  //const userType = user.type || 'employee'; // Fallback to 'employee' if type is not found
+  const userRole = user.role || 'employee'; // Fallback to 'employee' if role is not found
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
 
   const handleLogout = () => {
@@ -35,12 +37,12 @@ const DashboardSidebar = () => {
 
   const menuItems = [
     { path: '/admin-dashboard/customers', icon: faUsers, text: 'Customers' },
-    ...(userType === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
+    ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/', icon: faWallet, text: 'Accounts' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
     { path: '/', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/', icon: faSackDollar, text: 'Loans' },
-    ...(userType === 'manager' ? [{ path: '/admin-dashboard/reports', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
   ];
 
   return (
@@ -119,6 +121,7 @@ const DashboardSidebar = () => {
           <Route path="transactions" element={<Transactions />} />
           <Route path="reports" element={<BranchTransactionReport />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="createaccount" element={<CreateAccount />} />
         </Routes>
       </section>
     </div>
