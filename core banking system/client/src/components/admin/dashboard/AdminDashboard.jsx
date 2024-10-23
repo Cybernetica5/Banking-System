@@ -19,6 +19,7 @@ import Transactions from '../transactions/Transactions';
 import Settings from '../../common/settings/Settings';
 import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits'; // Import the FixedDeposits component
 import cookies from 'js-cookie';
+import CreateAccount from '../employees/CreateAccount';
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
@@ -50,7 +51,7 @@ const DashboardSidebar = () => {
   const menuItems = [
     { path: '/admin-dashboard/customers', icon: faUsers, text: 'Customers' },
     ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
-    { path: '/', icon: faWallet, text: 'Accounts' },
+    { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/', icon: faSackDollar, text: 'Loans' },
@@ -134,6 +135,7 @@ const DashboardSidebar = () => {
           <Route path="reports" element={<BranchTransactionReport />} />
           <Route path="settings" element={<Settings />} />
           <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> {/* Add the route for FixedDeposits */}
+          <Route path="createaccount" element={<CreateAccount />} />
         </Routes>
       </section>
     </div>
