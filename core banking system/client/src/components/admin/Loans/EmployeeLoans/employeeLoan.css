@@ -3,7 +3,7 @@
     text-align: center;
 }
 
-.App1 {
+.App2 {
     background-color: #210a4c;
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -12,29 +12,29 @@
     width: 60%;
     margin: auto;
     margin-top: 20px;
-    height: 120%;
+    height: 100%;
 }
 
-.App1 h1{
+.App2 h1{
     font-size: xx-large;
     text-align: center;
     color:#5649e7;
 
 }
 
-.App1 h2 {
+.App2 h2 {
     font-size: large;
     text-align: center;
-    color: #100e0e;
+    color: #5e208e;
 }
 
-.App1 fieldset {
+.App2 fieldset {
     border: none;
 }
 
 input[type="number"],
 input[type="email"],
-.App1 textarea {
+.App2 textarea {
     display: block;
     width: 100%;
     padding: 8px;
@@ -44,7 +44,7 @@ input[type="email"],
     font-size: 12px;
 }
 
-.App1 select {
+.App2 select {
     display: block;
     width: 100%;
     margin-bottom: 15px;
@@ -54,7 +54,7 @@ input[type="email"],
     border-radius: 5px;
 }
 
-.App1 label {
+.App2 label {
     font-size: 15px;
     display: block;
     margin-top: 8px;
@@ -64,7 +64,7 @@ input[type="email"],
     font-weight: bold;
 }
 
-.App1 button {
+.App2 button {
     padding: 5px;
     border-radius: 10px;
     margin: 15px 0;
@@ -76,7 +76,7 @@ input[type="email"],
     width: 30%;
     font-size: 16px;
 }
-.App1 button1 {
+.App2 button1 {
     padding: 5px;
     border-radius: 10px;
     margin: 15px 0;
@@ -89,16 +89,9 @@ input[type="email"],
     font-size: 16px;
 }
 
-.App1 textarea {
+.App2 textarea {
     resize: none;
     width: 98%;
     min-height: 100px;
     max-height: 120px;
-}
-.App1 .title {
-    color: #5649e7;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }

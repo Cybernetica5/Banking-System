@@ -66,36 +66,54 @@ router.post('/login', validateLoginInput, async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [user] = await db.execute('SELECT user_id as id, user_name, email, password as password_hash FROM user WHERE email = ?', [email]);
+    const [user] = await db.execute('SELECT user_id as id, user_name, email, password as password_hash, role FROM user WHERE email = ?', [email]);
     if (user.length === 0) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: '**Invalid email**' });
     }
     console.log('User:', user);
-
-    const [customerId] = await db.execute('SELECT customer_id FROM customer WHERE user_id = ?', [user[0].id]);
-    console.log('Customer ID:', customerId[0]);
+    
+    
 
     const isMatch = await bcrypt.compare(password, user[0].password_hash);
     if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      console.log('**Invalid password**');
+      return res.status(401).json({ error: 'Invalid password' });
     }
+    console.log('**User authenticated**');
 
     const accessToken = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ userId: user[0].id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
     // Store refresh token in the database
+    
     await db.execute('INSERT INTO refresh_tokens (token, user_id) VALUES (?, ?)', [refreshToken, user[0].id]);
-
+    console.log('---Refresh token stored in the database---');
     // Set cookies
-
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
     res.cookie('userId', user[0].id, { httpOnly: true, secure: true, sameSite: 'Strict' });
     res.cookie('email', user[0].email, { httpOnly: true, secure: true, sameSite: 'Strict' });
-    res.cookie('customerId', customerId[0].customer_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    
+    console.log("Cookies successfully set");
 
-    res.status(200).json({ message: 'Login successful', userId: user[0].id, customerId: customerId[0].customer_id, accessToken, refreshToken });
-    console.log(response);
+    if (user[0].role === 'customer') {
+      const [customerId] = await db.execute('SELECT customer_id FROM customer WHERE user_id = ?', [user[0].id]);
+      
+      res.cookie('customerId', customerId[0].customer_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
+      res.status(200).json({ message: 'Login successful', userId: user[0].id, customerId: customerId[0].customer_id, role: user[0].role, accessToken, refreshToken });
+    } 
+    else if (user[0].role === 'staff') {
+      const [staff] = await db.execute('SELECT role, staff_id FROM staff WHERE user_id = ?', [user[0].id]);
+      const staff_role = staff[0].role;
+      //const staff_id = staff[0].staff_id;
+      //console.log('Staff:', staff_id, staff_role);
+
+      res.cookie('staff_id', staff[0].staff_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
+      
+      res.status(200).json({ message: 'Login successful', userId: user[0].id, role: staff_role, accessToken, refreshToken });
+     
+    }
+    
     console.log('/////////////Login successful///////////////');
   } catch (error) {
     console.log('/////////////Error logging in user///////////////');

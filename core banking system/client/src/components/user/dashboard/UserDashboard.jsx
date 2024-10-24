@@ -40,9 +40,22 @@ const DashboardSidebar = () => {
 
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    const token = Cookies.get('refreshToken');
+   
+    if (!token) {
+      console.error('\\Logout error: Missing token//');
+      return;
+    }
+    try {
+      console.log('Logout request PROCESSING');
+      await logout(token);
+      navigate('/login');
+      
+    } catch (error) {
+      console.error('Logout error:', error.response ? error.response.data : error.message);
+      console.error('Token:', token);
+    }
   };
 
   const menuItems = [
@@ -51,14 +64,9 @@ const DashboardSidebar = () => {
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
     { 
-      path: '/dashboard/loans', 
+      path: '/dashboard/loans/apply', 
       icon: faSackDollar, 
       text: 'Loans',
-      subItems: [
-        { path: '/dashboard/loans/apply', text: 'Apply Loan' },
-        { path: '/dashboard/loans/payment', text: 'Loan Payment' },
-        { path: '/dashboard/loans/details', text: 'Loan Details' },
-      ]
     },
   ];
 

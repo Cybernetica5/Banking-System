@@ -1,0 +1,19 @@
+/* src/components/employee/CreateAccount.css */
+.create-account-container {
+    width: 600px;
+    margin: 10px auto;
+    margin-bottom: 20px;
+  }
+  
+  .create-account-form {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
