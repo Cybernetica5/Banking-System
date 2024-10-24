@@ -14,6 +14,7 @@ const CreateAccount = () => {
   const [customerType, setCustomerType] = useState('');
   const [accountType, setAccountType] = useState('');
   const [branchName, setBranchName] = useState('');
+  const [branchId, setBranchId] = useState('');
   const [savingsPlanType, setSavingsPlanType] = useState('');
   const [initialDeposit, setInitialDeposit] = useState('');
   const [idNumber, setIdNumber] = useState('');
@@ -73,13 +74,6 @@ const CreateAccount = () => {
     setIdNumber('');
     setLicenseNumber('');
     setGeneratedAccountNumber('');
-    /*setFdDetails({
-      savingsAccountNumber: '',
-      fdAmount: '',
-      fdPlan: '',
-      startDate: '',
-      endDate: ''
-    });*/
   };
 
   const handleSubmit = async (e) => {
@@ -98,13 +92,14 @@ const CreateAccount = () => {
       const accountData = {
         customerType,
         accountType,
-        branchName,
+        branchId,
         savingsPlanTypeId : getPlanTypeId(savingsPlanType),
         initialDeposit,
         idNumber,
         licenseNumber
       };
-      const response = await api.post('/create_account', accountData);
+      console.log('Account Data:', accountData);
+      const response = await api.post('staff/create_account', accountData);
       setGeneratedAccountNumber(response.data.accountNumber);
       showMessage(response.data.message, 'success');
     } catch (error) {
@@ -157,6 +152,7 @@ const CreateAccount = () => {
         
         const response = await api.get('staff/branch_name', { params: { staffId, staff_role } });  // Pass as query param
         setBranchName(response.data.branchName);
+        setBranchId(response.data.branchId);
       } catch (error) {
         console.error('Error fetching branch name:', error);
         showMessage('Failed to fetch branch name', 'error');
@@ -229,6 +225,13 @@ const CreateAccount = () => {
                 type="number"
                 value={initialDeposit}
                 onChange={(e) => setInitialDeposit(e.target.value)}
+                sx={{
+                  height: '56px', 
+                  '& input': { 
+                    height: '56px',
+                    fontSize: '16px'
+                    }
+                }}
               />
             </>
           )}
