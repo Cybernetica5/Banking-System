@@ -14,6 +14,7 @@ import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
+import { getUserInfo, updateUserInfo } from './services/User/user_services.js';
 
 dotenv.config();
 const app = express();
@@ -50,6 +51,10 @@ app.get("/credit-limit", getCreditLimit);
 
 //app.get("/recent_transactions/:customerId", getRecentTransactions);
 
+
+// User
+app.get("/user_info/:userId", getUserInfo);
+app.put("/user_info/:userId", updateUserInfo);
 
 //Loan
 app.post("/apply_loan", applyLoan);

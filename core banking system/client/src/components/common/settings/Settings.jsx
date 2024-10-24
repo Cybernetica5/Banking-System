@@ -6,6 +6,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import './Settings.css';
+import api from '../../../services/api';
 
 const userId = 1; // TODO: make this dynamic
 
@@ -37,7 +38,8 @@ const Settings = () => {
   const handleSave = async () => {
     // TODO: Add validation logic here
     try {
-      const response = await axios.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
+      const response = await api.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
+      // const response = await axios.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
       console.log('Personal Info updated successfully:', response.data);
     } catch (error) {
       console.error('Error updating personal info:', error.response ? error.response.data : error.message);
