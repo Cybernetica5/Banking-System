@@ -1,0 +1,49 @@
+.loan-approval-container {
+    padding: 20px;
+    max-width: 900px; /* Increased max-width for better layout */
+    margin: 20px auto; /* Centered with some margin */
+    background-color: #7f2841; /* White background for the container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .loan-approval-container h4 {
+    font-weight: 600; /* Bold title */
+    color: #9e9494; /* Dark text color */
+    text-align: center; /* Center align the title */
+    margin-bottom: 20px; /* Spacing below the title */
+  }
+  
+  .MuiCard-root {
+    margin-top: 20px; /* Space between title and card */
+  }
+  
+  .MuiTableCell-root {
+    padding: 16px; /* Increased cell padding for better spacing */
+    border-bottom: 1px solid #dacdcd; /* Light border for rows */
+    background-color:#a3ca24;;
+  }
+  
+  .MuiButton-root {
+    font-size: 0.9rem; /* Adjusted button font size */
+  }
+  
+  /* Style for the approve button */
+  .MuiButton-containedPrimary {
+    background-color: #4caf50; /* Green background for the approve button */
+    color: white; /* White text color */
+  }
+  
+  .MuiButton-containedPrimary:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .MuiTableHead-root {
+    background-color: #a3ca24; /* Light background for header */
+  }
+  
+  .MuiTableHead-root .MuiTableCell-root {
+    font-weight: bold; /* Bold text for header cells */
+    color: #555; /* Darker color for header text */
+  }
+  

@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField, Box } from '@mui/material';
+import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField } from '@mui/material';
 import api from '../../../services/api';
+import Cookies from 'js-cookie';
+
+const handleAccept = () => {
+  api.post('/loan_details', { status: 'accepted' });
+  console.log('Loan accepted');
+};
+
 
 const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
   const interestRate = 0.1; // Assuming a 10% interest rate
@@ -21,11 +28,11 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
             <strong>Transaction Summary</strong>
           </Typography>
           <Typography>Purpose of Loan: {loanReason}</Typography> {/* Display loanReason */}
-          <Typography>Loan Amount: ₦{loanAmount}</Typography>
+          <Typography>Loan Amount: Rs. {loanAmount}</Typography>
           <Typography>Interest Rate: 10%</Typography>
-          <Typography>Monthly Payment: ₦{monthlyPayment.toFixed(2)}</Typography>
+          <Typography>Monthly Payment: Rs .{monthlyPayment.toFixed(2)}</Typography>
           <Typography>No of Payments: {loanDuration}</Typography>
-          <Typography>Total Payback Amount: ₦{totalPaybackAmount.toFixed(2)}</Typography>
+          <Typography>Total Payback Amount: Rs .{totalPaybackAmount.toFixed(2)}</Typography>
 
           <FormControlLabel
             control={<Checkbox />}
@@ -37,7 +44,7 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
             sx={{ mt: 2 }}
           />
 
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleAccept}>
             Accept
           </Button>
           <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 1 }} onClick={onClose}>
@@ -60,7 +67,7 @@ const ApplyLoan = () => {
   useEffect(() => {
     const fetchCreditLimit = async () => {
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = Cookies.get('userId'); // Get the user ID from the user object
         console.log('Fetching credit limit...');
         console.log('User ID:', userId);
 
@@ -130,7 +137,7 @@ const ApplyLoan = () => {
             inputProps={{
               max: creditLimit, // Set the max limit as the credit limit
             }}
-            helperText={`The maximum loan amount you can apply for is ₦${creditLimit}`}
+            helperText={`The maximum loan amount you can apply for is Rs. ${creditLimit}`}
           />
           <TextField
             label="Loan Duration (in months)"
