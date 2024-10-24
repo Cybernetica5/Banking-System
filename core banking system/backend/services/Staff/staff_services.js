@@ -52,8 +52,6 @@ router.post('/create_account', async (req, res) => {
       return res.json({ success: true, message: 'Account created successfully', accountNumber });
     }
 
-    const accountNumber = result[1][0].account_number;
-
      // Update the initial deposit
      await db.query(
       `UPDATE account SET balance = ? WHERE account_number = ?`,

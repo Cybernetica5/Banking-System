@@ -8,7 +8,7 @@ import api from '../../../services/api';
 import Cookies from 'js-cookie';
 import './CreateAccount.css';
 
-const staffID = 1; // TODO: make this dynamic
+// const staffID = 1; // TODO: make this dynamic
 
 const CreateAccount = () => {
   const [customerType, setCustomerType] = useState('');
@@ -85,14 +85,14 @@ const CreateAccount = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate initial deposit for savings and checking accounts
-    if (accountType === 'savings' || accountType === 'checking') {
+    // Validate initial deposit for savings accounts
+    if (accountType === 'savings') {
       const minDeposit = getMinimumDeposit(savingsPlanType);
       if (parseFloat(initialDeposit) < minDeposit) {
         showMessage(`Initial deposit must be at least $${minDeposit}`, 'error');
         return;
       }
-    }
+    }    
 
     try {
       const accountData = {
@@ -144,17 +144,23 @@ const CreateAccount = () => {
   useEffect(() => {
     const fetchBranchName = async () => {
       try {
-        //const staffId = Cookies.get('staff_id');
-        const response = await api.get('/branch_name', { staffId: ID } );
+        const staffId = Cookies.get('staff_id');  // Retrieve staff_id from cookies
+        if (!staffId) {
+          showMessage('Staff ID not found', 'error');
+          return;
+        }
+        
+        const response = await api.get('/branch_name', { params: { staffId } });  // Pass as query param
         setBranchName(response.data.branchName);
       } catch (error) {
         console.error('Error fetching branch name:', error);
         showMessage('Failed to fetch branch name', 'error');
       }
     };
-
+  
     fetchBranchName();
   }, []);
+  
 
   return (
     <div className="create-account-container">
