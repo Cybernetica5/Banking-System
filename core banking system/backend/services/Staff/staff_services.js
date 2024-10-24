@@ -15,6 +15,9 @@ router.post('/create_account', async (req, res) => {
     if (!customerType || !accountType || !branchId || (!idNumber && !licenseNumber)) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
+    // if (!customerType || !accountType || (!idNumber && !licenseNumber)) {
+    //   return res.status(400).json({ success: false, message: 'Missing required fields' });
+    // }
 
     // Check if ID number or license number exists in the customer table
     let customerId;
