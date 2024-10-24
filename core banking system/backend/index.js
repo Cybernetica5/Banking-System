@@ -57,7 +57,7 @@ app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 
-app.get("/recent_transactions/:customerId", getRecentTransactions);
+// app.get("/recent_transactions/:customerId", getRecentTransactions);
 
 // Reports
 app.post("/report/transaction", getTransactionReport);
