@@ -6,6 +6,7 @@ import { getLoanDetails, getCreditLimit } from './services/Loan/loan_services.js
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
+import {addEmployee} from './services/emplyees/employee_services.js'
 
 dotenv.config();
 const app = express();
@@ -56,29 +57,27 @@ async function getAccountSummary(req, res) {
 }
 
 async function getRecentTransactions(req, res) {
-    const customerId = req.params.customerId;
-
-    const q = "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3";
-
     try {
-        const [rows] = await db.query(q, [customerId]);
-        res.json({ success: true, data: rows });
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3",
+            [req.query.customer_id]
+        );
+        res.json(rows);
     } catch (err) {
-        console.error('Error fetching recent transactions:', err);
-        res.status(500).json({ success: false, error: 'Internal server error' });
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 async function getTransactionsHistory(req, res) {
-    const customerId = req.params.customerId;
-
-    const q = "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?";
-
     try {
-        const [rows] = await db.query(q, [customerId]);
-        res.json({ success: true, data: rows });
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
+            [req.query.customer_id]
+        );
+        res.json(rows);
     } catch (err) {
-        console.error('Error fetching recent transactions:', err);
-        res.status(500).json({ success: false, error: 'Internal server error' });
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
@@ -143,11 +142,13 @@ app.post("/login", login);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 
-app.get("/recent_transactions/:customerId", getRecentTransactions);
+app.get("/recent_transactions", getRecentTransactions);
 app.get("/transaction_History", getTransactionsHistory);
 
 // Reports
 app.post("/report/transaction", getTransactionReport);
+//shashanka
+app.post("add-employee",addEmployee);
 
 app.post("/add-customer/individual", addIndividualCustomer);
 app.post("/add-customer/organization", addOrganizationCustomer);
