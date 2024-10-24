@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './services/Config/database.js';
-import { getLoanDetails, getCreditLimit, applyLoan } from './services/Loan/loan_services.js';
+import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import authRoutes from './services/Authentication/login.js';
@@ -47,12 +47,14 @@ app.get("/accounts", getAccounts);
 app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
+app.get("/installment", getInstallmentAmount);
 
 //app.get("/recent_transactions/:customerId", getRecentTransactions);
 
 
 //Loan
 app.post("/apply_loan", applyLoan);
+app.post("/pay_loan", payLoanInstallment);
 
 // Reports
 app.post("/report/transaction", getTransactionReport);
