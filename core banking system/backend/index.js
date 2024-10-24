@@ -2,13 +2,16 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './services/Config/database.js';
-import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
-import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
-import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
+
 import authRoutes from './services/Authentication/login.js';
 import protectedRoutes from './routes/protected.js';
 import refreshRoutes from './routes/referesh.js';
 import authenticateToken from './middleware/auth.js';
+import staffServices from './services/Staff/staff_services.js';
+
+import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
+import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
+import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
@@ -41,6 +44,7 @@ app.listen(8800, () => {
 app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
+app.use('/staff', staffServices);
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
