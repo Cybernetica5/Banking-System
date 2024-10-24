@@ -103,8 +103,12 @@ router.post('/login', validateLoginInput, async (req, res) => {
       res.status(200).json({ message: 'Login successful', userId: user[0].id, customerId: customerId[0].customer_id, role: user[0].role, accessToken, refreshToken });
     } 
     else if (user[0].role === 'staff') {
-      const [staff] = await db.execute('SELECT role FROM staff WHERE user_id = ?', [user[0].id]);
+      const [staff] = await db.execute('SELECT role, staff_id FROM staff WHERE user_id = ?', [user[0].id]);
       const staff_role = staff[0].role;
+      //const staff_id = staff[0].staff_id;
+      //console.log('Staff:', staff_id, staff_role);
+
+      res.cookie('staff_id', staff[0].staff_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
       
       res.status(200).json({ message: 'Login successful', userId: user[0].id, role: staff_role, accessToken, refreshToken });
      
