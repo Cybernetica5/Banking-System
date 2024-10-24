@@ -6,7 +6,7 @@ import { getLoanDetails, getCreditLimit } from './services/Loan/loan_services.js
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
-import {addEmployee} from './services/emplyees/employee_services.js'
+//import {addEmployee} from './services/emplyees/employee_services.js'
 
 dotenv.config();
 const app = express();
@@ -148,7 +148,7 @@ app.get("/transaction_History", getTransactionsHistory);
 // Reports
 app.post("/report/transaction", getTransactionReport);
 //shashanka
-app.post("add-employee",addEmployee);
+//app.post("add-employee",addEmployee);
 
 app.post("/add-customer/individual", addIndividualCustomer);
 app.post("/add-customer/organization", addOrganizationCustomer);
