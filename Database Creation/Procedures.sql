@@ -174,7 +174,8 @@ SET full_name = p_full_name,
 WHERE staff_id = p_staff_id;
 -- If no error, commit the transaction
 COMMIT;
-END CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_user_details`(
+END -- -------------------------------update Employee user details ---------------------------------------
+CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_user_details`(
     IN p_staff_id INT,
     IN p_user_name VARCHAR(50),
     IN p_password VARCHAR(255),
@@ -202,7 +203,8 @@ WHERE user_id = (
     );
 -- If no error, commit the transaction
 COMMIT;
-END CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_branch`(p_staff_id INT, p_branch_id INT) BEGIN
+END -- ---------------------------------- update emplotee branch -------------------------------------
+CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_branch`(p_staff_id INT, p_branch_id INT) BEGIN
 DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN -- Rollback the transaction in case of error
     ROLLBACK;
 -- Signal an error
