@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './AccountDetails.css';
 import api from '../../../services/api';
-
-const customerID = 1;
+import Cookie from 'js-cookie';
 
 const AccountDetails = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
+  const customerID = Cookie.get('customerId');
   const [accounts, setAccounts] = useState({
     savingAccounts: [],
     checkingAccounts: [],
@@ -15,6 +15,7 @@ const AccountDetails = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
+        
         const response = await api.post('/account_details', { customerId: customerID });
         const data = response.data;
 

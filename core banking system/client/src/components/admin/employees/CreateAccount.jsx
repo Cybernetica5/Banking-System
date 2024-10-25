@@ -1,16 +1,26 @@
-// src/components/employee/CreateAccount.js
-import React, { useState } from 'react';
-import { Typography, Card, CardContent, TextField, Button, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import SnackbarAlert from '../../common/alert/SnackbarAlert';
+import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
 import api from '../../../services/api';
-//import './CreateAccount.css';
+import Cookies from 'js-cookie';
+import './CreateAccount.css';
+
+// const staffID = 1; // TODO: make this dynamic
 
 const CreateAccount = () => {
   const [customerType, setCustomerType] = useState('');
   const [accountType, setAccountType] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
+  const [branchName, setBranchName] = useState('');
   const [branchId, setBranchId] = useState('');
   const [savingsPlanType, setSavingsPlanType] = useState('');
-  const [fixedDeposit, setFixedDeposit] = useState(false);
+  const [initialDeposit, setInitialDeposit] = useState('');
+  const [idNumber, setIdNumber] = useState('');
+  const [licenseNumber, setLicenseNumber] = useState('');
+  const [generatedAccountNumber, setGeneratedAccountNumber] = useState('');
+  /*
   const [fdDetails, setFdDetails] = useState({
     savingsAccountNumber: '',
     fdAmount: '',
@@ -18,33 +28,145 @@ const CreateAccount = () => {
     startDate: '',
     endDate: ''
   });
+  */
+
+  // Snackbar alert
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+
+  const showMessage = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  // Confirmation dialog
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    handleCloseDialog();
+    handleSubmit();
+  };
+
+  const handleCancelDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleCancel = () => {
+    setCustomerType('');
+    setAccountType('');
+    setBranchName('');
+    setSavingsPlanType('');
+    setInitialDeposit('');
+    setIdNumber('');
+    setLicenseNumber('');
+    setGeneratedAccountNumber('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate initial deposit for savings accounts
+    if (accountType === 'savings') {
+      const minDeposit = getMinimumDeposit(savingsPlanType);
+      if (parseFloat(initialDeposit) < minDeposit) {
+        showMessage(`Initial deposit must be at least $${minDeposit}`, 'error');
+        return;
+      }
+    }    
+
     try {
       const accountData = {
         customerType,
         accountType,
-        accountNumber,
         branchId,
-        savingsPlanType,
-        fixedDeposit,
-        fdDetails
+        savingsPlanTypeId : getPlanTypeId(savingsPlanType),
+        initialDeposit,
+        idNumber,
+        licenseNumber
       };
-      const response = await api.post('/create_account', accountData);
-      alert(response.data.message);
+      console.log('Account Data:', accountData);
+      const response = await api.post('staff/create_account', accountData);
+      setGeneratedAccountNumber(response.data.accountNumber);
+      showMessage(response.data.message, 'success');
     } catch (error) {
       console.error('Error creating account:', error);
-      alert('Failed to create account');
+      showMessage(error.response.data.message || 'Failed to create account', 'error');
     }
   };
 
+  const getMinimumDeposit = (planType) => {
+    switch (planType) {
+      case 'child':
+        return 0;
+      case 'teen':
+        return 500;
+      case 'adult':
+      case 'senior':
+        return 1000;
+      default:
+        return 0;
+    }
+  };
+  const getPlanTypeId = (planType) => {
+    switch (planType) {
+      case 'child':
+        return 1;
+      case 'teen':
+        return 2;
+      case 'adult':
+        return 3;
+      case 'senior':
+        return 4;
+      default:
+        return 0;
+    }
+  };
+
+  useEffect(() => {
+    const fetchBranchName = async () => {
+      try {
+        const staffId = Cookies.get('staffId');  // Retrieve staff_id from cookies
+        const staff_role = Cookies.get('role');  // Retrieve staff_role from local storage
+        if (!staffId) {
+          showMessage('Staff ID not found', 'error');
+          return;
+        }
+        if (!staff_role) {
+          showMessage('Staff role not found', 'error');
+          return;
+        }
+        
+        const response = await api.get('staff/branch_name', { params: { staffId, staff_role } });  // Pass as query param
+        setBranchName(response.data.branchName);
+        setBranchId(response.data.branchId);
+      } catch (error) {
+        console.error('Error fetching branch name:', error);
+        showMessage('Failed to fetch branch name', 'error');
+      }
+    };
+  
+    fetchBranchName();
+  }, []);
+  
+
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
-          Create Account
-        </Typography>
+    <div className="create-account-container">
+      <div className="form-container">
+        <Typography variant="h6">Create Account</Typography>
         <form onSubmit={handleSubmit} className="create-account-form">
           <FormControl fullWidth margin="normal">
             <InputLabel>Customer Type</InputLabel>
@@ -53,6 +175,24 @@ const CreateAccount = () => {
               <MenuItem value="organization">Organization</MenuItem>
             </Select>
           </FormControl>
+          {customerType === 'individual' && (
+            <TextField
+              fullWidth
+              margin="normal"
+              label="ID Number"
+              value={idNumber}
+              onChange={(e) => setIdNumber(e.target.value)}
+            />
+          )}
+          {customerType === 'organization' && (
+            <TextField
+              fullWidth
+              margin="normal"
+              label="License Number"
+              value={licenseNumber}
+              onChange={(e) => setLicenseNumber(e.target.value)}
+            />
+          )}
           <FormControl fullWidth margin="normal">
             <InputLabel>Account Type</InputLabel>
             <Select value={accountType} onChange={(e) => setAccountType(e.target.value)}>
@@ -63,82 +203,90 @@ const CreateAccount = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Account Number"
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Branch ID"
-            value={branchId}
-            onChange={(e) => setBranchId(e.target.value)}
+            label="Branch Name"
+            value={branchName}
+            disabled
           />
           {accountType === 'savings' && (
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Savings Plan Type"
-              value={savingsPlanType}
-              onChange={(e) => setSavingsPlanType(e.target.value)}
-            />
-          )}
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Fixed Deposit</InputLabel>
-            <Select value={fixedDeposit} onChange={(e) => setFixedDeposit(e.target.value === 'true')}>
-              <MenuItem value="false">No</MenuItem>
-              <MenuItem value="true">Yes</MenuItem>
-            </Select>
-          </FormControl>
-          {fixedDeposit && (
             <>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Savings Plan Type</InputLabel>
+                <Select value={savingsPlanType} onChange={(e) => setSavingsPlanType(e.target.value)}>
+                  <MenuItem value="child">Children - 12%, no minimum</MenuItem>
+                  <MenuItem value="teen">Teen - 11%, $500 minimum</MenuItem>
+                  <MenuItem value="adult">Adult (18+) - 10%, $1000 minimum</MenuItem>
+                  <MenuItem value="senior">Senior (60+) - 13%, $1000 minimum</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 margin="normal"
-                label="Savings Account Number"
-                value={fdDetails.savingsAccountNumber}
-                onChange={(e) => setFdDetails({ ...fdDetails, savingsAccountNumber: e.target.value })}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Fixed Deposit Amount"
-                value={fdDetails.fdAmount}
-                onChange={(e) => setFdDetails({ ...fdDetails, fdAmount: e.target.value })}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="FD Plan"
-                value={fdDetails.fdPlan}
-                onChange={(e) => setFdDetails({ ...fdDetails, fdPlan: e.target.value })}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Start Date"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                value={fdDetails.startDate}
-                onChange={(e) => setFdDetails({ ...fdDetails, startDate: e.target.value })}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="End Date"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                value={fdDetails.endDate}
-                onChange={(e) => setFdDetails({ ...fdDetails, endDate: e.target.value })}
+                label="Initial Deposit"
+                type="number"
+                value={initialDeposit}
+                onChange={(e) => setInitialDeposit(e.target.value)}
+                sx={{
+                  height: '56px', 
+                  '& input': { 
+                    height: '56px',
+                    fontSize: '16px'
+                    }
+                }}
               />
             </>
           )}
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Create Account
-          </Button>
+          {accountType === 'checking' && (
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Initial Deposit"
+              type="number"
+              value={initialDeposit}
+              onChange={(e) => setInitialDeposit(e.target.value)}
+            />
+          )}
+          <div className="button-container">
+            <Button
+              variant="contained"
+              startIcon={<CancelIcon />}
+              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+              style={{ marginRight: '8px' }}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              endIcon={<AddCircleIcon />}
+              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+            >
+              Create Account
+            </Button>
+          </div>
         </form>
-      </CardContent>
-    </Card>
+        {generatedAccountNumber && (
+          <Typography variant="h6" color="success" align="center" sx={{ mt: 2 }}>
+            Account created successfully! Account Number: {generatedAccountNumber}
+          </Typography>
+        )}
+      </div>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        message={"Are you sure you want to create this account?"}
+        onConfirm={handleConfirm}
+        onCancel={handleCancelDialog}
+      />
+
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+    </div>
   );
 };
 
