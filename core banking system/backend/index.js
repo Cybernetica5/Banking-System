@@ -17,6 +17,8 @@ import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
+import { getSavingsAccounts, createFixedDeposit } from './services/Staff/FixedDeposits/fixedDeposit.js';
+
 
 dotenv.config();
 const app = express();
@@ -52,6 +54,7 @@ app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 app.get("/installment", getInstallmentAmount);
+app.get("/savings_accounts", getSavingsAccounts);
 
 //app.get("/recent_transactions/:customerId", getRecentTransactions);
 
@@ -75,6 +78,7 @@ app.post("/money_transfer", money_transfer);
 
 // Account details
 app.post("/account_details", getAccountDetails);
+app.post("/create_fixed_deposit", createFixedDeposit);
 
 // Existing routes...
 app.get("/", (req, res) => {
