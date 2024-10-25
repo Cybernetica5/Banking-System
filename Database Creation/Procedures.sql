@@ -1,8 +1,8 @@
 DELIMITER $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MoneyTransfer`(
-    IN sender_account_id INT,
-    IN receiver_account_id INT,
+    IN sender_account_number CHAR(15),
+    IN receiver_account_number CHAR(15),
     IN transfer_amount DECIMAL(10,2),
     IN description_0 VARCHAR(255)
 )
@@ -12,7 +12,8 @@ BEGIN
     DECLARE sender_status ENUM('active','inactive');
     DECLARE receiver_status ENUM('active','inactive');
     DECLARE transaction_time  datetime;
-
+	DECLARE sender_account_id INT;
+    DECLARE receiver_account_id INT;
 	
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
@@ -25,17 +26,16 @@ BEGIN
     SELECT NOW() INTO transaction_time;
 	START TRANSACTION;
     
-    SELECT balance, status INTO sender_balance, sender_status 
+    SELECT account_id,balance, status INTO sender_account_id,sender_balance, sender_status 
     FROM account
-    WHERE account_id = sender_account_id;
+    WHERE account_number = sender_account_number;
     
 
-    SELECT balance, status INTO receiver_balance, receiver_status 
+    SELECT account_id,balance, status INTO receiver_account_id,receiver_balance, receiver_status 
     FROM account
-    WHERE account_id = receiver_account_id;
+    WHERE account_number = receiver_account_number;
     
-
-    
+	
     IF sender_status = 'inactive' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sender account is not active.';
     ELSEIF sender_balance < transfer_amount THEN
@@ -73,7 +73,7 @@ COMMIT;
     
     SELECT CONCAT('Transfer of ', transfer_amount, ' completed from account ', sender_account_id, ' to account ', receiver_account_id) AS confirmation_message;
 	
-END $$
+END
 DELIMITER ;
 
 DELIMITER //
@@ -274,3 +274,5 @@ BEGIN
 END$$
 
 DELIMITER;
+
+

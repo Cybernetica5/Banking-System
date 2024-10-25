@@ -17,12 +17,14 @@ import "./managerLoans.css";
 const ManagerLoans = () => {
   const [pendingLoans, setPendingLoans] = useState([]);
 
-  // Fetch pending loans from the backend
+
   useEffect(() => {
-    fetch('/loans')  // Assumes your backend API is running at /loans
+    fetch('/api/manager-loans')  // Assumes your backend API is running at /loans
       .then((response) => response.json())
       .then((data) => {
         setPendingLoans(data);
+
+        console.log('Pending loans:', data);
       })
       .catch((error) => {
         console.error('Error fetching loans:', error);
@@ -31,7 +33,7 @@ const ManagerLoans = () => {
 
   const handleApprove = (loanId) => {
     // Call backend to approve the loan
-    fetch(`/loans/approve/${loanId}`, {
+    fetch(`/api/manager-loans/approve/${loanId}`, {
       method: 'POST',
     })
     .then((response) => response.json())

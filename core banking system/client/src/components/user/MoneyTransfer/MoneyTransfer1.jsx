@@ -20,7 +20,6 @@ function MoneyTransfer1() {
         e.preventDefault();
         const transferDetails = {
             selectedAccount,
-            beneficiaryName,
             beneficiaryAccount,
             transferAmount,
             description,
