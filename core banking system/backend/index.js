@@ -15,14 +15,11 @@ import { getAccounts, getAccountSummary } from './services/AccountManagement/acc
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
-<<<<<<< HEAD
 //import {addEmployee} from './services/emplyees/employee_services.js'
-=======
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
 import { getSavingsAccounts, createFixedDeposit } from './services/Staff/FixedDeposits/fixedDeposit.js';
 
->>>>>>> 33c621a02cd64dd541c801989c630ff1b9597230
 
 dotenv.config();
 const app = express();
@@ -47,7 +44,6 @@ app.listen(8800, () => {
 
 
 // Routes
-<<<<<<< HEAD
 // app.use('/auth', authRoutes);
 // app.use('/api', protectedRoutes);
 
@@ -153,22 +149,17 @@ async function money_transfer(req, res) {
         res.status(500).send('Money transfer failed');
     }
 }
-=======
 app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
 app.use('/staff', staffServices);
->>>>>>> 33c621a02cd64dd541c801989c630ff1b9597230
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
 app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
-app.get("/installment", getInstallmentAmount);
-app.get("/savings_accounts", getSavingsAccounts);
 
-<<<<<<< HEAD
 app.get("/recent_transactions", getRecentTransactions);
 app.get("/transaction_History", getTransactionsHistory);
 
@@ -176,18 +167,6 @@ app.get("/transaction_History", getTransactionsHistory);
 app.post("/report/transaction", getTransactionReport);
 //shashanka
 //app.post("add-employee",addEmployee);
-
-=======
-//app.get("/recent_transactions/:customerId", getRecentTransactions);
-
-
-//Loan
-app.post("/apply_loan", applyLoan);
-app.post("/pay_loan", payLoanInstallment);
-
-// Reports
-app.post("/report/transaction", getTransactionReport);
->>>>>>> 33c621a02cd64dd541c801989c630ff1b9597230
 app.post("/add-customer/individual", addIndividualCustomer);
 app.post("/add-customer/organization", addOrganizationCustomer);
 
@@ -207,5 +186,21 @@ app.post("/create_fixed_deposit", createFixedDeposit);
 app.get("/", (req, res) => {
     res.json("Hello this is the backend");
 });
+
+
+app.post('/money-transfer', (req, res) => {
+    const { sender_account_id, receiver_account_id, transfer_amount,description} = req.body;
+  
+    const query = `CALL MoneyTransfer(?, ?, ?)`;
+  
+    db.query(query, [sender_account_id, receiver_account_id, transfer_amount,description], (err, result) => {
+      if (err) {
+        console.error('Error during money transfer:', err);
+        res.status(500).send('Money transfer failed');
+      } else {
+        res.status(200).json({ message: 'Money transfer successful', result });
+      }
+    });
+  });
 
 
