@@ -1,143 +1,228 @@
-import React, { useState } from 'react';
-import { Typography, Card, CardContent, TextField, Button, Modal, FormControlLabel, Checkbox } from '@mui/material';
+import React, { useState, useEffect } from 'react'; 
+import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Autocomplete} from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import SnackbarAlert from '../../common/alert/SnackbarAlert';
+import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
+import api from '../../../services/api';
+import './fixedDeposits.css';
 
-const FdSummary = ({ fdAmount, fdDuration, accountNumber, onClose }) => {
-  const [isAgreed, setIsAgreed] = useState(false);
-
-  const interestRate = 0.1; // Assuming a 10% interest rate
-  const totalInterest = fdAmount * interestRate;
-  const startDate = new Date();
-  const endDate = new Date(startDate);
-  endDate.setMonth(startDate.getMonth() + fdDuration);
-
-  return (
-    <Modal open={true} onClose={onClose}>
-      <Card sx={{ p: 3, maxWidth: 400, margin: 'auto', mt: 10 }}>
-        <CardContent>
-          <Typography variant="h6">Congrats! You are eligible.</Typography>
-          <Typography variant="body2" gutterBottom>
-            Kindly allow 3-4hrs for the amount to reflect in your bank account.
-          </Typography>
-
-          <Typography variant="body1" sx={{ mt: 2 }}>
-            <strong>Transaction Summary</strong>
-          </Typography>
-          <Typography>Account Number: {accountNumber}</Typography>
-          <Typography>Deposit Amount: Rs. {fdAmount}</Typography>
-          <Typography>Interest Rate: 10%</Typography>
-          <Typography>Total Interest: Rs. {totalInterest.toFixed(2)}</Typography>
-          <Typography>Start Date: {startDate.toLocaleDateString()}</Typography>
-          <Typography>End Date: {endDate.toLocaleDateString()}</Typography>
-
-          <FormControlLabel
-            control={<Checkbox checked={isAgreed} onChange={(e) => setIsAgreed(e.target.checked)} />}
-            label={
-              <>
-                I agree to the <a href="#terms">Terms & Conditions</a> and <a href="#policy">Policy</a>.
-              </>
-            }
-            sx={{ mt: 2 }}
-          />
-
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={onClose} disabled={!isAgreed}>
-            Accept
-          </Button>
-          <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 1 }} onClick={onClose}>
-            Decline
-          </Button>
-        </CardContent>
-      </Card>
-    </Modal>
-  );
-};
-
-const ApplyFixedDeposit = () => {
-  const [name, setName] = useState('');
-  const [fdAmount, setfdAmount] = useState('');
-  const [fdDuration, setfdDuration] = useState('');
+const CreateFixedDeposit = () => {
+  const [fdPlans, setFdPlans] = useState([]);
+  const [fdPlanId, setFdPlanId] = useState('');
+  const [savingsAccounts, setSavingsAccounts] = useState([]);
   const [accountNumber, setAccountNumber] = useState('');
-  const [showSummary, setShowSummary] = useState(false);
+  const [accountName, setAccountName] = useState('');
+  const [depositAmount, setDepositAmount] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setShowSummary(true);
-    console.log('Deposit Amount:', fdAmount);
-    console.log('Deposit Duration:', fdDuration);
-    console.log('Account Number:', accountNumber);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  
+  
+
+  useEffect(() => {
+    const fetchFDPlans = async () => {
+      try {
+        const response = await api.get('/staff/fdPlans');
+        setFdPlans(response.data);
+      } catch (error) {
+        console.error('Error fetching FD Plans:', error);
+      }
+    };
+
+    fetchFDPlans();
+ 
+  }, []);
+
+  useEffect(() => {
+    const fetchSavingsAccounts = async () => {
+      try {
+        const response = await api.get('/savings_accounts');
+        console.log('API Response:', response.data); // Log the raw response
+  
+        const data = Array.isArray(response.data.data) ? response.data.data : [];
+        setSavingsAccounts(data);
+  
+      } catch (error) {
+        console.error('Error fetching savings accounts:', error);
+        setSavingsAccounts([]); // Set as empty array on error to avoid null issues
+      }
+    };
+  
+    fetchSavingsAccounts();
+  }, []);
+  
+
+  const showMessage = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
   };
 
-  const handleCloseSummary = () => {
-    setShowSummary(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  // const handleOpenDialog = () => {
+  //   setDialogOpen(true);
+  // };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    handleCloseDialog();
+    handleSubmit();
+  };
+
+  const handleCancelDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleCancel = () => {
+    setFdPlanId('');
+    setAccountNumber('');
+    setAccountName('');
+    setDepositAmount('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const selectedPlan = fdPlans.find(plan => plan.fd_plan_id === fdPlanId);
+
+    if (!selectedPlan) {
+      showMessage('Invalid FD Plan selected', 'error');
+      return;
+    }
+
+    try {
+      const fdData = {
+        accountNumber,
+        amount: depositAmount,
+        duration: selectedPlan.duration,
+        fd_plan_id: fdPlanId,
+      };
+      const response = await api.post('/create_fixed_deposit', fdData);
+      showMessage(response.data.message, 'success');
+      handleCancel();
+      
+    } catch (error) {
+      console.error('Error creating fixed deposit:', error);
+      showMessage(error.response?.data?.message || 'Failed to create fixed deposit', 'error');
+    }
   };
 
   return (
-    <Card sx={{ width: 969, margin: 'auto', mt: 10 }}>
-      <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
-          Apply for a Fixed Deposit
-        </Typography>
-
-        <form onSubmit={handleSubmit}>
+    <div className="create-account-container">
+      <div className="form-container">
+        <Typography variant="h6">Create Fixed Deposit</Typography>
+        <form onSubmit={handleSubmit} className="create-account-form">
+          <FormControl fullWidth margin="normal">
+            <Autocomplete
+              options={savingsAccounts}
+              getOptionLabel={(option) => `${option.account_number}`}
+              value={savingsAccounts.find(account => account.account_number === accountNumber) || null}
+              onChange={(event, newValue) => {
+                if (newValue) {
+                  setAccountNumber(newValue.account_number);
+                  setAccountName(newValue.name);
+                  console.log('Selected account:', newValue.account_number, newValue.name);
+                } else {
+                  setAccountNumber('');
+                  setAccountName('');
+                  console.log('No account selected');
+                }
+              }}
+              renderInput={(params) => {
+                console.log('Rendering Autocomplete with options:', savingsAccounts);
+                return <TextField {...params} label="Savings Account Number" />;
+              }}
+            />
+          </FormControl>
           <TextField
-            label="Name"
-            variant="outlined"
             fullWidth
             margin="normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            type="text"
+            label="Account Name"
+            value={accountName}
+            disabled
           />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>FD Plan</InputLabel>
+            <Select value={fdPlanId} onChange={(e) => setFdPlanId(e.target.value)}>
+              {fdPlans.map((plan) => (
+                <MenuItem key={plan.fd_plan_id} value={plan.fd_plan_id}>
+                  {plan.duration} months - {plan.Interest_rate}%
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
-            label="Account Number"
-            variant="outlined"
             fullWidth
             margin="normal"
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            required
-            type="text"
-          />
-          <TextField
             label="Deposit Amount"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={fdAmount}
-            onChange={(e) => setfdAmount(e.target.value)}
-            required
+            value={depositAmount}
+            onChange={(e) => setDepositAmount(e.target.value)}
           />
           <TextField
-            label="Fixed Deposit Duration (in months)"
-            variant="outlined"
             fullWidth
             margin="normal"
-            value={fdDuration}
-            onChange={(e) => setfdDuration(e.target.value)}
-            required
+            label="Deposit Term"
+            value={fdPlans.find(plan => plan.fd_plan_id === fdPlanId)?.duration || ''}
+            disabled
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
+          <TextField
             fullWidth
-            sx={{ mt: 2 }}
-          >
-            Submit Application
-          </Button>
-        </form>
-
-        {showSummary && (
-          <FdSummary
-            fdAmount={parseFloat(fdAmount)}
-            fdDuration={parseInt(fdDuration, 10)}
-            accountNumber={accountNumber}
-            onClose={handleCloseSummary}
+            margin="normal"
+            label="Interest Rate"
+            value={fdPlans.find(plan => plan.fd_plan_id === fdPlanId)?.Interest_rate || ''}
+            disabled
           />
-        )}
-      </CardContent>
-    </Card>
+          <div className="button-container">
+            <Button
+              variant="contained"
+              startIcon={<CancelIcon />}
+              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+              style={{ marginRight: '8px' }}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              endIcon={<AddCircleIcon />}
+              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+            >
+              Create Fixed Deposit
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        message={"Are you sure you want to create this fixed deposit?"}
+        onConfirm={handleConfirm}
+        onCancel={handleCancelDialog}
+      />
+
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+    </div>
+    
   );
+  
+  
 };
 
-export default ApplyFixedDeposit;
+export default CreateFixedDeposit;

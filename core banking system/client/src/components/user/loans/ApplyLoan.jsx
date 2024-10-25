@@ -1,19 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField } from '@mui/material';
+import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
 
-const handleAccept = () => {
-  api.post('/loan_details', { status: 'accepted' });
-  console.log('Loan accepted');
-};
+const LoanSummary = ({ accountNumber, loanAmount, loanDuration, loanType, onClose }) => {
+  const [isAgreed, setIsAgreed] = useState(false);
 
+  let interestRate;
+  if (loanType === 'personal') {
+    if (loanDuration <= 12) {
+      interestRate = 0.05;
+    } else if (loanDuration > 12 && loanDuration <= 36) {
+      interestRate = 0.045;
+    } else {
+      interestRate = 0.04;
+    }
+  } else if (loanType === 'business') {
+    if (loanDuration <= 12) {
+      interestRate = 0.06;
+    } else if (loanDuration > 12 && loanDuration <= 36) {
+      interestRate = 0.055;
+    } else {
+      interestRate = 0.05;
+    }
+  }
 
-const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
-  const interestRate = 0.1; // Assuming a 10% interest rate
   const totalInterest = loanAmount * interestRate;
   const totalPaybackAmount = loanAmount + totalInterest;
   const monthlyPayment = totalPaybackAmount / loanDuration;
+
+
+  const handleAccept = () => {
+    const customerId = Cookies.get('customerId');
+    const loanStartDate = new Date().toISOString().split('T')[0];
+    const startDate = new Date(loanStartDate);
+    startDate.setMonth(startDate.getMonth() + loanDuration);
+    const loanEndDate = startDate.toISOString().split('T')[0];
+    
+    api.post('/apply_loan', { accountNumber, customerId, loanType, loanAmount, loanStartDate, loanEndDate })
+      .then(() => {
+        console.log('Loan Submitted For Processing');
+        onClose();
+      })
+      .catch((error) => {
+        console.error('Error submitting loan:', error);
+      });
+  };
 
   return (
     <Modal open={true} onClose={onClose}>
@@ -27,15 +59,16 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
           <Typography variant="body1" sx={{ mt: 2 }}>
             <strong>Transaction Summary</strong>
           </Typography>
-          <Typography>Purpose of Loan: {loanReason}</Typography> {/* Display loanReason */}
+          <Typography>Account Number: {accountNumber}</Typography>
+          <Typography>Purpose of Loan: {loanType === 'personal' ? 'Personal' : 'Business'}</Typography>
           <Typography>Loan Amount: Rs. {loanAmount}</Typography>
-          <Typography>Interest Rate: 10%</Typography>
-          <Typography>Monthly Payment: Rs .{monthlyPayment.toFixed(2)}</Typography>
+          <Typography>Interest Rate: {interestRate * 100}%</Typography>
+          <Typography>Monthly Payment: Rs. {monthlyPayment.toFixed(2)}</Typography>
           <Typography>No of Payments: {loanDuration}</Typography>
-          <Typography>Total Payback Amount: Rs .{totalPaybackAmount.toFixed(2)}</Typography>
+          <Typography>Total Payback Amount: Rs. {totalPaybackAmount.toFixed(2)}</Typography>
 
           <FormControlLabel
-            control={<Checkbox />}
+            control={<Checkbox checked={isAgreed} onChange={(e) => setIsAgreed(e.target.checked)} />}
             label={
               <>
                 I agree to the <a href="#terms">Terms & Conditions</a> and <a href="#policy">Policy</a>.
@@ -44,7 +77,7 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
             sx={{ mt: 2 }}
           />
 
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleAccept}>
+          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleAccept} disabled={!isAgreed}>
             Accept
           </Button>
           <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 1 }} onClick={onClose}>
@@ -59,7 +92,8 @@ const LoanSummary = ({ loanAmount, loanDuration, loanReason, onClose }) => {
 const ApplyLoan = () => {
   const [loanAmount, setLoanAmount] = useState('');
   const [loanDuration, setLoanDuration] = useState('');
-  const [loanReason, setLoanReason] = useState('');
+  const [loanType, setLoanType] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
   const [creditLimit, setCreditLimit] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSummary, setShowSummary] = useState(false);
@@ -89,7 +123,8 @@ const ApplyLoan = () => {
     setShowSummary(true);
     console.log('Loan Amount:', loanAmount);
     console.log('Loan Duration:', loanDuration);
-    console.log('Loan Reason:', loanReason);
+    console.log('Loan Type:', loanType);
+    console.log('Account Number:', accountNumber);
     console.log('Credit Limit:', creditLimit);
   };
 
@@ -102,7 +137,7 @@ const ApplyLoan = () => {
   }
 
   return (
-    <Card sx={{width: 969, margin: 'auto', mt: 10}}>
+    <Card sx={{ width: 969, margin: 'auto', mt: 10 }}>
       <CardContent>
         <Typography variant="h6" component="div" gutterBottom>
           Apply for a Loan
@@ -115,15 +150,31 @@ const ApplyLoan = () => {
         )}
 
         <form onSubmit={handleSubmit}>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Loan Type</InputLabel>
+            <Select
+              value={loanType}
+              onChange={(e) => setLoanType(e.target.value)}
+              label="Loan Type"
+              align="left"
+            >
+              <MenuItem value="personal">Personal</MenuItem>
+              <MenuItem value="business">Business</MenuItem>
+            </Select>
+          </FormControl>
+          
           <TextField
-            label="Reason"
+            label="Account Number"
             variant="outlined"
             fullWidth
             margin="normal"
-            value={loanReason}
-            onChange={(e) => setLoanReason(e.target.value)}
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
             required
-            type="text"
+            inputProps={{
+              maxLength: 13, // Limit the number of characters to 13
+              pattern: "SAV-\\d{9}", // Ensure the format is SAV- followed by 9 digits
+            }}
           />
           <TextField
             label="Loan Amount"
@@ -133,11 +184,17 @@ const ApplyLoan = () => {
             value={loanAmount}
             onChange={(e) => setLoanAmount(e.target.value)}
             required
-            // type="number"
+            type="number"
+            sx={{
+              height: '56px', 
+              '& input': { 
+                height: '56px',
+                fontSize: '16px'
+                }
+            }}
             inputProps={{
               max: creditLimit, // Set the max limit as the credit limit
             }}
-            helperText={`The maximum loan amount you can apply for is Rs. ${creditLimit}`}
           />
           <TextField
             label="Loan Duration (in months)"
@@ -147,7 +204,14 @@ const ApplyLoan = () => {
             value={loanDuration}
             onChange={(e) => setLoanDuration(e.target.value)}
             required
-            // type="number"
+            type="number"
+            sx={{
+              height: '56px', 
+              '& input': { 
+                height: '56px',
+                fontSize: '16px'
+                }
+            }}
           />
           <Button
             type="submit"
@@ -162,9 +226,10 @@ const ApplyLoan = () => {
 
         {showSummary && (
           <LoanSummary
+            accountNumber={accountNumber}
             loanAmount={parseFloat(loanAmount)}
             loanDuration={parseInt(loanDuration, 10)}
-            loanReason={loanReason}  // Pass loanReason as a prop
+            loanType={loanType}  // Pass loanType as a prop
             onClose={handleCloseSummary}
           />
         )}
