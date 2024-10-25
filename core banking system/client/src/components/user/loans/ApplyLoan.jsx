@@ -139,7 +139,7 @@ const ApplyLoan = () => {
   return (
     <Card sx={{ width: 969, margin: 'auto', mt: 10 }}>
       <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
+        <Typography variant="h6" component="div" gutterBottom>
           Apply for a Loan
         </Typography>
 
