@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; 
-import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Autocomplete } from '@mui/material';
+import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Autocomplete} from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
@@ -20,6 +20,8 @@ const CreateFixedDeposit = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('');
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  
+  
 
   useEffect(() => {
     const fetchFDPlans = async () => {
@@ -44,10 +46,6 @@ const CreateFixedDeposit = () => {
         const data = Array.isArray(response.data.data) ? response.data.data : [];
         setSavingsAccounts(data);
   
-        // console.log('After setSavingsAccounts, savingsAccounts:', data);
-        // data.forEach((account, index) => {
-        //   console.log(`Account ${index + 1}: Name - ${account.name}, Account Number - ${account.account_number}`);
-        // });
       } catch (error) {
         console.error('Error fetching savings accounts:', error);
         setSavingsAccounts([]); // Set as empty array on error to avoid null issues
@@ -68,9 +66,9 @@ const CreateFixedDeposit = () => {
     setSnackbarOpen(false);
   };
 
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
-  };
+  // const handleOpenDialog = () => {
+  //   setDialogOpen(true);
+  // };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -105,13 +103,14 @@ const CreateFixedDeposit = () => {
     try {
       const fdData = {
         accountNumber,
-        fd_plan: fdPlanId,
-        depositAmount,
-        depositTerm: selectedPlan.duration,
-        interestRate: selectedPlan.Interest_rate
+        amount: depositAmount,
+        duration: selectedPlan.duration,
+        fd_plan_id: fdPlanId,
       };
       const response = await api.post('/create_fixed_deposit', fdData);
       showMessage(response.data.message, 'success');
+      handleCancel();
+      
     } catch (error) {
       console.error('Error creating fixed deposit:', error);
       showMessage(error.response?.data?.message || 'Failed to create fixed deposit', 'error');
@@ -220,7 +219,10 @@ const CreateFixedDeposit = () => {
         message={snackbarMessage}
       />
     </div>
+    
   );
+  
+  
 };
 
 export default CreateFixedDeposit;
