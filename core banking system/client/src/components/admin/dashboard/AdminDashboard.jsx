@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import cookies from 'js-cookie';
 import { 
   faMoneyBillTransfer, faWallet, faGear, 
   faArrowRightFromBracket, faCircleQuestion, 
@@ -14,12 +15,16 @@ import './AdminDashboard.css';
 // import Notification from './notification/Notification';
 
 import AddCustomers from '../customers/AddCustomers';
+import GetCustomerDetails from '../customers/GetCustomerDetails';
+import Customers from '../customers/Customers';
+import Reports from '../reports/Reports';
 import BranchTransactionReport from '../reports/BranchTransactionReport';
+import BranchLatePaymentsReport from '../reports/BranchLatePaymentsReport';
 import Transactions from '../transactions/Transactions';
 import Settings from '../../common/settings/Settings';
-import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits'; // Import the FixedDeposits component
-import cookies from 'js-cookie';
+import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits';
 import CreateAccount from '../employees/CreateAccount';
+
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
@@ -49,13 +54,13 @@ const DashboardSidebar = () => {
   };
 
   const menuItems = [
-    { path: '/admin-dashboard/customers', icon: faUsers, text: 'Customers' },
+    { path: '/admin-dashboard/customers/get-customer-details', icon: faUsers, text: 'Customers' },
     ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/', icon: faSackDollar, text: 'Loans' },
-    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
   ];
 
   return (
@@ -129,12 +134,18 @@ const DashboardSidebar = () => {
         </div>
 
         <Routes>
-          <Route index element={<AddCustomers />} />
-          <Route path="customers" element={<AddCustomers />} />
+          <Route index element={<Customers />} />
+          <Route path="customers" element={<Customers />}>
+            <Route path="get-customer-details" element={<GetCustomerDetails />} />
+            <Route path="add-new-customer" element={<AddCustomers />} />
+          </Route>
           <Route path="transactions" element={<Transactions />} />
-          <Route path="reports" element={<BranchTransactionReport />} />
+          <Route path="reports" element={<Reports />}>
+            <Route path="transaction-report" element={<BranchTransactionReport />} />
+            <Route path="late-loan-payment-report" element={<BranchLatePaymentsReport />} />
+          </Route>
           <Route path="settings" element={<Settings />} />
-          <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> {/* Add the route for FixedDeposits */}
+          <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> 
           <Route path="createaccount" element={<CreateAccount />} />
         </Routes>
       </section>

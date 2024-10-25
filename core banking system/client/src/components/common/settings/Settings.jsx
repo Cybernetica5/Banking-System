@@ -7,8 +7,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import './Settings.css';
 import api from '../../../services/api';
+import Cookies from 'js-cookie';
 
-const userId = 1; // TODO: make this dynamic
+const userId = Cookies.get('userId');
 
 const Settings = () => {
   const [open, setOpen] = useState(false);
@@ -36,10 +37,8 @@ const Settings = () => {
   };
 
   const handleSave = async () => {
-    // TODO: Add validation logic here
     try {
       const response = await api.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
-      // const response = await axios.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
       console.log('Personal Info updated successfully:', response.data);
     } catch (error) {
       console.error('Error updating personal info:', error.response ? error.response.data : error.message);
@@ -48,17 +47,35 @@ const Settings = () => {
     }
   };
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = async () => {
     console.log('Current Password:', currentPassword);
     console.log('New Password:', newPassword);
-    // Add logic here for handling the password change (e.g., API call)
-    setOpen(false); // Close the dialog after the password is changed
+
+    try {
+        const response = await axios.put(`http://localhost:8800/change_password/${userId}`, { currentPassword, newPassword });
+        console.log(response.data);
+        // Handle success response
+        alert('Password changed successfully');
+    } catch (error) {
+        console.error('Error changing password:', error);
+        // Handle error response
+        if (error.response && error.response.data) {
+            alert(`Error: ${error.response.data.error}`);
+        } else {
+            alert('An error occurred while changing the password. Please try again.');
+        }
+    } finally {
+        // Clear the text fields
+        setCurrentPassword('');
+        setNewPassword('');
+        setOpen(false); // Close the dialog after the password is changed
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8800/user_info/${userId}`); 
+        const response = await api.get(`http://localhost:8800/user_info/${userId}`);
         const data = response.data[0]; // Assuming the response is an array with a single object
         setPersonalInfo({
           username: data.username,
@@ -116,10 +133,9 @@ const Settings = () => {
             }}
           />
 
-
           <Button
             variant="contained"
-            sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+            sx={{ backgroundColor: '#695CFE',display: 'flex', ':hover': { backgroundColor: '#5648CC' } }}
             style={{ marginRight: '8px' }}
             onClick={handleClickOpen}
           >
