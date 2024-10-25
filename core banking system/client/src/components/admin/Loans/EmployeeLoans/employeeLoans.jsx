@@ -1,6 +1,3 @@
-// Filename - MoneyTransfer.jsx
-// It contains the Form, its Structure
-// and Basic Form Functionalities
 
 import { OutlinedInput } from "@mui/material";
 import "./employeeLoan.css";   
@@ -24,7 +21,7 @@ function EmployeeLoans() {
             duration,
         };
     try {
-        const response = await fetch("/api/loan-form", {
+        const response = await fetch("/api/employee-loans", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
