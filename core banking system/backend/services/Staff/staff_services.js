@@ -12,7 +12,7 @@ router.post('/create_account', async (req, res) => {
 
   try {
     // Validate required fields
-    if (!customerType || !accountType || !branchId || (!idNumber && !licenseNumber) || !savingsPlanTypeId) {
+    if (!customerType || !accountType || !branchId || (!idNumber && !licenseNumber)) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
