@@ -1,6 +1,6 @@
 DELIMITER $$ CREATE DEFINER = `root` @`localhost` PROCEDURE `MoneyTransfer`(
-    IN sender_account_id INT,
-    IN receiver_account_id INT,
+    IN sender_account_number CHAR(15),
+    IN receiver_account_number CHAR(15),
     IN transfer_amount DECIMAL(10, 2),
     IN description_0 VARCHAR(255)
 ) BEGIN
@@ -9,42 +9,41 @@ DECLARE receiver_balance DECIMAL(15, 2);
 DECLARE sender_status ENUM('active', 'inactive');
 DECLARE receiver_status ENUM('active', 'inactive');
 DECLARE transaction_time datetime;
--- DECLARE insufficient_funds EXCEPTION;
+DECLARE sender_account_id INT;
+DECLARE receiver_account_id INT;
 DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK;
--- Roll back the transaction in case of error
 SELECT 'An error occurred during the transfer. Transaction rolled back.' AS error_message;
 END;
 SELECT NOW() INTO transaction_time;
 START TRANSACTION;
--- Check if both sender and receiver accounts are active and get their balances
-SELECT balance,
-    status INTO sender_balance,
+SELECT account_id,
+    balance,
+    status INTO sender_account_id,
+    sender_balance,
     sender_status
 FROM account
-WHERE account_id = sender_account_id;
-SELECT balance,
-    status INTO receiver_balance,
+WHERE account_number = sender_account_number;
+SELECT account_id,
+    balance,
+    status INTO receiver_account_id,
+    receiver_balance,
     receiver_status
 FROM account
-WHERE account_id = receiver_account_id;
--- Check if sender's account is active and has sufficient balance
+WHERE account_number = receiver_account_number;
 IF sender_status = 'inactive' THEN SIGNAL SQLSTATE '45000'
 SET MESSAGE_TEXT = 'Sender account is not active.';
 ELSEIF sender_balance < transfer_amount THEN SIGNAL SQLSTATE '45000'
 SET MESSAGE_TEXT = 'Insufficient funds in sender account.';
 END IF;
--- Check if receiver's account is active
 IF receiver_status = 'inactive' THEN SIGNAL SQLSTATE '45000'
 SET MESSAGE_TEXT = 'Receiver account is not active.';
 END IF;
--- Perform the transaction: deduct from sender's account and add to receiver's account
 UPDATE account
 SET balance = balance - transfer_amount
 WHERE account_id = sender_account_id;
 UPDATE account
 SET balance = balance + transfer_amount
 WHERE account_id = receiver_account_id;
--- Insert transaction records for sender and receiver, including beneficiary account IDs
 INSERT INTO transaction(
         account_id,
         transaction_type,
@@ -59,12 +58,10 @@ VALUES (
         transaction_time,
         description_0
     );
--- (receiver_account_id, 'deposit', transfer_amount, transaction_time, CONCAT('Transfer from account ', sender_account_id));
 SET @trans_id = LAST_INSERT_ID();
 INSERT INTO transfer(transaction_id, beneficiary_account_id)
 VALUES (@trans_id, receiver_account_id);
 COMMIT;
--- Confirm the transfer
 SELECT CONCAT(
         'Transfer of ',
         transfer_amount,
@@ -73,7 +70,7 @@ SELECT CONCAT(
         ' to account ',
         receiver_account_id
     ) AS confirmation_message;
-END $$ DELIMITER;
+END DELIMITER;
 DELIMITER // CREATE PROCEDURE GetLoanDetails(IN userId INT) BEGIN
 SELECT l.loan_id,
     l.loan_type,
@@ -100,123 +97,163 @@ GROUP BY l.loan_id,
     l.interest_rate,
     ply.penalty_amount;
 END // DELIMITER;
-CREATE DEFINER = `root` @`localhost` PROCEDURE `AddEmploye`(
-    IN p_user_name VARCHAR(50),
-    IN p_password VARCHAR(255),
-    IN p_email VARCHAR(100),
-    IN p_full_name VARCHAR(100),
-    IN p_date_of_birth DATE,
-    IN p_NIC VARCHAR(12),
-    IN p_branch_id INT
+DELIMITER ##
+CREATE DEFINER = root @localhost PROCEDURE AddLoan(
+    IN p_account_id INT,
+    IN p_loan_type ENUM('personal', 'business'),
+    IN p_amount DECIMAL(15, 2),
+    IN p_start_date DATE,
+    IN p_end_date DATE,
+    IN p_status ENUM('approved', 'pending', 'rejected')
 ) BEGIN
-DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN -- Rollback the transaction in case of error
-    ROLLBACK;
--- Signal an error
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Transaction failed. Unable to add employee.';
-END;
--- Start transaction
-START TRANSACTION;
--- Step 1: Insert into the user table
-INSERT INTO user(user_name, password, email, role)
-VALUES(p_user_name, p_password, p_email, 'staff');
--- Step 2: Insert into the staff table using the new user_id
-INSERT INTO staff(user_id, full_name, date_of_birth, NIC, role)
-VALUES(
+DECLARE v_loan_term INT;
+DECLARE v_fixed_rate DECIMAL(4, 2);
+DECLARE v_monthly_payment DECIMAL(15, 2);
+DECLARE v_installment_amount DECIMAL(15, 2);
+DECLARE v_duration INT;
+DECLARE v_loan_id INT;
+SET v_loan_term = TIMESTAMPDIFF(MONTH, p_start_date, p_end_date);
+IF p_loan_type = 'personal' THEN IF v_loan_term <= 12 THEN
+SET v_fixed_rate = 5.0;
+ELSEIF v_loan_term > 12
+AND v_loan_term <= 36 THEN
+SET v_fixed_rate = 4.5;
+ELSE
+SET v_fixed_rate = 4.0;
+END IF;
+ELSEIF p_loan_type = 'business' THEN IF v_loan_term <= 12 THEN
+SET v_fixed_rate = 6.0;
+ELSEIF v_loan_term > 12
+AND v_loan_term <= 36 THEN
+SET v_fixed_rate = 5.5;
+ELSE
+SET v_fixed_rate = 5.0;
+END IF;
+END IF;
+INSERT INTO loan (
+        account_id,
+        loan_type,
+        amount,
+        interest_rate,
+        start_date,
+        end_date,
+        status
+    )
+VALUES (
+        p_account_id,
+        p_loan_type,
+        p_amount,
+        v_fixed_rate,
+        p_start_date,
+        p_end_date,
+        p_status
+    );
+SET v_loan_id = LAST_INSERT_ID();
+SET v_monthly_payment = p_amount / v_loan_term;
+SET v_duration = 30;
+WHILE v_loan_term > 0 DO
+INSERT INTO loan_installment (loan_id, amount, duration)
+VALUES (v_loan_id, v_monthly_payment, v_duration);
+INSERT INTO loan_payment (instalment_id, amount, due_date, status)
+VALUES (
         LAST_INSERT_ID(),
-        p_full_name,
-        p_date_of_birth,
-        p_NIC,
-        'employee'
+        v_monthly_payment,
+        DATE_ADD(p_start_date, INTERVAL 1 MONTH),
+        'unpaid'
     );
--- Step 3: Insert into the employee table using the new staff_id
-INSERT INTO employee(staff_id, branch_id)
-VALUES(LAST_INSERT_ID(), p_branch_id);
--- Commit the transaction if all operations are successful
-COMMIT;
-END CREATE DEFINER = `root` @`localhost` PROCEDURE `removeEmployee`(p_staff_id INT) BEGIN
-DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN -- Rollback the transaction in case of error
-    ROLLBACK;
--- Signal an error
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Transaction failed. Unable to remove employee.';
-END;
--- Start transaction
-START TRANSACTION;
--- Delete from employee table
-DELETE FROM employee
-WHERE staff_id = p_staff_id;
--- Delete from staff table
-DELETE FROM staff
-WHERE staff_id = p_staff_id;
--- If no error, commit the transaction
-COMMIT;
-END CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_staff_details`(
-    IN p_staff_id INT,
-    -- IN p_user_name VARCHAR(50),
-    -- IN p_password VARCHAR(255),
-    -- IN p_email VARCHAR(100),
-    IN p_full_name VARCHAR(100),
-    IN p_date_of_birth DATE -- IN p_branch_id INT
+SET v_loan_term = v_loan_term - 1;
+SET p_start_date = DATE_ADD(p_start_date, INTERVAL 1 MONTH);
+END WHILE;
+END ##
+DELIMITER;
+DELIMITER ##
+CREATE DEFINER = root @localhost PROCEDURE AddLoanPayment(
+    IN p_installment_id INT,
+    IN p_payment_amount DECIMAL(15, 2),
+    IN p_payment_date DATE
 ) BEGIN
-DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN -- Rollback the transaction in case of error
-    ROLLBACK;
--- Signal an error
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Transaction failed. Unable to update staff details.';
-END;
--- Start transaction
-START TRANSACTION;
--- Update staff details based on staff_id
-UPDATE staff
-SET full_name = p_full_name,
-    date_of_birth = p_date_of_birth
-WHERE staff_id = p_staff_id;
--- If no error, commit the transaction
-COMMIT;
-END -- -------------------------------update Employee user details ---------------------------------------
-CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_user_details`(
-    IN p_staff_id INT,
-    IN p_user_name VARCHAR(50),
-    IN p_password VARCHAR(255),
-    IN p_email VARCHAR(100) -- IN p_full_name VARCHAR(100), 
-    -- IN p_date_of_birth DATE,
-    -- IN p_branch_id INT
-) BEGIN
-DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN -- Rollback the transaction in case of error
-    ROLLBACK;
--- Signal an error
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Transaction failed. Unable to update user details.';
-END;
--- Start transaction
-START TRANSACTION;
--- Update user details based on staff_id
-UPDATE user
-SET user_name = p_user_name,
-    password = p_password,
-    email = p_email
-WHERE user_id = (
-        SELECT user_id
-        FROM staff
-        WHERE staff_id = p_staff_id
+DECLARE v_due_date DATE;
+DECLARE v_status ENUM('paid', 'unpaid');
+DECLARE v_penalty_id INT DEFAULT NULL;
+DECLARE v_penalty_amount DECIMAL(15, 2);
+DECLARE v_final_payment_amount DECIMAL(15, 2);
+DECLARE v_is_late BOOLEAN;
+DECLARE v_penalty_type_id INT;
+SELECT penalty_type_id,
+    penalty_amount INTO v_penalty_type_id,
+    v_penalty_amount
+FROM penalty_types
+WHERE penalty_type = 'Late Payment';
+SELECT due_date INTO v_due_date
+FROM loan_payment
+WHERE instalment_id = p_installment_id
+ORDER BY payment_id DESC
+LIMIT 1;
+IF p_payment_date <= v_due_date THEN
+SET v_status = 'paid';
+SET v_is_late = FALSE;
+SET v_final_payment_amount = p_payment_amount;
+ELSE
+SET v_status = 'unpaid';
+SET v_is_late = TRUE;
+SET v_final_payment_amount = p_payment_amount + v_penalty_amount;
+INSERT INTO penalty (penalty_type_id)
+VALUES (v_penalty_type_id);
+SET v_penalty_id = LAST_INSERT_ID();
+END IF;
+INSERT INTO loan_payment (
+        instalment_id,
+        amount,
+        due_date,
+        payed_date,
+        status,
+        penalty_id
+    )
+VALUES (
+        p_installment_id,
+        v_final_payment_amount,
+        v_due_date,
+        p_payment_date,
+        v_status,
+        v_penalty_id
     );
--- If no error, commit the transaction
-COMMIT;
-END -- ---------------------------------- update emplotee branch -------------------------------------
-CREATE DEFINER = `root` @`localhost` PROCEDURE `updateEmployee_branch`(p_staff_id INT, p_branch_id INT) BEGIN
-DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN -- Rollback the transaction in case of error
-    ROLLBACK;
--- Signal an error
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Transaction failed. Unable to update employee branch.';
-END;
--- Start transaction
-START TRANSACTION;
--- Update statement
-UPDATE employee
-SET branch_id = p_branch_id
-WHERE staff_id = p_staff_id;
--- If no error, commit the transaction
-COMMIT;
-END
+CALL UpdateLoanInstallment(p_installment_id, p_payment_amount);
+END ##
+DELIMITER;
+DELIMITER ##
+CREATE DEFINER = root @localhost PROCEDURE UpdateLoanInstallment(
+    IN p_installment_id INT,
+    IN p_payment_amount DECIMAL(15, 2)
+) BEGIN
+DECLARE v_remaining_amount DECIMAL(15, 2);
+DECLARE v_remaining_duration INT;
+DECLARE v_loan_id INT;
+SELECT amount,
+    loan_id INTO v_remaining_amount,
+    v_loan_id
+FROM loan_installment
+WHERE installment_id = p_installment_id;
+SET v_remaining_amount = v_remaining_amount - p_payment_amount;
+SET v_remaining_duration = FLOOR(v_remaining_amount / (p_payment_amount / 30));
+IF v_remaining_amount <= 0 THEN
+UPDATE loan_installment
+SET amount = 0,
+    duration = 0
+WHERE installment_id = p_installment_id;
+ELSE
+UPDATE loan_installment
+SET amount = v_remaining_amount,
+    duration = v_remaining_duration
+WHERE installment_id = p_installment_id;
+END IF;
+END ##
+DELIMITER;
+DELIMITER $$ CREATE DEFINER = `root` @`localhost` PROCEDURE `GetPendingLoans`() BEGIN
+SELECT loan_id,
+    account_id,
+    amount,
+    start_date,
+    status
+FROM loan
+WHERE status = 'pending';
+END $$ DELIMITER;

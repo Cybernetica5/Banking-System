@@ -8,6 +8,7 @@ import {
 
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../../services/auth';
+import Cookies from 'js-cookie';
 
 import './UserDashboard.css';
 import Notification from './notification/Notification';
@@ -28,17 +29,33 @@ const DashboardSidebar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user?.username) {
-      setUserName(user.username);
+    const storedUserId = Cookies.get('userId');
+    const storedEmail = Cookies.get('email');
+    console.log('Stored User ID:', storedUserId);
+    console.log('Stored Email:', storedEmail);
+    if (storedUserId) {
+      setUserName(storedUserId);
     }
   }, []); // Fetch user data once when component mounts
 
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    const token = Cookies.get('refreshToken');
+   
+    if (!token) {
+      console.error('\\Logout error: Missing token//');
+      return;
+    }
+    try {
+      console.log('Logout request PROCESSING');
+      await logout(token);
+      navigate('/login');
+      
+    } catch (error) {
+      console.error('Logout error:', error.response ? error.response.data : error.message);
+      console.error('Token:', token);
+    }
   };
 
   const menuItems = [
@@ -47,14 +64,9 @@ const DashboardSidebar = () => {
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
     { 
-      path: '/dashboard/loans', 
+      path: '/dashboard/loans/apply', 
       icon: faSackDollar, 
       text: 'Loans',
-      subItems: [
-        { path: '/dashboard/loans/apply', text: 'Apply Loan' },
-        { path: '/dashboard/loans/payment', text: 'Loan Payment' },
-        { path: '/dashboard/loans/details', text: 'Loan Details' },
-      ]
     },
   ];
 
@@ -131,7 +143,7 @@ const DashboardSidebar = () => {
         <Routes>
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
-          {/* <Route path="account-details" element={<AccountDetails />} /> */}
+          <Route path="account-details" element={<AccountDetails />} /> 
           <Route path="money-transfer" element={<MoneyTransfer />} />
           <Route path="transaction-history" element={<TransactionHistory />} /> 
           <Route path="loans" element={<Loans />}>
