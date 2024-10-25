@@ -97,7 +97,7 @@ export default function PieChartWithCenterLabel() {
   return (
     <Card className="chart-card">
       <CardContent>
-        <Typography variant="h5" className="card-title">
+        <Typography variant="h6">
           Account Summary
         </Typography>
         <PieChart series={[{ data, innerRadius: 75, outerRadius: 100 }]} {...chartSize}>

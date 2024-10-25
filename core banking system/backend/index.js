@@ -12,13 +12,18 @@ import staffServices from './services/Staff/staff_services.js';
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
-import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
-import { getTransactionReport } from './services/Reports/report_services.js';
+
+
+import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
+import { getTransactionReport , getLateLoanPaymentReport} from './services/Reports/report_services.js';
+
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
 //import {addEmployee} from './services/emplyees/employee_services.js'
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
+
 import { getSavingsAccounts, createFixedDeposit } from './services/Staff/FixedDeposits/fixedDeposit.js';
+import { getUserInfo, updateUserInfo, changeUserPassword } from './services/User/user_services.js';
 
 
 dotenv.config();
@@ -160,15 +165,35 @@ app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 
+
 app.get("/recent_transactions", getRecentTransactions);
 app.get("/transaction_History", getTransactionsHistory);
 
 // Reports
-app.post("/report/transaction", getTransactionReport);
 //shashanka
 //app.post("add-employee",addEmployee);
+//app.get("/recent_transactions/:customerId", getRecentTransactions);
+
+
+// User info
+app.get("/user_info/:userId", getUserInfo);
+app.put("/user_info/:userId", updateUserInfo);
+
+// Change password
+app.put("/change_password/:userId", changeUserPassword);
+
+//Loan
+app.post("/apply_loan", applyLoan);
+
+// Reports
+app.post("/report/transaction", getTransactionReport);
+app.post("/report/late_loan_payment", getLateLoanPaymentReport);
+
+
+// Customer
 app.post("/add-customer/individual", addIndividualCustomer);
 app.post("/add-customer/organization", addOrganizationCustomer);
+app.post("/customer-details", getCustomerDetails);
 
 //logout
 app.post("/logout", logout);
