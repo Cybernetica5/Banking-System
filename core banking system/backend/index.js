@@ -48,28 +48,28 @@ app.listen(8800, () => {
 // app.use('/api', protectedRoutes);
 
 // Async functions to handle requests
-async function getAccounts(req, res) {
-    try {
-        const [rows] = await db.query("SELECT * FROM account");
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching accounts:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
+// async function getAccounts(req, res) {
+//     try {
+//         const [rows] = await db.query("SELECT * FROM account");
+//         res.json(rows);
+//     } catch (err) {
+//         console.error('Error fetching accounts:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
 
-async function getAccountSummary(req, res) {
-    try {
-        const [rows] = await db.query(
-            "SELECT * FROM bank_database.accounts_summary WHERE customer_id = ?",
-            [req.query.customer_id]
-        );
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching account summary:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
+// async function getAccountSummary(req, res) {
+//     try {
+//         const [rows] = await db.query(
+//             "SELECT * FROM bank_database.accounts_summary WHERE customer_id = ?",
+//             [req.query.customer_id]
+//         );
+//         res.json(rows);
+//     } catch (err) {
+//         console.error('Error fetching account summary:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
 
 async function getRecentTransactions(req, res) {
     try {
@@ -136,19 +136,19 @@ async function signup(req, res) {
     }
 }
 
-async function money_transfer(req, res) {
-    const { sender_account_id, receiver_account_id, transfer_amount, description } = req.body;
+// async function money_transfer(req, res) {
+//     const { sender_account_id, receiver_account_id, transfer_amount, description } = req.body;
 
-    const query = `CALL MoneyTransfer(?, ?, ?, ?)`;
+//     const query = `CALL MoneyTransfer(?, ?, ?, ?)`;
 
-    try {
-        const [result] = await db.query(query, [sender_account_id, receiver_account_id, transfer_amount, description]);
-        res.status(200).json({ message: 'Money transfer successful', result });
-    } catch (err) {
-        console.error('Error during money transfer:', err);
-        res.status(500).send('Money transfer failed');
-    }
-}
+//     try {
+//         const [result] = await db.query(query, [sender_account_id, receiver_account_id, transfer_amount, description]);
+//         res.status(200).json({ message: 'Money transfer successful', result });
+//     } catch (err) {
+//         console.error('Error during money transfer:', err);
+//         res.status(500).send('Money transfer failed');
+//     }
+// }
 app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
@@ -188,19 +188,19 @@ app.get("/", (req, res) => {
 });
 
 
-app.post('/money-transfer', (req, res) => {
-    const { sender_account_id, receiver_account_id, transfer_amount,description} = req.body;
+// app.post('/money-transfer', (req, res) => {
+//     const { sender_account_id, receiver_account_id, transfer_amount,description} = req.body;
   
-    const query = `CALL MoneyTransfer(?, ?, ?)`;
+//     const query = `CALL MoneyTransfer(?, ?, ?)`;
   
-    db.query(query, [sender_account_id, receiver_account_id, transfer_amount,description], (err, result) => {
-      if (err) {
-        console.error('Error during money transfer:', err);
-        res.status(500).send('Money transfer failed');
-      } else {
-        res.status(200).json({ message: 'Money transfer successful', result });
-      }
-    });
-  });
+//     db.query(query, [sender_account_id, receiver_account_id, transfer_amount,description], (err, result) => {
+//       if (err) {
+//         console.error('Error during money transfer:', err);
+//         res.status(500).send('Money transfer failed');
+//       } else {
+//         res.status(200).json({ message: 'Money transfer successful', result });
+//       }
+//     });
+//   });
 
 
