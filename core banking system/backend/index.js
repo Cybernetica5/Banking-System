@@ -14,7 +14,7 @@ import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
-import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
+import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
 //import {addEmployee} from './services/emplyees/employee_services.js'
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
@@ -71,30 +71,7 @@ app.listen(8800, () => {
 //     }
 // }
 
-async function getRecentTransactions(req, res) {
-    try {
-        const [rows] = await db.query(
-            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3",
-            [req.query.customer_id]
-        );
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching account summary:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-async function getTransactionsHistory(req, res) {
-    try {
-        const [rows] = await db.query(
-            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
-            [req.query.customer_id]
-        );
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching account summary:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
+
 
 
 async function login(req, res) {
