@@ -3,6 +3,7 @@ import { TextField, Button, Typography, Container, Box, Link } from '@mui/materi
 import { login } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const UserLogin = () => {
   const [email, setEmail] = useState('');
@@ -59,15 +60,17 @@ const UserLogin = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', alignItems: 'center'}}>
       <Box
         sx={{
-          marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          padding: '20px',
         }}
       >
+        <AccountCircleIcon sx={{ fontSize: 60, color: '#695CFE' }} />
+        
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
@@ -96,22 +99,29 @@ const UserLogin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
+          
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+            >
+              Sign In
+            </Button>
+          </Box>
+
           {error && (
             <Typography color="error" align="center">
               {error}
             </Typography>
           )}
-          <Link href="/signup" variant="body2" sx={{ mt: 2 }}>
-            {"Don't have an account? Sign Up"}
-          </Link>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Link href="/signup" variant="body2">
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Box>
+
         </Box>
       </Box>
     </Container>

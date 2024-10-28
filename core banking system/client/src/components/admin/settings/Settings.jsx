@@ -5,9 +5,11 @@ import { TextField, Button, Switch, FormControlLabel, Typography, Grid, Dialog, 
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PasswordIcon from '@mui/icons-material/Password';
 import './Settings.css';
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
+import _ from 'lodash';
 
 const userId = Cookies.get('userId');
 
@@ -17,10 +19,7 @@ const Settings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [personalInfo, setPersonalInfo] = useState({
     username: '',
-    email: '',
-    address: '',
-    mobileNumber: '',
-    landlineNumber: ''
+    email: ''
   });
   const [initialInfo, setInitialInfo] = useState({ ...personalInfo }); // Store the initial user information
 
@@ -37,8 +36,15 @@ const Settings = () => {
   };
 
   const handleSave = async () => {
+      // Check if the user has made any changes
+      if (_.isEqual(personalInfo, initialInfo)) {
+        console.log('No changes made');
+        return;
+      }
+  
+
     try {
-      const response = await api.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
+      const response = await api.put(`http://localhost:8800/staff_info/${userId}`, personalInfo);
       console.log('Personal Info updated successfully:', response.data);
     } catch (error) {
       console.error('Error updating personal info:', error.response ? error.response.data : error.message);
@@ -75,21 +81,15 @@ const Settings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`http://localhost:8800/user_info/${userId}`);
+        const response = await api.get(`http://localhost:8800/staff_info/${userId}`);
         const data = response.data[0]; // Assuming the response is an array with a single object
         setPersonalInfo({
           username: data.username,
-          email: data.email,
-          address: data.address,
-          mobileNumber: data.mobile_number,
-          landlineNumber: data.landline_number
+          email: data.email
         });
         setInitialInfo({
           username: data.username,
-          email: data.email,
-          address: data.address,
-          mobileNumber: data.mobile_number,
-          landlineNumber: data.landline_number
+          email: data.email
         });
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -133,51 +133,18 @@ const Settings = () => {
             }}
           />
 
+          <div className="button-container">
+
           <Button
             variant="contained"
-            sx={{ backgroundColor: '#695CFE',display: 'flex', ':hover': { backgroundColor: '#5648CC' } }}
+            startIcon={<PasswordIcon />}
+            sx={{ backgroundColor: '#695CFE',display: 'flex', justifyContent: 'flex-start' ,':hover': { backgroundColor: '#5648CC' } }}
             style={{ marginRight: '8px' }}
             onClick={handleClickOpen}
           >
             Change Password
           </Button>
 
-          <TextField
-            label="Address"
-            id="address"
-            name="address"
-            value={personalInfo.address}
-            fullWidth
-            margin="normal"
-            onChange={(e) => setPersonalInfo({ ...personalInfo, address: e.target.value })}
-          />
-
-          <div className="phone-numbers-container">
-            <TextField
-              label="Phone number (Mobile)"
-              id="mobile-number"
-              name="mobile-number"
-              type="tel"
-              value={personalInfo.mobileNumber}
-              fullWidth
-              margin="normal"
-              style={{ marginRight: '8px' }}
-              onChange={(e) => setPersonalInfo({ ...personalInfo, mobileNumber: e.target.value })}
-            />
-
-            <TextField
-              label="Phone number (Home)"
-              id="home-number"
-              name="home-number"
-              type="tel"
-              value={personalInfo.landlineNumber}
-              fullWidth
-              margin="normal"
-              onChange={(e) => setPersonalInfo({ ...personalInfo, landlineNumber: e.target.value })}
-            />
-          </div>
-
-          <div className="button-container">
             <Button
               variant="contained"
               startIcon={<CancelIcon />}
@@ -190,7 +157,7 @@ const Settings = () => {
 
             <Button
               variant="contained"
-              endIcon={<SaveIcon />}
+              startIcon={<SaveIcon />}
               sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
               onClick={handleSave} // save (update) the user information
             >
@@ -198,15 +165,6 @@ const Settings = () => {
             </Button>
           </div>
         </form>
-      </div>
-
-      <div className="form-container">
-        <Grid container justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Notifications</Typography>
-          <FormControlLabel
-            control={<Switch color="primary" defaultChecked />}
-          />
-        </Grid>
       </div>
 
       {/* Dialog for changing password */}

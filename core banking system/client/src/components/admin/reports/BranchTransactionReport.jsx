@@ -10,7 +10,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const branchId = 2; // TODO: Get branch ID dynamically
+const branchId = 1; // TODO: Get branch ID dynamically
 
 const TransactionsReport = () => {
   const [reportData, setReportData] = useState([]);
@@ -35,16 +35,20 @@ const TransactionsReport = () => {
     try {
       const response = await api.post('/report/transaction', { startDate, endDate, branchId });
       const transactions = response.data.transactions;
+      console.log('Transactions:', transactions);
       setReportData(transactions);
 
       // Calculate total withdrawals and deposits
       const withdrawals = transactions
         .filter((transaction) => transaction.transaction_type === 'withdrawal')
-        .reduce((total, transaction) => total + transaction.amount, 0);
+        .reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
 
       const deposits = transactions
         .filter((transaction) => transaction.transaction_type === 'deposit')
-        .reduce((total, transaction) => total + transaction.amount, 0);
+        .reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
+
+      console.log('Withdrawals:', withdrawals);
+      console.log('Deposits:', deposits);
 
       setTotalWithdrawals(withdrawals);
       setTotalDeposits(deposits);
