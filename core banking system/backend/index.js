@@ -9,6 +9,8 @@ import refreshRoutes from './routes/referesh.js';
 import authenticateToken from './middleware/auth.js';
 import staffServices from './services/Staff/staff_services.js';
 
+import { getPendingLoans } from './services/ManagerLoans/manager-loans.js';   
+import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
@@ -17,7 +19,7 @@ import { getAccounts, getAccountSummary } from './services/AccountManagement/acc
 import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
 import { getTransactionReport , getLateLoanPaymentReport} from './services/Reports/report_services.js';
 
-import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
+import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
 //import {addEmployee} from './services/emplyees/employee_services.js'
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
@@ -46,114 +48,6 @@ app.listen(8800, () => {
 });
 
 // Logout route
-
-
-// Routes
-// app.use('/auth', authRoutes);
-// app.use('/api', protectedRoutes);
-
-// Async functions to handle requests
-async function getAccounts(req, res) {
-    try {
-        const [rows] = await db.query("SELECT * FROM account");
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching accounts:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-async function getAccountSummary(req, res) {
-    try {
-        const [rows] = await db.query(
-            "SELECT * FROM bank_database.accounts_summary WHERE customer_id = ?",
-            [req.query.customer_id]
-        );
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching account summary:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-async function getRecentTransactions(req, res) {
-    try {
-        const [rows] = await db.query(
-            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3",
-            [req.query.customer_id]
-        );
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching account summary:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-async function getTransactionsHistory(req, res) {
-    try {
-        const [rows] = await db.query(
-            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
-            [req.query.customer_id]
-        );
-        res.json(rows);
-    } catch (err) {
-        console.error('Error fetching account summary:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-
-async function login(req, res) {
-    const { user_name, password } = req.body;
-    try {
-        const [rows] = await db.query(
-            "SELECT * FROM user WHERE user_name = ? AND password = ?",
-            [user_name, password]
-        );
-        if (rows.length > 0) {
-            const user = rows[0];
-            res.json({ 
-                success: true, 
-                user: { 
-                    id: user.user_id, 
-                    user_name: user.user_name, 
-                    role: user.role 
-                } 
-            });
-        } else {
-            res.json({ success: false });
-        }
-    } catch (err) {
-        console.error('Error during login:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-async function signup(req, res) {
-    const { account_number, user_name, email, password } = req.body;
-    const query = `CALL register_user(?, ?, ?, ?)`;
-
-    try {
-        const [result] = await db.query(query, [account_number, user_name, email, password]);
-        res.status(200).json({ message: result[0].message });
-    } catch (err) {
-        console.error('Error during registration:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-async function money_transfer(req, res) {
-    const { sender_account_id, receiver_account_id, transfer_amount, description } = req.body;
-
-    const query = `CALL MoneyTransfer(?, ?, ?, ?)`;
-
-    try {
-        const [result] = await db.query(query, [sender_account_id, receiver_account_id, transfer_amount, description]);
-        res.status(200).json({ message: 'Money transfer successful', result });
-    } catch (err) {
-        console.error('Error during money transfer:', err);
-        res.status(500).send('Money transfer failed');
-    }
-}
 app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
@@ -164,15 +58,12 @@ app.get("/accounts", getAccounts);
 app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
-
+app.get("/savings_accounts", getSavingsAccounts);
 
 app.get("/recent_transactions", getRecentTransactions);
 app.get("/transaction_History", getTransactionsHistory);
 
-// Reports
-//shashanka
-//app.post("add-employee",addEmployee);
-//app.get("/recent_transactions/:customerId", getRecentTransactions);
+app.get("/manager-loans", getPendingLoans);
 
 
 // User info
@@ -202,6 +93,7 @@ app.post("/logout", logout);
 app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);
 app.post("/money_transfer", money_transfer);
+app.post("/employee_loans",employee_loans);
 
 // Account details
 app.post("/account_details", getAccountDetails);
@@ -212,20 +104,5 @@ app.get("/", (req, res) => {
     res.json("Hello this is the backend");
 });
 
-
-app.post('/money-transfer', (req, res) => {
-    const { sender_account_id, receiver_account_id, transfer_amount,description} = req.body;
-  
-    const query = `CALL MoneyTransfer(?, ?, ?)`;
-  
-    db.query(query, [sender_account_id, receiver_account_id, transfer_amount,description], (err, result) => {
-      if (err) {
-        console.error('Error during money transfer:', err);
-        res.status(500).send('Money transfer failed');
-      } else {
-        res.status(200).json({ message: 'Money transfer successful', result });
-      }
-    });
-  });
 
 
