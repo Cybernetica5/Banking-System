@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Link } from '@mui/material';
 import { register } from '../../services/auth';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
@@ -29,15 +30,18 @@ const SignUp = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', alignItems: 'center'}}>
       <Box
         sx={{
-          marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          padding: '20px',
         }}
       >
+
+        <AccountCircleIcon sx={{ fontSize: 60, color: '#695CFE' }} />
+
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
@@ -82,28 +86,36 @@ const SignUp = () => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Password (min. 6 characters)"
             type="password"
             id="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign Up
-          </Button>
+          
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+            >
+              Sign Up
+            </Button>
+          </Box>
+
           {error && (
             <Typography color="error" align="center">
               {error}
             </Typography>
-          )}<Link href="/login" variant="body2" sx={{ mt: 2 }}>
+          )}
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <Link href="/login" variant="body2">
           {"Already have an account? Login"}
-        </Link>
+          </Link>
+        </Box>  
+
       </Box>
     </Box>
     </Container>

@@ -121,7 +121,7 @@ const CreateFixedDeposit = () => {
     <div className="create-account-container">
       <div className="form-container">
         <Typography variant="h6">Create Fixed Deposit</Typography>
-        <form onSubmit={handleSubmit} className="create-account-form">
+        <form onSubmit={handleSubmit} >
           <FormControl fullWidth margin="normal">
             <Autocomplete
               options={savingsAccounts}

@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import api from '../../../services/api'; // Assuming you have an API service for backend calls
 
-const branchId = 2; // Assuming branch ID is fixed, you can adjust it dynamically as needed
+const branchId = 1; // TODO: Get the branch ID from the logged-in user
 
 const LatePaymentsReport = () => {
   const [latePayments, setLatePayments] = useState([]); // State to store the report data

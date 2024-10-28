@@ -57,9 +57,9 @@ const LoanPayment = () => {
   };
 
   return (
-    <Card>
+    <Card sx={{ maxWidth: 600, margin: 'auto', mt: 10 }}>
       <CardContent>
-        <Typography variant="h5" component="div">
+        <Typography variant="h6" component="div">
           Loan Payment
         </Typography>
         <form onSubmit={handleSubmit}>

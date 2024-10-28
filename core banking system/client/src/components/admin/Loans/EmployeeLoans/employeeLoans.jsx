@@ -3,8 +3,6 @@ import { OutlinedInput } from "@mui/material";
 import "./employeeLoan.css";   
 import React, { useState } from "react";
 
-
-
 function EmployeeLoans() {
     const [employeeName, setEmployeeName] = useState("");
     const [accountNumber, setAccountNumber] = useState("");

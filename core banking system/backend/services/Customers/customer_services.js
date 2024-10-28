@@ -1,12 +1,12 @@
 import db from '../../services/Config/database.js';
 
 async function addIndividualCustomer(req, res) {
-    const { branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType } = req.body;
+    const { branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType, savingsPlanId } = req.body;
 
     try {
         await db.query(
-            `CALL add_individual_customer(?, ?, ?, ?, ?, ?, ?, ?, @account_number);`,
-            [branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType]
+            `CALL add_individual_customer(?, ?, ?, ?, ?, ?, ?, ?, ?, @account_number);`,
+            [branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType, savingsPlanId]
         );
 
         // get the account number

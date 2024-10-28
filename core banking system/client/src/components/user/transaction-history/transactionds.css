@@ -40,7 +40,7 @@
   border-radius: 5px;
 }
 
-.MuiTablePagination-root {
+/* .MuiTablePagination-root {
   background-color: #695CFE;
   color: #f9f9f9;
 }
@@ -51,7 +51,7 @@
 
 .MuiTablePagination-select {
   color: #f9f9f9;
-}
+} */
 
 .loading {
   display: flex;
@@ -82,7 +82,7 @@
 }
 
 .filter-button.active {
-  background-color: #333;
+  background-color: #695CFE;
   color: white;
 }
 
