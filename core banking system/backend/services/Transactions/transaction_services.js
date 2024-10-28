@@ -1,21 +1,5 @@
 import db from '../Config/database.js';
 
-// app.post('/money-transfer', (req, res) => {
-//     const { sender_account_id, receiver_account_id, transfer_amount } = req.body;
-  
-//     const query = `CALL MoneyTransfer(?, ?, ?)`;
-  
-//     db.query(query, [sender_account_id, receiver_account_id, transfer_amount], (err, result) => {
-//       if (err) {
-//         console.error('Error during money transfer:', err);
-//         res.status(500).send('Money transfer failed');
-//       } else {
-//         res.status(200).json({ message: 'Money transfer successful', result });
-//       }
-//     });
-//   });
-
-
 async function depositFunds(req, res) {
     const { accountNumber, amount, branchId, description } = req.body;
 
@@ -78,5 +62,29 @@ async function withdrawFunds(req, res) {
         return res.status(500).json({ error: 'Error processing withdraw', details: err.message });
     }
 }
+async function getRecentTransactions(req, res) {
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3",
+            [req.query.customer_id]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+async function getTransactionsHistory(req, res) {
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
+            [req.query.customer_id]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
-export { depositFunds, withdrawFunds };
+export { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory };

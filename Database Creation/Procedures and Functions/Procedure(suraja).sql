@@ -439,3 +439,33 @@ BEGIN
 
 END $$
 DELIMITER ;
+
+
+--- Change the password of the user
+
+DROP PROCEDURE IF EXISTS change_user_password;
+DELIMITER $$
+CREATE PROCEDURE change_user_password(
+    IN p_user_id INT,
+    IN new_password VARCHAR(255),
+    OUT result VARCHAR(255)
+)
+
+BEGIN
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SELECT 'Error occurred during password change';
+    END;
+
+    START TRANSACTION;
+
+        -- Update the user password
+        UPDATE user
+        SET password = new_password
+        WHERE user_id = p_user_id;
+
+        COMMIT;
+        SET result = 'Password changed successfully';
+
+END $$

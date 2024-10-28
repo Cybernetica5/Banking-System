@@ -1,61 +1,128 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { TextField, Button, Typography } from '@mui/material';
+import SnackbarAlert from '../../common/alert/SnackbarAlert';
+import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
+import api from '../../../services/api';
 
 const UpdateEmployeeBranch = () => {
-    const [staffId, setStaffId] = useState('');
-    const [branchId, setBranchId] = useState('');
-    const [message, setMessage] = useState('');
+  const [employeeBranchData, setEmployeeBranchData] = useState({
+    staffId: '',
+    branchId: ''
+  });
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent form refresh on submit
-        setMessage(''); // Clear previous messages
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-        try {
-            // Make API call to update employee branch
-            const response = await axios.post('/api/updateEmployeeBranch', {
-                staff_id: staffId,
-                branch_id: branchId,
-            });
+  const showMessage = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
-            // Set success message
-            setMessage(response.data.message);
-        } catch (error) {
-            // Handle errors and set failure message
-            console.error('Error updating employee branch:', error);
-            setMessage('Failed to update employee branch. Please try again.');
-        }
-    };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
-    return (
-        <div>
-            <h2>Update Employee Branch</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="staffId">Staff ID:</label>
-                    <input
-                        type="text"
-                        id="staffId"
-                        value={staffId}
-                        onChange={(e) => setStaffId(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="branchId">Branch ID:</label>
-                    <input
-                        type="text"
-                        id="branchId"
-                        value={branchId}
-                        onChange={(e) => setBranchId(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Update Branch</button>
-            </form>
-            {message && <p>{message}</p>}
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    handleCloseDialog();
+    updateEmployeeBranch();
+  };
+
+  const handleCancelDialog = () => {
+    handleCloseDialog();
+  };
+
+  const updateEmployeeBranch = async () => {
+    try {
+      console.log('Updating employee branch:', employeeBranchData);
+      const response = await api.post('/updateStaffBranch', {
+        staff_id: employeeBranchData.staffId,
+        branch_id: employeeBranchData.branchId
+      });
+      console.log('Response:', response.data);
+      showMessage('Employee branch updated successfully', 'success');
+    } catch (error) {
+      console.error('Error updating employee branch:', error);
+      showMessage('Error updating employee branch', 'error');
+    }
+  };
+
+  const handleUpdateBranch = () => {
+    if (!employeeBranchData.staffId || !employeeBranchData.branchId) {
+      showMessage('Please fill in both Staff ID and Branch ID', 'error');
+      return;
+    }
+    handleOpenDialog();
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEmployeeBranchData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  return (
+    <div className="update-employee-branch-container" style={{ paddingBottom: '25px' }}>
+      <div className="form-container">
+        <Typography variant="h6">Update Employee Branch</Typography>
+
+        <TextField
+          label="Staff ID"
+          name="staffId"
+          value={employeeBranchData.staffId}
+          fullWidth
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <TextField
+          label="Branch ID"
+          name="branchId"
+          value={employeeBranchData.branchId}
+          fullWidth
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <div className="button-container">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleUpdateBranch}
+          >
+            Update Branch
+          </Button>
         </div>
-    );
+      </div>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        message={"Are you sure you want to update this employee's branch?"}
+        onConfirm={handleConfirm}
+        onCancel={handleCancelDialog}
+      />
+
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+    </div>
+  );
 };
 
 export default UpdateEmployeeBranch;

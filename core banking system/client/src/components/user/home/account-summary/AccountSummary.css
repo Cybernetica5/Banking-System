@@ -1,21 +1,13 @@
 .chart-card {
-    max-width: 800px;
-    margin: 20px auto;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
+  max-width: 800px;
+  margin: 20px auto;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
   
-  .card-title {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-    
-  }
-  
-  .graph-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.graph-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
   
