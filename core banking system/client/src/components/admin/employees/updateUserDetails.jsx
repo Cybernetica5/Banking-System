@@ -1,85 +1,160 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { TextField, Button, Typography } from '@mui/material';
+import SnackbarAlert from '../../common/alert/SnackbarAlert';
+import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
+import api from '../../../services/api';
 
-const UpdateUserDetails = () => {
-    const [staffId, setStaffId] = useState('');
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
+const UpdateEmployeeUserDetails = () => {
+  const [userDetails, setUserDetails] = useState({
+    staffId: '',
+    userName: '',
+    password: '',
+    email: ''
+  });
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent page refresh on form submission
-        setMessage(''); // Reset previous messages
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-        try {
-            // Make API call to update user details
-            const response = await axios.post('/api/updateUserDetails', {
-                staff_id: staffId,
-                user_name: userName,
-                password,
-                email
-            });
+  const showMessage = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
-            // Set success message
-            setMessage(response.data.message);
-        } catch (error) {
-            // Handle errors and set failure message
-            console.error('Error updating user details:', error);
-            setMessage('Failed to update user details. Please try again.');
-        }
-    };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
-    return (
-        <div>
-            <h2>Update User Details</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="staffId">Staff ID:</label>
-                    <input
-                        type="text"
-                        id="staffId"
-                        value={staffId}
-                        onChange={(e) => setStaffId(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="userName">Username:</label>
-                    <input
-                        type="text"
-                        id="userName"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Update User</button>
-            </form>
-            {message && <p>{message}</p>}
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    handleCloseDialog();
+    updateUserDetails();
+  };
+
+  const handleCancelDialog = () => {
+    handleCloseDialog();
+  };
+
+  const updateUserDetails = async () => {
+    try {
+      console.log('Updating user details:', userDetails);
+      const response = await api.post('/updateStaffUserDetails', {
+        staff_id: userDetails.staffId,
+        user_name: userDetails.userName,
+        password: userDetails.password,
+        email: userDetails.email
+      });
+      console.log('Response:', response.data);
+      showMessage('User details updated successfully', 'success');
+    } catch (error) {
+      console.error('Error updating user details:', error);
+      showMessage('Error updating user details', 'error');
+    }
+  };
+
+  const handleUpdateUserDetails = () => {
+    if (!userDetails.staffId || !userDetails.userName || !userDetails.password || !userDetails.email) {
+      showMessage('Please fill in all fields', 'error');
+      return;
+    }
+    handleOpenDialog();
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserDetails((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  return (
+    <div className="update-user-details-container" style={{ paddingBottom: '25px' }}>
+      <div className="form-container">
+        <Typography variant="h6">Update User Details</Typography>
+
+        <TextField
+          label="Staff ID"
+          name="staffId"
+          value={userDetails.staffId}
+          fullWidth
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <TextField
+          label="Username"
+          name="userName"
+          value={userDetails.userName}
+          fullWidth
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <TextField
+          label="Password"
+          name="password"
+          type="password"
+          value={userDetails.password}
+          fullWidth
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          value={userDetails.email}
+          fullWidth
+          sx={{
+            height: '56px', 
+            '& input': { 
+              height: '56px',
+              fontSize: '16px'
+              }
+          }}
+
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <div className="button-container">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleUpdateUserDetails}
+          >
+            Update
+          </Button>
         </div>
-    );
+      </div>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        message={"Are you sure you want to update this user's details?"}
+        onConfirm={handleConfirm}
+        onCancel={handleCancelDialog}
+      />
+
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+    </div>
+  );
 };
 
-export default UpdateUserDetails;
+export default UpdateEmployeeUserDetails;
