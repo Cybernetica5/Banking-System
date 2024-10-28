@@ -15,6 +15,10 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import './transactionds.css';
+import Cookies from 'js-cookie';
+
+const userId = Cookies.get('userId');
+const customerId = Cookies.get('customerId');
 
 export default function TransactionHistoryCard() {
   const [transactions, setTransactions] = useState([]);
@@ -25,9 +29,6 @@ export default function TransactionHistoryCard() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const storedUser = localStorage.getItem('user');
-  const userId = storedUser ? JSON.parse(storedUser)?.id : null;
-
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) {
@@ -37,7 +38,8 @@ export default function TransactionHistoryCard() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8800/transaction_History?customer_id=${userId}`);
+        const response = await axios.get(`http://localhost:8800/transaction_History/${customerId}`);
+       console.log(response.data);
         const data = response.data.map(transaction => ({
           ...transaction,
           amount: parseFloat(transaction.amount) || 0,
@@ -121,7 +123,7 @@ export default function TransactionHistoryCard() {
 
       <Card className="transaction-card">
         <CardContent>
-          <Typography variant="h5" className="card-title">
+          <Typography variant="h6">
             Transaction History
           </Typography>
           {filteredTransactions.length === 0 ? (

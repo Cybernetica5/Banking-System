@@ -77,10 +77,10 @@ const LoanSummary = ({ accountNumber, loanAmount, loanDuration, loanType, onClos
             sx={{ mt: 2 }}
           />
 
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleAccept} disabled={!isAgreed}>
+          <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleAccept} disabled={!isAgreed}>
             Accept
           </Button>
-          <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 1 }} onClick={onClose}>
+          <Button variant="outlined" color="secondary" sx={{ mt: 1 }} onClick={onClose}>
             Decline
           </Button>
         </CardContent>
@@ -217,7 +217,6 @@ const ApplyLoan = () => {
             type="submit"
             variant="contained"
             color="primary"
-            fullWidth
             sx={{ mt: 2 }}
           >
             Submit Application

@@ -87,4 +87,31 @@ async function getTransactionsHistory(req, res) {
     }
 }
 
+async function getRecentTransactions(req, res) {
+    const customerId = req.params.customerId;
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3",
+            [customerId]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+async function getTransactionsHistory(req, res) {
+    const customerId = req.params.customerId;
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
+            [customerId]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 export { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory };

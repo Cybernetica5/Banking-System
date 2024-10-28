@@ -8,7 +8,7 @@ import {
   faUsers, faFileInvoiceDollar, faCoins
 } from '@fortawesome/free-solid-svg-icons';
 
-import {Routes, Link, useNavigate, Route} from 'react-router-dom';
+import {Routes, Link, useNavigate, Route, Navigate} from 'react-router-dom';
 import { logout } from '../../../services/auth';
 
 import './AdminDashboard.css';
@@ -21,7 +21,7 @@ import Reports from '../reports/Reports';
 import BranchTransactionReport from '../reports/BranchTransactionReport';
 import BranchLatePaymentsReport from '../reports/BranchLatePaymentsReport';
 import Transactions from '../transactions/Transactions';
-import Settings from '../../common/settings/Settings';
+import Settings from '../../admin/settings/Settings';
 import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits';
 import Employee from '../employees/Employees';
 import AddEmployeeForm from '../employees/AddEmployees';
@@ -142,7 +142,7 @@ const DashboardSidebar = () => {
         </div>
 
         <Routes>
-          <Route index element={<Customers />} />
+          <Route path="/" element={<Navigate to="customers/get-customer-details" replace />} />
           <Route path="customers" element={<Customers />}>
             <Route path="get-customer-details" element={<GetCustomerDetails />} />
             <Route path="add-new-customer" element={<AddCustomers />} />

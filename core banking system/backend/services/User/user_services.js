@@ -30,6 +30,35 @@ async function updateUserInfo(req, res) {
     }
 }
 
+async function getStaffInfo(req, res) {
+    const userId = req.params.userId;
+
+    const q = "SELECT * FROM bank_database.staff_info WHERE user_id = ?";
+
+    try {
+        const [data] = await db.query(q, [userId]);
+        return res.json(data);
+    } catch (err) {
+        console.error('Error fetching user info:', err);
+        return res.status(500).json({ error: 'Database query failed', details: err.message });
+    }
+}
+
+async function updateStaffInfo(req, res) {
+    const userId = req.params.userId;
+    const { username, email } = req.body;
+
+    const q = "CALL update_staff_info(?, ?, ?);";
+
+    try {
+        const [data] = await db.query(q, [userId, username, email]);
+        return res.json(data);
+    } catch (err) {
+        console.error('Error executing stored procedure:', err);
+        return res.status(500).json({ error: 'Database query failed', details: err.message });
+    }
+}
+
 async function changeUserPassword(req, res) {
     const userId = req.params.userId;
     const { currentPassword, newPassword } = req.body;
@@ -60,4 +89,4 @@ async function changeUserPassword(req, res) {
     }   
 }
 
-export { updateUserInfo , getUserInfo, changeUserPassword };
+export { updateUserInfo , getUserInfo, updateStaffInfo, getStaffInfo, changeUserPassword };

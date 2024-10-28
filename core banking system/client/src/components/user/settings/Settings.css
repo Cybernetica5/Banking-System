@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.settings-container {
+    width: 600px;
+    margin: 10px auto;
+    margin-bottom: 20px;
+}
+  
+.form-container {
+    width: 600px;
+    margin: 10px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.phone-numbers-container {
+    display: flex;
+}
+  
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+  
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}

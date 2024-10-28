@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './services/Config/database.js';
-
 import authRoutes from './services/Authentication/login.js';
 import protectedRoutes from './routes/protected.js';
 import refreshRoutes from './routes/referesh.js';
@@ -17,11 +16,17 @@ import { getTransactionReport, getLateLoanPaymentReport } from './services/Repor
 import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
 import { addEmployee, removeEmployee,updateEmployeeDetails, updateUserDetails, updateEmployeeBranch } from './services/emplyees/employee_services.js';
 
+import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
+import { getTransactionReport , getLateLoanPaymentReport} from './services/Reports/report_services.js';
+
+import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
+//import {addEmployee} from './services/emplyees/employee_services.js'
+
 import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
 
 import { getSavingsAccounts, createFixedDeposit } from './services/Staff/FixedDeposits/fixedDeposit.js';
-import { getUserInfo, updateUserInfo, changeUserPassword } from './services/User/user_services.js';
+import { getUserInfo, updateUserInfo, getStaffInfo, updateStaffInfo,changeUserPassword } from './services/User/user_services.js';
 
 
 dotenv.config();
@@ -50,85 +55,6 @@ app.listen(8800, () => {
 // app.use('/auth', authRoutes);
 // app.use('/api', protectedRoutes);
 
-// Async functions to handle requests
-// async function getAccounts(req, res) {
-//     try {
-//         const [rows] = await db.query("SELECT * FROM account");
-//         res.json(rows);
-//     } catch (err) {
-//         console.error('Error fetching accounts:', err);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// }
-
-// async function getAccountSummary(req, res) {
-//     try {
-//         const [rows] = await db.query(
-//             "SELECT * FROM bank_database.accounts_summary WHERE customer_id = ?",
-//             [req.query.customer_id]
-//         );
-//         res.json(rows);
-//     } catch (err) {
-//         console.error('Error fetching account summary:', err);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// }
-
-
-
-
-async function login(req, res) {
-    const { user_name, password } = req.body;
-    try {
-        const [rows] = await db.query(
-            "SELECT * FROM user WHERE user_name = ? AND password = ?",
-            [user_name, password]
-        );
-        if (rows.length > 0) {
-            const user = rows[0];
-            res.json({ 
-                success: true, 
-                user: { 
-                    id: user.user_id, 
-                    user_name: user.user_name, 
-                    role: user.role 
-                } 
-            });
-        } else {
-            res.json({ success: false });
-        }
-    } catch (err) {
-        console.error('Error during login:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-async function signup(req, res) {
-    const { account_number, user_name, email, password } = req.body;
-    const query = `CALL register_user(?, ?, ?, ?)`;
-
-    try {
-        const [result] = await db.query(query, [account_number, user_name, email, password]);
-        res.status(200).json({ message: result[0].message });
-    } catch (err) {
-        console.error('Error during registration:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-// async function money_transfer(req, res) {
-//     const { sender_account_id, receiver_account_id, transfer_amount, description } = req.body;
-
-//     const query = `CALL MoneyTransfer(?, ?, ?, ?)`;
-
-//     try {
-//         const [result] = await db.query(query, [sender_account_id, receiver_account_id, transfer_amount, description]);
-//         res.status(200).json({ message: 'Money transfer successful', result });
-//     } catch (err) {
-//         console.error('Error during money transfer:', err);
-//         res.status(500).send('Money transfer failed');
-//     }
-// }
 app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
@@ -141,8 +67,8 @@ app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 
 
-app.get("/recent_transactions", getRecentTransactions);
-app.get("/transaction_History", getTransactionsHistory);
+app.get("/recent_transactions/:customerId", getRecentTransactions);
+app.get("/transaction_History/:customerId", getTransactionsHistory);
 
 // Reports
 
@@ -152,6 +78,10 @@ app.get("/transaction_History", getTransactionsHistory);
 // User info
 app.get("/user_info/:userId", getUserInfo);
 app.put("/user_info/:userId", updateUserInfo);
+
+// Staff info
+app.get("/staff_info/:userId", getStaffInfo);
+app.put("/staff_info/:userId", updateStaffInfo);
 
 // Change password
 app.put("/change_password/:userId", changeUserPassword);
