@@ -23,6 +23,13 @@ import BranchLatePaymentsReport from '../reports/BranchLatePaymentsReport';
 import Transactions from '../transactions/Transactions';
 import Settings from '../../admin/settings/Settings';
 import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits';
+import Employee from '../employees/Employees';
+import AddEmployeeForm from '../employees/AddEmployees';
+import RemoveEmployee from '../employees/removeEmployee';
+import UpdateEmployee from '../employees/updateStaffDetails';
+import UpdateEmployeeUserDetails from '../employees/updateUserDetails';
+import UpdateEmployeeBranch from '../employees/updatebranchDetails';
+
 import CreateAccount from '../employees/CreateAccount';
 
 
@@ -58,6 +65,7 @@ const DashboardSidebar = () => {
     ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
+    { path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/', icon: faSackDollar, text: 'Loans' },
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
@@ -140,6 +148,16 @@ const DashboardSidebar = () => {
             <Route path="add-new-customer" element={<AddCustomers />} />
           </Route>
           <Route path="transactions" element={<Transactions />} />
+
+          <Route index element={<Employee />} />
+          <Route path="employee" element={<Employee />}>
+            <Route path="add-employee" element={<AddEmployeeForm />} />
+            <Route path="remove-employee" element={<RemoveEmployee />} />
+            <Route path="update-staff-detail" element={<UpdateEmployee />} />
+            <Route path="update-staff-user-detail" element={<UpdateEmployeeUserDetails />} />
+            <Route path="update-staff-branch-detail" element={<UpdateEmployeeBranch />} />
+          </Route>
+
           <Route path="reports" element={<Reports />}>
             <Route path="transaction-report" element={<BranchTransactionReport />} />
             <Route path="late-loan-payment-report" element={<BranchLatePaymentsReport />} />

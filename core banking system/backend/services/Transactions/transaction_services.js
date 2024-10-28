@@ -62,6 +62,30 @@ async function withdrawFunds(req, res) {
         return res.status(500).json({ error: 'Error processing withdraw', details: err.message });
     }
 }
+async function getRecentTransactions(req, res) {
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ? LIMIT 3",
+            [req.query.customer_id]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+async function getTransactionsHistory(req, res) {
+    try {
+        const [rows] = await db.query(
+            "SELECT transaction_id, date, transaction_type, amount, description FROM bank_database.transaction_history WHERE customer_id = ?",
+            [req.query.customer_id]
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching account summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
 async function getRecentTransactions(req, res) {
     const customerId = req.params.customerId;

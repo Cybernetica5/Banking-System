@@ -8,11 +8,11 @@ const router = express.Router();
 router.use(cookieParser());
 
 router.post('/create_account', async (req, res) => {
-  const { customerType, accountType, branchId, savingsPlanTypeId, initialDeposit, idNumber, licenseNumber } = req.body;
+  let { customerType, accountType, branchId, savingsPlanTypeId, initialDeposit, idNumber, licenseNumber } = req.body;
 
   try {
     // Validate required fields
-    if (!customerType || !accountType || !branchId || (!idNumber && !licenseNumber) || !savingsPlanTypeId) {
+    if (!customerType || !accountType || !branchId || (!idNumber && !licenseNumber)) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
@@ -63,6 +63,7 @@ await db.query(
 );
 
     res.json({ success: true, message: 'Account created successfully', accountNumber });
+
     customerType = '';
     accountType = '';
     branchId = '';
@@ -76,6 +77,8 @@ await db.query(
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
+
+console.log('stage 1');
 
 router.get('/branch_name', async (req, res) => {
   const { staffId, staff_role } = req.query;

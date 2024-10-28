@@ -1,47 +1,109 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { TextField, Button, Typography } from '@mui/material';
+import SnackbarAlert from '../../common/alert/SnackbarAlert';
+import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
+import api from '../../../services/api';
 
 const RemoveEmployee = () => {
-    const [staffId, setStaffId] = useState('');
-    const [message, setMessage] = useState('');
+  const [staffId, setStaffId] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-    // Function to handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent the form from refreshing the page
-        setMessage(''); // Reset the message
+  const showMessage = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
-        try {
-            // Make API call to remove employee
-            const response = await axios.post('/api/removeEmployee', { staff_id: staffId });
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
-            // Set success message
-            setMessage(response.data.message);
-        } catch (error) {
-            // Handle errors and set failure message
-            console.error('Error removing employee:', error);
-            setMessage('Failed to remove employee. Please try again.');
-        }
-    };
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
 
-    return (
-        <div>
-            <h2>Remove Employee</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="staffId">Staff ID:</label>
-                    <input
-                        type="text"
-                        id="staffId"
-                        value={staffId}
-                        onChange={(e) => setStaffId(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Remove Employee</button>
-            </form>
-            {message && <p>{message}</p>}
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    handleCloseDialog();
+    removeEmployee();
+  };
+
+  const handleCancelDialog = () => {
+    handleCloseDialog();
+  };
+
+  const removeEmployee = async () => {
+    try {
+      console.log('Removing employee with staff ID:', staffId);
+      const response = await api.post('/removeEmployee', { staffId });
+      console.log('Response:', response.data);
+      showMessage('Employee removed successfully', 'success');
+      setStaffId('');
+    } catch (error) {
+      console.error('Error removing employee:', error);
+      showMessage('Error removing employee', 'error');
+    }
+  };
+
+  const handleRemoveEmployee = () => {
+    if (!staffId) {
+      showMessage('Staff ID is required', 'error');
+      return;
+    }
+    handleOpenDialog();
+  };
+
+  const handleInputChange = (e) => {
+    setStaffId(e.target.value);
+  };
+
+  return (
+    <div className="remove-employee-container" style={{ paddingBottom: '25px' }}>
+      <div className="form-container">
+        <Typography variant="h6">Remove Employee</Typography>
+
+        <TextField
+          label="Staff ID"
+          name="staffId"
+          value={staffId}
+          fullWidth
+          margin="normal"
+          onChange={handleInputChange}
+        />
+
+        <div className="button-container">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleRemoveEmployee}
+          >
+            Remove Employee
+          </Button>
         </div>
-    );
+      </div>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        message={`Are you sure you want to remove employee with Staff ID: ${staffId}?`}
+        onConfirm={handleConfirm}
+        onCancel={handleCancelDialog}
+      />
+
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+    </div>
+  );
 };
 
 export default RemoveEmployee;
