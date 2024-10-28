@@ -1,7 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, CircularProgress, TablePagination } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableContainer,
+  Paper,
+  CircularProgress,
+  TablePagination
+} from '@mui/material';
 import axios from 'axios';
 import './transactionds.css';
+import Cookies from 'js-cookie';
+
+const userId = Cookies.get('userId');
+const customerId = Cookies.get('customerId');
 
 export default function TransactionHistoryCard() {
   const [transactions, setTransactions] = useState([]);
@@ -9,23 +26,20 @@ export default function TransactionHistoryCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState({ type: 'all', dateRange: 'all' });
-
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  let userId = null;
-  try {
-    const storedUser = localStorage.getItem('user');
-    userId = storedUser ? JSON.parse(storedUser).id : null;
-  } catch (err) {
-    console.error('Error parsing localStorage user data:', err);
-    setError('Failed to load user data');
-  }
-
   useEffect(() => {
     const fetchData = async () => {
+      if (!userId) {
+        setError('User not found. Please log in.');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await axios.get(`http://localhost:8800/transaction_History?customer_id=${userId}`);
+        const response = await axios.get(`http://localhost:8800/transaction_History/${customerId}`);
+       console.log(response.data);
         const data = response.data.map(transaction => ({
           ...transaction,
           amount: parseFloat(transaction.amount) || 0,
@@ -41,49 +55,34 @@ export default function TransactionHistoryCard() {
       }
     };
 
-    if (userId) {
-      fetchData();
-    } else {
-      setLoading(false);
-      setError('User not found. Please log in.');
-    }
+    fetchData();
   }, [userId]);
 
   const applyFilters = (transactions, filter) => {
     const now = new Date();
+
     return transactions.filter(transaction => {
-      let typeMatch = true;
-      let dateMatch = true;
-
-      // Filter by transaction type
-      if (filter.type !== 'all') {
-        typeMatch = transaction.description === filter.type;
-      }
-
-      // Filter by date range
-      switch (filter.dateRange) {
-        case 'week':
-          const diffDays = Math.ceil(Math.abs(now - transaction.date) / (1000 * 60 * 60 * 24));
-          dateMatch = diffDays <= 7;
-          break;
-        case 'month':
-          dateMatch = transaction.date.getMonth() === now.getMonth() && transaction.date.getFullYear() === now.getFullYear();
-          break;
-        case 'year':
-          dateMatch = transaction.date.getFullYear() === now.getFullYear();
-          break;
-        default:
-          break;
-      }
+      const typeMatch = filter.type === 'all' || transaction.transaction_type === filter.type;
+      const dateMatch = (() => {
+        switch (filter.dateRange) {
+          case 'week':
+            return (now - transaction.date) / (1000 * 60 * 60 * 24) <= 7;
+          case 'month':
+            return transaction.date.getMonth() === now.getMonth() && transaction.date.getFullYear() === now.getFullYear();
+          case 'year':
+            return transaction.date.getFullYear() === now.getFullYear();
+          default:
+            return true;
+        }
+      })();
 
       return typeMatch && dateMatch;
     });
   };
 
   useEffect(() => {
-    const filtered = applyFilters(transactions, filter);
-    setFilteredTransactions(filtered);
-    setPage(0); // Reset to first page when filters change
+    setFilteredTransactions(applyFilters(transactions, filter));
+    setPage(0);
   }, [filter, transactions]);
 
   const handleTypeFilterChange = (type) => {
@@ -109,9 +108,9 @@ export default function TransactionHistoryCard() {
   return (
     <div className="transaction-container">
       <div className="button-group">
-        <button className={`filter-button ${filter.type === 'ATM withdrawal' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('ATM withdrawal')}>ATM withdrawal</button>
-        <button className={`filter-button ${filter.type === 'ATM depsite' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('ATM depsite')}>ATM deposit</button>
-        <button className={`filter-button ${filter.type === 'ATM transfer' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('ATM transfer')}>ATM transfer</button>
+        <button className={`filter-button ${filter.type === 'withdrawal' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('withdrawal')}>Withdrawal</button>
+        <button className={`filter-button ${filter.type === 'deposit' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('deposit')}>Deposit</button>
+        <button className={`filter-button ${filter.type === 'transfer' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('transfer')}>Transfer</button>
         <button className={`filter-button ${filter.type === 'all' ? 'active' : ''}`} onClick={() => handleTypeFilterChange('all')}>All types</button>
       </div>
 
@@ -124,7 +123,7 @@ export default function TransactionHistoryCard() {
 
       <Card className="transaction-card">
         <CardContent>
-          <Typography variant="h5" className="card-title">
+          <Typography variant="h6">
             Transaction History
           </Typography>
           {filteredTransactions.length === 0 ? (
@@ -137,7 +136,7 @@ export default function TransactionHistoryCard() {
                     <TableRow>
                       <TableCell>Date</TableCell>
                       <TableCell>Type</TableCell>
-                      <TableCell>Amount (LKR)</TableCell>
+                      <TableCell>Amount ($)</TableCell>
                       <TableCell>Description</TableCell>
                     </TableRow>
                   </TableHead>

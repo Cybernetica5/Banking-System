@@ -1,4 +1,5 @@
 -- View for get user information
+DROP VIEW IF EXISTS user_info;
 CREATE VIEW user_info AS
 SELECT 
     u.user_id,
@@ -10,7 +11,48 @@ SELECT
 FROM 
     user u
 JOIN 
-    customer c ON u.user_id = c.user_id;
+    customer c ON u.user_id = c.user_id
+WHERE
+    u.role = 'customer';
+
+
+
+-- View for get staff information
+DROP VIEW IF EXISTS staff_info;
+CREATE VIEW staff_info AS
+SELECT 
+    u.user_id,
+    u.user_name AS username,
+    u.email
+FROM
+    user u
+JOIN
+    staff s ON u.user_id = s.user_id
+WHERE
+    u.role = 'staff';
+
+
+
+-- Procedure for update staff information
+DROP PROCEDURE IF EXISTS update_staff_info;
+
+DELIMITER $$
+
+CREATE PROCEDURE `update_staff_info` (
+    IN userId INT,
+    IN new_username VARCHAR(255),
+    IN new_email VARCHAR(255)
+)
+BEGIN
+    -- Update the 'user' table
+    UPDATE user
+    SET user_name = new_username, email = new_email
+    WHERE user_id = userId;
+
+END $$
+
+DELIMITER ;
+
 
 -- View for branch wise late loan payment details
 DROP VIEW IF EXISTS branch_late_loan_payment_details;
@@ -82,12 +124,10 @@ BEGIN
         IFNULL(i.full_name, o.name) AS customer_name,  -- individual's full_name or organization's name
         c.mobile_number,
         c.landline_number,
-        c.address,
-        u.email
+        c.address
     FROM customer c
     LEFT JOIN individual i ON c.customer_id = i.customer_id  -- join individual table
     LEFT JOIN organization o ON c.customer_id = o.customer_id  -- join organization table
-    JOIN user u ON c.user_id = u.user_id
     WHERE c.customer_id = customerId;
 
 END$$

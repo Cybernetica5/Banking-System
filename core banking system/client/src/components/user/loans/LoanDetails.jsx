@@ -28,7 +28,7 @@ const LoanDetails = () => {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
+        <Typography variant="h6" component="div" gutterBottom>
           Loan Details
         </Typography>
         {loanDetails.length > 0 ? (

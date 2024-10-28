@@ -5,10 +5,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
 import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
 import api from '../../../services/api';
+import Cookies from 'js-cookie';
 
-const userId = 1; // TODO: make this dynamic
-
-const branchId = 1; // TODO: make this dynamic
+const branchId = 1; // TODO: Get the branch ID from the logged-in user
 
 const AddCustomer = () => {
   const [individualCustomerInfo, setIndividualCustomerInfo] = useState({
@@ -19,7 +18,8 @@ const AddCustomer = () => {
     address: '',
     mobileNumber: '',
     landlineNumber: '',
-    accountType: 'savings' // Default account type
+    accountType: '', // Default account type
+    savingsPlanId: null
   });
 
   const [organizationCustomerInfo, setOrganizationCustomerInfo] = useState({
@@ -29,10 +29,12 @@ const AddCustomer = () => {
     address: '',
     mobileNumber: '',
     landlineNumber: '',
-    accountType: 'savings' // Default account type
+    accountType: '' // Default account type
   });
 
   const [customerType, setCustomerType] = useState('individual');
+
+  console.log(branchId);
   
   // Snackbar alert
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -77,7 +79,8 @@ const AddCustomer = () => {
       address: '',
       mobileNumber: '',
       landlineNumber: '',
-      accountType: 'savings'
+      accountType: 'savings',
+      savingsPlanId: null
     });
 
     setOrganizationCustomerInfo({
@@ -124,6 +127,7 @@ const AddCustomer = () => {
        const response = await api.post('/add-customer/individual', individualCustomerInfo);
        console.log('Response:', response.data);
        showMessage('Customer added successfully', 'success');
+       alert('Account Number: ' + response.data.accountNumber);
  
      } catch (error) {
         console.error('Error adding individual customer:', error);
@@ -136,6 +140,7 @@ const AddCustomer = () => {
         const response = await api.post('/add-customer/organization', organizationCustomerInfo);
         console.log('Response:', response.data);
         showMessage('Customer added successfully', 'success');
+        alert('Account Number: ' + response.data.accountNumber);
   
       } catch (error) {
         console.error('Error adding organization customer:', error);
@@ -243,6 +248,25 @@ const AddCustomer = () => {
               <FormControlLabel value="savings" control={<Radio />} label="Saving" />
               <FormControlLabel value="checking" control={<Radio />} label="Checking" />
             </RadioGroup>
+
+            {individualCustomerInfo.accountType === 'savings' && (
+              <FormControl fullWidth style={{ marginTop: '8px' }}>
+                <InputLabel id="savings-plan-label">Savings Plan</InputLabel>
+                <Select
+                  labelId="savings-plan-label"
+                  value={individualCustomerInfo.savingsPlanId}
+                  label="Savings Plan"
+                  onChange={(e) => setIndividualCustomerInfo({ ...individualCustomerInfo, savingsPlanId: e.target.value })}
+                  align="left"
+                >
+                  <MenuItem value="1">child - 12%</MenuItem>
+                  <MenuItem value="2">Teen - 11%</MenuItem>
+                  <MenuItem value="3">Adult - 10%</MenuItem>
+                  <MenuItem value="4">Senior - 13%</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+
           </form>
         )}
 
@@ -311,11 +335,13 @@ const AddCustomer = () => {
               onChange={(e) => setOrganizationCustomerInfo({ ...organizationCustomerInfo, accountType: e.target.value })}
               style={{ marginTop: '8px' }}
             >
-              <FormControlLabel value="savings" control={<Radio />} label="Saving" />
+              {/* <FormControlLabel value="savings" control={<Radio />} label="Saving" /> */}
               <FormControlLabel value="checking" control={<Radio />} label="Checking" />
             </RadioGroup>
           </form>
         )}
+
+        Initial Deposit: $1000 
 
         <div className="button-container">
           <Button

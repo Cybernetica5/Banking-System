@@ -76,7 +76,6 @@ const GetCustomerDetails = () => {
                 <Typography><strong>Mobile Number:</strong> {customerDetails.mobile_number}</Typography>
                 <Typography><strong>Landline Number:</strong> {customerDetails.landline_number}</Typography>
                 <Typography><strong>Address:</strong> {customerDetails.address}</Typography>
-                <Typography><strong>Email:</strong> {customerDetails.email}</Typography>
               </Paper>
           )}
         </CardContent>
