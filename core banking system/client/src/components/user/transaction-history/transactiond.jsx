@@ -134,7 +134,7 @@ export default function TransactionHistoryCard() {
                     <TableRow>
                       <TableCell>Date</TableCell>
                       <TableCell>Type</TableCell>
-                      <TableCell>Amount (LKR)</TableCell>
+                      <TableCell>Amount ($)</TableCell>
                       <TableCell>Description</TableCell>
                     </TableRow>
                   </TableHead>
