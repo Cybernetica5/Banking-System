@@ -34,7 +34,7 @@ const LatePaymentsReport = () => {
 
   return (
     <div>
-      <Card style={{ padding: '16px', margin: '16px', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto' }}>
+      <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Late Loan Payment Report</Typography>
 
         {/* Loading Indicator */}

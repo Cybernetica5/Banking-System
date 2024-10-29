@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
+import Cookies from 'js-cookie';
+import { TextField, Button, Typography, Card } from '@mui/material';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
 import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
 import api from '../../../services/api';
+
+const branchId = Cookies.get('branchId');
 
 const AddEmployee = () => {
   const [employeeData, setEmployeeData] = useState({
@@ -12,7 +15,7 @@ const AddEmployee = () => {
     fullName: '',
     dateOfBirth: '',
     NIC: '',
-    branchId: ''
+    branchId: branchId
   });
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -89,7 +92,7 @@ const AddEmployee = () => {
 
   return (
     <div className="add-employee-container" style={{ paddingBottom: '25px' }}>
-      <div className="form-container">
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Add Employee</Typography>
 
         <TextField
@@ -155,6 +158,7 @@ const AddEmployee = () => {
           type="number"
           value={employeeData.branchId}
           fullWidth
+          disabled
           sx={{
             height: '56px', 
             '& input': { 
@@ -176,7 +180,7 @@ const AddEmployee = () => {
             Add Employee
           </Button>
         </div>
-      </div>
+      </Card>
 
       <ConfirmationDialog
         open={dialogOpen}

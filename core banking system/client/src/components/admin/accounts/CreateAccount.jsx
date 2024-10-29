@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Card } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
@@ -138,7 +138,7 @@ const CreateAccount = () => {
 
   return (
     <div className="create-account-container">
-      <div className="form-container">
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Create Account</Typography>
         <form onSubmit={handleSubmit} className="create-account-form">
           <FormControl fullWidth margin="normal">
@@ -262,7 +262,7 @@ const CreateAccount = () => {
             Account created successfully! Account Number: {generatedAccountNumber}
           </Typography>
         )}
-      </div>
+      </Card>
 
       <SnackbarAlert
         open={snackbarOpen}

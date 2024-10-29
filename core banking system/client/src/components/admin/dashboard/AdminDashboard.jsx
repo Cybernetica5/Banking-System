@@ -12,7 +12,6 @@ import {Routes, Link, useNavigate, Route, Navigate} from 'react-router-dom';
 import { logout } from '../../../services/auth';
 
 import './AdminDashboard.css';
-// import Notification from './notification/Notification';
 
 import AddCustomers from '../customers/AddCustomers';
 import GetCustomerDetails from '../customers/GetCustomerDetails';
@@ -29,25 +28,21 @@ import RemoveEmployee from '../employees/removeEmployee';
 import UpdateEmployee from '../employees/updateStaffDetails';
 import UpdateEmployeeUserDetails from '../employees/updateUserDetails';
 import UpdateEmployeeBranch from '../employees/updatebranchDetails';
-
-import CreateAccount from '../employees/CreateAccount';
-
-
-
+import CreateAccount from '../accounts/CreateAccount';
 import EmployeeLoans from '../../admin/Loans/EmployeeLoans/employeeLoans';
 import ManagerLoans from '../../admin/Loans/ManagerLoans/managerLoans';
-
-
+import Cookies from 'js-cookie';
 
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  console.log('User:', user);
-  const userName = user.username || 'User'; // Fallback to 'User' if username is not found
-  const userRole = user.role || 'employee'; // Fallback to 'employee' if role is not found
+  const userName = Cookies.get('username') || 'User'; // Fallback to 'User' if username is not found
+  const userRole = Cookies.get('role') || 'employee'; // Fallback to 'employee' if role is not found
+
+  console.log('User:', userName, userRole); //! Debugging
+
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
   
   const handleLogout = async () => {
@@ -69,10 +64,9 @@ const DashboardSidebar = () => {
 
   const menuItems = [
     { path: '/admin-dashboard/customers/get-customer-details', icon: faUsers, text: 'Customers' },
-    ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
-    { path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/admin-dashboard/loans', icon: faSackDollar, text: 'Loans' },
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers
@@ -160,7 +154,6 @@ const DashboardSidebar = () => {
           </Route>
           <Route path="transactions" element={<Transactions />} />
 
-          <Route index element={<Employee />} />
           <Route path="employee" element={<Employee />}>
             <Route path="add-employee" element={<AddEmployeeForm />} />
             <Route path="remove-employee" element={<RemoveEmployee />} />
@@ -168,7 +161,6 @@ const DashboardSidebar = () => {
             <Route path="update-staff-user-detail" element={<UpdateEmployeeUserDetails />} />
             <Route path="update-staff-branch-detail" element={<UpdateEmployeeBranch />} />
           </Route>
-
           <Route path="reports" element={<Reports />}>
             <Route path="transaction-report" element={<BranchTransactionReport />} />
             <Route path="late-loan-payment-report" element={<BranchLatePaymentsReport />} />
