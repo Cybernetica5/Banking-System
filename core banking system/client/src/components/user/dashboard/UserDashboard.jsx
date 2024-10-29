@@ -11,7 +11,6 @@ import { logout } from '../../../services/auth';
 import Cookies from 'js-cookie';
 
 import './UserDashboard.css';
-import Notification from './notification/Notification';
 import Home from '../home/Home';
 import MoneyTransfer from '../MoneyTransfer/MoneyTransfer1';
 
@@ -137,7 +136,6 @@ const DashboardSidebar = () => {
       <section className="home">
         <div className="top-bar">
           <div className="text">Welcome, {userName}</div>
-          <div className="notification"><Notification /></div>
         </div>
 
         <Routes>

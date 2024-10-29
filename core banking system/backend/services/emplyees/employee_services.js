@@ -23,11 +23,12 @@ async function addEmployee(req, res) {
 
 // Define the function to remove an employee
 async function removeEmployee(req, res) {
-    const { staff_id } = req.body;
+    const { staffId } = req.body;
+    console.log(req.body);
     const query = `CALL removeEmployee(?)`;
 
     try {
-        const [result] = await db.query(query, [staff_id]);
+        const [result] = await db.query(query, [staffId]);
         res.status(200).json({ message: 'Employee removed successfully', result });
     } catch (err) {
         console.error('Error removing employee:', err);

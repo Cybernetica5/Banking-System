@@ -101,7 +101,7 @@ export default function PieChartWithCenterLabel() {
           Account Summary
         </Typography>
         <PieChart series={[{ data, innerRadius: 75, outerRadius: 100 }]} {...chartSize}>
-          <PieCenterLabel>{`${totalAmount.toFixed(2)} LKR`}</PieCenterLabel>
+          <PieCenterLabel>{`${totalAmount.toFixed(2)} $`}</PieCenterLabel>
         </PieChart>
       </CardContent>
     </Card>

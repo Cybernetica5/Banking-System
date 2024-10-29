@@ -100,7 +100,7 @@ function MoneyTransfer1() {
             variant="outlined"
             fullWidth
             margin="normal"
-            value="LKR"
+            value="$"
             InputProps={{
               readOnly: true,
             }}
