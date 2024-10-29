@@ -269,6 +269,10 @@ header .image-text .profession{
     width: calc(100% - 250px);
     background-color: var(--body-color);
     transition: var(--tran-05);
+    background-image: url('./../../../assets/dashboard-background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .home .text{
