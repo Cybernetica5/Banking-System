@@ -109,7 +109,7 @@ const Settings = () => {
   console.log('Personal Info:', personalInfo);
 
   return (
-    <div className='settings-container'>
+    <div className='settings-container-shadow'>
       <div className="form-container">
         <Typography variant="h6">Personal Information</Typography>
         <form noValidate>

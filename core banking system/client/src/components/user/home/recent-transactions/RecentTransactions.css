@@ -1,38 +1,11 @@
-.transaction-card {
-    max-width: 800px;
-    margin: 20px auto;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
-  
-  .card-title {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .transaction-table {
-    margin-top: 20px;
-  }
-  
-  .table-header {
-    background-color: #f5f5f5;
-    font-weight: bold;
-  }
-  
-  .table-row {
-    &:nth-of-type(odd) {
-      background-color: #f9f9f9;
-    }
-  }
-  
-  .card-title {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #f9f9f9;
-    background-color: #695CFE;
-    border-radius: 5px;
-  }
-  
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+              0 0 15px rgba(0, 0, 255, 0.5); /* Base 3D glow color */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.shadow:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
+              0 0 25px rgba(0, 0, 255, 0.8); /* Brighter 3D glow color on hover */
+  transform: translateY(-3px);
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Card, CardContent, Button, Checkbox, FormControlLabel, Modal, CircularProgress, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
+import './Loans.css';
 
 const LoanSummary = ({ accountNumber, loanAmount, loanDuration, loanType, onClose }) => {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -49,7 +50,7 @@ const LoanSummary = ({ accountNumber, loanAmount, loanDuration, loanType, onClos
   return (
     <Modal open={true} onClose={onClose}>
       <Card sx={{ p: 3, maxWidth: 400, margin: 'auto', mt: 10 }}>
-        <CardContent>
+        <CardContent className="shadow">
           <Typography variant="h6">Congrats! You are eligible.</Typography>
           <Typography variant="body2" gutterBottom>
             Kindly allow 3-4hrs for the amount to reflect in your bank account.
@@ -146,7 +147,7 @@ const ApplyLoan = () => {
   }
 
   return (
-    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
+    <Card className="shadow" sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6" component="div" gutterBottom>
           Apply for a Loan
@@ -197,13 +198,13 @@ const ApplyLoan = () => {
             onChange={(e) => setLoanAmount(e.target.value)}
             required
             type="number"
-            sx={{
-              height: '56px', 
-              '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-            }}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
             inputProps={{
               max: creditLimit, // Set the max limit as the credit limit
             }}
@@ -217,13 +218,13 @@ const ApplyLoan = () => {
             onChange={(e) => setLoanDuration(e.target.value)}
             required
             type="number"
-            sx={{
-              height: '56px', 
-              '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-            }}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
           />
           <Button
             type="submit"

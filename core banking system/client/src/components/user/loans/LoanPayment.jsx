@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Card, CardContent, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
+import './Loans.css';
 
 const LoanPayment = () => {
   const [amount, setAmount] = useState('');
@@ -57,7 +58,7 @@ const LoanPayment = () => {
   };
 
   return (
-    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
+    <Card className='shadow' sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6" component="div">
           Loan Payment
