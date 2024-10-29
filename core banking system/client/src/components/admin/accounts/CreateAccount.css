@@ -1,4 +1,3 @@
-/* src/components/employee/CreateAccount.css */
 .create-account-container {
     width: 600px;
     margin: 10px auto;
@@ -7,9 +6,9 @@
   
   .create-account-form {
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid white;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: white;
   }
   
   .button-container {

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box, Link } from '@mui/material';
+import { TextField, Button, Typography, Container, Box, Link, Card } from '@mui/material';
 import { login } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import './Login.css';
 
 const UserLogin = () => {
   const [email, setEmail] = useState('');
@@ -23,6 +24,7 @@ const UserLogin = () => {
         if (response.data.role === 'customer') {
           localStorage.setItem('customerId', response.data.customerId);
           Cookies.set('userId', response.data.userId, { secure: true, sameSite: 'Strict' });
+          Cookies.set('username', response.data.username, { secure: true, sameSite: 'Strict' });
           Cookies.set('email', email, { secure: true, sameSite: 'Strict' });
           Cookies.set('accessToken', response.data.accessToken, { secure: true, sameSite: 'Strict' });
           Cookies.set('refreshToken', response.data.refreshToken, { secure: true, sameSite: 'Strict' });
@@ -37,6 +39,7 @@ const UserLogin = () => {
         }else if (response.data.role === 'manager' || response.data.role === 'employee') {
 
         Cookies.set('userId', response.data.userId, { secure: true, sameSite: 'Strict' });
+        Cookies.set('username', response.data.username, { secure: true, sameSite: 'Strict' });
         Cookies.set('email', email, { secure: true, sameSite: 'Strict' });
         Cookies.set('accessToken', response.data.accessToken, { secure: true, sameSite: 'Strict' });
         Cookies.set('refreshToken', response.data.refreshToken, { secure: true, sameSite: 'Strict' });
@@ -61,71 +64,75 @@ const UserLogin = () => {
   };
 
   return (
+    <div className='login-container'>
     <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', alignItems: 'center'}}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: '20px',
-        }}
-      >
-        <AccountCircleIcon sx={{ fontSize: 60, color: '#695CFE' }} />
+      <Card sx={{ borderRadius: 4 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: '20px'
+          }}
+        >
         
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <AccountCircleIcon sx={{ fontSize: 60, color: '#695CFE' }} />
           
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
-            >
-              Sign In
-            </Button>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+              >
+                Sign In
+              </Button>
+            </Box>
+
+            {error && (
+              <Typography color="error" align="center">
+                {error}
+              </Typography>
+            )}
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Link href="/signup" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Box>
           </Box>
-
-          {error && (
-            <Typography color="error" align="center">
-              {error}
-            </Typography>
-          )}
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Link href="/signup" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
-          </Box>
-
         </Box>
-      </Box>
+      </Card>
     </Container>
+    </div>
   );
 };
 

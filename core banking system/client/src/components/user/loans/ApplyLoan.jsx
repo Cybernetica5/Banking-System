@@ -146,7 +146,7 @@ const ApplyLoan = () => {
   }
 
   return (
-    <Card sx={{ width: 969, margin: 'auto', mt: 10 }}>
+    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6" component="div" gutterBottom>
           Apply for a Loan
