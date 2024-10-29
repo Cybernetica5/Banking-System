@@ -8,17 +8,18 @@ import protectedRoutes from './routes/protected.js';
 import refreshRoutes from './routes/referesh.js';
 import authenticateToken from './middleware/auth.js';
 import staffServices from './services/Staff/staff_services.js';
+import managerRoutes from './routes/m-loans.js';
 
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
-import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
+import { getAccounts, getAccountSummary, getUserAccounts } from './services/AccountManagement/account_details.js';
 import { addIndividualCustomer, addOrganizationCustomer } from './services/Customers/customer_services.js';
 import { getTransactionReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds } from './services/Transactions/transaction_services.js';
-import { getAccountDetails } from './services/Accounts/account_services.js';    
+//import { getAccountDetails } from './services/Accounts/account_services.js';    
 import { logout } from './services/Authentication/logout.js';
 import { getSavingsAccounts, createFixedDeposit } from './services/Staff/FixedDeposits/fixedDeposit.js';
-
+import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
 
 dotenv.config();
 const app = express();
@@ -47,15 +48,17 @@ app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
 app.use('/staff', staffServices);
+app.use('/manager', managerRoutes);
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
+app.get("/user_accounts", getUserAccounts);
 app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 app.get("/installment", getInstallmentAmount);
 app.get("/savings_accounts", getSavingsAccounts);
-
+//app.get("/manager-loans", getPendingLoans);
 //app.get("/recent_transactions/:customerId", getRecentTransactions);
 
 
@@ -70,14 +73,13 @@ app.post("/add-customer/organization", addOrganizationCustomer);
 
 //logout
 app.post("/logout", logout);
-
 // Transactions
 app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);
 app.post("/money_transfer", money_transfer);
-
+app.post("/employee_loans",employee_loans);
 // Account details
-app.post("/account_details", getAccountDetails);
+//app.post("/account_details", getAccountDetails);
 app.post("/create_fixed_deposit", createFixedDeposit);
 
 // Existing routes...

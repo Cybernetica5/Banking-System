@@ -22,6 +22,8 @@ import ApplyLoan from '../loans/ApplyLoan';
 import LoanPayment from '../loans/LoanPayment';
 import LoanDetails from '../loans/LoanDetails';
 import Settings from '../../common/settings/Settings';
+import EmployeeLoans from '../../admin/Loans/EmployeeLoans/employeeLoans';
+import ManagerLoans from '../../admin/Loans/ManagerLoans/managerLoans';
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
@@ -63,6 +65,8 @@ const DashboardSidebar = () => {
     { path: '/dashboard/account-details', icon: faWallet, text: 'Account Details' },
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
+    {path: '/dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
+    {path: '/dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
     { 
       path: '/dashboard/loans/apply', 
       icon: faSackDollar, 
@@ -146,6 +150,8 @@ const DashboardSidebar = () => {
           <Route path="account-details" element={<AccountDetails />} /> 
           <Route path="money-transfer" element={<MoneyTransfer />} />
           <Route path="transaction-history" element={<TransactionHistory />} />
+          <Route path="employee-loans" element={<EmployeeLoans />} />
+          <Route path="manager-loans" element={<ManagerLoans />} />
           <Route path="loans" element={<Loans />}>
             <Route path="apply" element={<ApplyLoan />} />
             <Route path="payment" element={<LoanPayment />} />
