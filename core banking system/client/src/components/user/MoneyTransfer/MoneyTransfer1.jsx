@@ -165,7 +165,7 @@ function MoneyTransfer1() {
                             </Button>
                         </Grid>
                         <Grid item xs={6}>
-                            <Button
+                            <Button className="button"
                                 type="submit"
                                 variant="contained"
                                 color="primary"
