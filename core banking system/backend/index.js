@@ -13,16 +13,10 @@ import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
-import { addIndividualCustomer, addOrganizationCustomer,getCustomerDetails } from './services/Customers/customer_services.js';
+import { addIndividualCustomer, addOrganizationCustomer, getCustomerDetails } from './services/Customers/customer_services.js';
 import { getTransactionReport, getLateLoanPaymentReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
 import { addEmployee, removeEmployee,updateEmployeeDetails, updateUserDetails, updateEmployeeBranch } from './services/emplyees/employee_services.js';
-
-import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
-import { getTransactionReport , getLateLoanPaymentReport} from './services/Reports/report_services.js';
-
-import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
-import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
 //import {addEmployee} from './services/emplyees/employee_services.js'
 
 import { getAccountDetails } from './services/Accounts/account_services.js';    
