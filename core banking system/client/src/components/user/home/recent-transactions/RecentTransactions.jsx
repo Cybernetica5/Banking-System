@@ -39,7 +39,7 @@ export default function TransactionHistoryCard() {
   if (error) return <div>{error}</div>;
 
   return (
-    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
+    <Card className='shadow' sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6" >
           Recent Transactions
