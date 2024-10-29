@@ -118,7 +118,7 @@ app.post("/money_transfer", money_transfer);
 app.post("/employee_loans",employee_loans);
 
 // Account details
-//app.post("/account_details", getAccountDetails);
+app.post("/account_details", getAccountDetails);
 app.post("/create_fixed_deposit", createFixedDeposit);
 
 // Existing routes...

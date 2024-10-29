@@ -63,8 +63,6 @@ const DashboardSidebar = () => {
     { path: '/dashboard/account-details', icon: faWallet, text: 'Account Details' },
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
-    {path: '/dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
-    {path: '/dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
     { 
       path: '/dashboard/loans/apply', 
       icon: faSackDollar, 
