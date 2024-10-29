@@ -49,10 +49,23 @@ const ManagerLoans = () => {
       setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); 
     } catch (error) {
       console.error('Error approving loan:', error);
-    }
-    
+    }    
     
   };
+
+  const handleReject = async (loanId) => {
+    console.log('Rejecting loan:', loanId);
+    try {
+      // Call backend to reject the loan
+      const response = await api.post(`manager/manager-loans/reject`, {param:{ loanId }});
+      console.log('Loan rejection response:', response.data);
+      
+      // Remove the rejected loan from the list
+      setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); 
+    } catch (error) {
+      console.error('Error rejecting loan:', error);
+    }
+  }
 
   return (
     <div className="loan-approval-container">
@@ -83,12 +96,26 @@ const ManagerLoans = () => {
                       </TableCell>
                       <TableCell>{loan.start_date ? new Date(loan.start_date).toLocaleDateString() : 'N/A'}</TableCell>
                       <TableCell>
-                        <Button 
-                          variant="contained" 
-                          color="primary" 
+                          <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ marginRight: '10px' }} // Adds gap to the right of the Approve button
                           onClick={() => handleApprove(loan.loan_id)}
-                        >
+                          >
                           Approve
+                          </Button>
+                          <Button
+                          variant="contained"
+                          sx={{
+                          backgroundColor: 'red',
+                          color: 'white',
+                          '&:hover': {
+                          backgroundColor: '#b30000', // Darker shade of red on hover
+                          },
+                          }}
+                          onClick={() => handleReject(loan.loan_id)}
+                          >
+                          Reject
                         </Button>
                       </TableCell>
                     </TableRow>
