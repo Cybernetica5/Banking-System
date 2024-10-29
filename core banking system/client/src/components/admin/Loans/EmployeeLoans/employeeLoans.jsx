@@ -19,8 +19,8 @@ function EmployeeLoans() {
     useEffect(() => {
         const fetchUserAccounts = async () => {
           try {
-            console.log('Fetching user accounts for customer ID:', customerId);
-            const response = await api.get('/user_accounts',{params:{customerId}});
+            //console.log('Fetching user accounts for customer ID:', customerId);
+            const response = await api.get('/accounts');
 
             console.log('API Response:', response.data); // Log the raw response
       
