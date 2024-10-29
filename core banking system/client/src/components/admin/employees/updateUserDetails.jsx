@@ -116,13 +116,13 @@ const UpdateEmployeeUserDetails = () => {
           type="email"
           value={userDetails.email}
           fullWidth
-          sx={{
-            height: '56px', 
-            '& input': { 
-              height: '56px',
-              fontSize: '16px'
-              }
-          }}
+          // sx={{
+          //   height: '56px', 
+          //   '& input': { 
+          //     height: '56px',
+          //     fontSize: '16px'
+          //     }
+          // }}
 
           margin="normal"
           onChange={handleInputChange}

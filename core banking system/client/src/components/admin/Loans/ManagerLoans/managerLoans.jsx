@@ -66,10 +66,10 @@ const ManagerLoans = () => {
 
   return (
     <div className="loan-approval-container">
-      <Typography variant="h4" gutterBottom>
+      <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4}}>
+      <Typography variant="h6" gutterBottom>
         Pending Loans
       </Typography>
-      <Card>
         <CardContent>
           <TableContainer component={Paper}>
             <Table>
