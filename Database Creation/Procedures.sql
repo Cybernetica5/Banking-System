@@ -1,10 +1,11 @@
-DELIMITER $$
+DELIMITER //
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MoneyTransfer`(
     IN sender_account_number CHAR(15),
     IN receiver_account_number CHAR(15),
     IN transfer_amount DECIMAL(10,2),
-    IN description_0 VARCHAR(255)
+    IN description_0 VARCHAR(255),
+    OUT confirmation_message VARCHAR(255)
 )
 BEGIN
     DECLARE sender_balance DECIMAL(15,2);
@@ -12,42 +13,35 @@ BEGIN
     DECLARE sender_status ENUM('active','inactive');
     DECLARE receiver_status ENUM('active','inactive');
     DECLARE transaction_time  datetime;
-	DECLARE sender_account_id INT;
+    DECLARE sender_account_id INT;
     DECLARE receiver_account_id INT;
-	
+    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
-    ROLLBACK; 
-    SELECT 'An error occurred during the transfer. Transaction rolled back.' AS error_message;
+        ROLLBACK; 
+        SET confirmation_message = 'An error occurred during the transfer. Transaction rolled back.';
     END;
 
-
-	
     SELECT NOW() INTO transaction_time;
-	START TRANSACTION;
+    START TRANSACTION;
     
-    SELECT account_id,balance, status INTO sender_account_id,sender_balance, sender_status 
+    SELECT account_id, balance, status INTO sender_account_id, sender_balance, sender_status 
     FROM account
     WHERE account_number = sender_account_number;
     
-
-    SELECT account_id,balance, status INTO receiver_account_id,receiver_balance, receiver_status 
+    SELECT account_id, balance, status INTO receiver_account_id, receiver_balance, receiver_status 
     FROM account
     WHERE account_number = receiver_account_number;
     
-	
     IF sender_status = 'inactive' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sender account is not active.';
     ELSEIF sender_balance < transfer_amount THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient funds in sender account.';
     END IF;
 
-    
-    IF receiver_status ='inactive' THEN
+    IF receiver_status = 'inactive' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Receiver account is not active.';
     END IF;
-	
-    
     
     UPDATE account
     SET balance = balance - transfer_amount
@@ -57,23 +51,20 @@ BEGIN
     SET balance = balance + transfer_amount
     WHERE account_id = receiver_account_id;
 
-    
     INSERT INTO transaction(account_id, transaction_type, amount, date, description)
     VALUES 
     (sender_account_id, 'transfer', transfer_amount, transaction_time, description_0);
     
-
     SET @trans_id = LAST_INSERT_ID();
 
     INSERT INTO transfer(transaction_id, beneficiary_account_id)
     VALUES
-    (@trans_id,receiver_account_id);
-COMMIT;
-
+    (@trans_id, receiver_account_id);
     
-    SELECT CONCAT('Transfer of ', transfer_amount, ' completed from account ', sender_account_id, ' to account ', receiver_account_id) AS confirmation_message;
-	
-END
+    COMMIT;
+
+    SET confirmation_message = CONCAT('Transfer of ', transfer_amount, ' completed from account ', sender_account_number, ' to account ', receiver_account_number);
+END//
 DELIMITER ;
 
 DELIMITER //
@@ -276,3 +267,37 @@ END$$
 DELIMITER;
 
 
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ManagerApproveLoan`(
+    IN p_loan_id INT,
+    IN p_approved_date DATE
+)
+BEGIN
+    DECLARE v_duration INT;
+    DECLARE v_end_date DATE;
+    DECLARE v_start_date DATE;
+
+    SELECT start_date, end_date INTO v_start_date, v_end_date
+    FROM loan
+    WHERE loan_id = p_loan_id;
+
+
+    SET v_duration = TIMESTAMPDIFF(MONTH, v_start_date, v_end_date);
+
+    
+    SET v_end_date = DATE_ADD(p_approved_date, INTERVAL v_duration MONTH);
+
+    
+    UPDATE loan
+    SET start_date = p_approved_date,
+        end_date = v_end_date,
+        status = 'approved'
+    WHERE loan_id = p_loan_id;
+
+    
+    IF ROW_COUNT() = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Loan not found or already approved';
+    END IF;
+END$$
+DELIMITER;
