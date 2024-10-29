@@ -12,39 +12,37 @@ import {
   Paper, 
   Button 
 } from '@mui/material';
-import "./managerLoans.css";   
+import "./managerLoans.css";
+import api from '../../../../services/api';   
 
 const ManagerLoans = () => {
   const [pendingLoans, setPendingLoans] = useState([]);
 
-
   useEffect(() => {
-    fetch('/api/manager-loans')  // Assumes your backend API is running at /loans
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchLoans = async () => {
+      try {
+        const response = await api.get('/manager-loans');
+        const data = response.data;
         setPendingLoans(data);
-
         console.log('Pending loans:', data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching loans:', error);
-      });
+      }
+    };
+
+    fetchLoans();
   }, []);
 
-  const handleApprove = (loanId) => {
-    // Call backend to approve the loan
-    fetch(`/api/manager-loans/approve/${loanId}`, {
-      method: 'POST',
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(`Loan approved: ${loanId}`);
-      // Optionally, you can update the UI to reflect the approved status
+  const handleApprove = async (loanId) => {
+    try {
+      // Call backend to approve the loan
+      const response = await api.post(`/manager-loans/approve/${loanId}`);
+      console.log('Loan approval response:', response.data);
+      
       setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); // Remove the approved loan
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error('Error approving loan:', error);
-    });
+    }
   };
 
   return (
@@ -72,7 +70,9 @@ const ManagerLoans = () => {
                       <TableCell>{loan.start_date}</TableCell>
                       <TableCell>{loan.applicant || 'Unknown Applicant'}</TableCell>
                       <TableCell>{loan.account_id}</TableCell>
-                      <TableCell align="right">${loan.amount.toFixed(2)}</TableCell>
+                      <TableCell align="right">
+                        {loan.amount !== undefined && !isNaN(loan.amount) ? `$${loan.amount.toFixed(2)}` : 'N/A'}
+                      </TableCell>
                       <TableCell>
                         <Button 
                           variant="contained" 

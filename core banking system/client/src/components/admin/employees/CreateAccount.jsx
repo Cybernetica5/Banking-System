@@ -46,7 +46,7 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validate initial deposit for savings accounts
     if (accountType === 'savings') {
       const minDeposit = getMinimumDeposit(savingsPlanType);
@@ -55,24 +55,29 @@ const CreateAccount = () => {
         return;
       }
     }    
-
+  
     try {
       const accountData = {
         customerType,
         accountType,
         branchId,
-        savingsPlanTypeId : getPlanTypeId(savingsPlanType),
+        savingsPlanTypeId: getPlanTypeId(savingsPlanType),
         initialDeposit,
         idNumber,
         licenseNumber
       };
       console.log('Account Data:', accountData);
       const response = await api.post('staff/create_account', accountData);
-      setGeneratedAccountNumber(response.data.accountNumber);
-      showMessage(response.data.message, 'success');
+      
+      if (response && response.data) {
+        setGeneratedAccountNumber(response.data.accountNumber);
+        showMessage(response.data.message, 'success');
+      } else {
+        showMessage('Failed to create account: No response data', 'error');
+      }
     } catch (error) {
       console.error('Error creating account:', error);
-      showMessage(error.response.data.message || 'Failed to create account', 'error');
+      showMessage(error.response?.data?.message || 'Failed to create account', 'error');
     }
   };
 

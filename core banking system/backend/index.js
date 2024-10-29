@@ -8,18 +8,15 @@ import refreshRoutes from './routes/referesh.js';
 import authenticateToken from './middleware/auth.js';
 import staffServices from './services/Staff/staff_services.js';
 
+import { getPendingLoans } from './services/ManagerLoans/manager-loans.js';   
+import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
-import { addIndividualCustomer, addOrganizationCustomer,getCustomerDetails } from './services/Customers/customer_services.js';
+import { addIndividualCustomer, addOrganizationCustomer, getCustomerDetails } from './services/Customers/customer_services.js';
 import { getTransactionReport, getLateLoanPaymentReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
 import { addEmployee, removeEmployee,updateEmployeeDetails, updateUserDetails, updateEmployeeBranch } from './services/emplyees/employee_services.js';
-
-import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
-import { getTransactionReport , getLateLoanPaymentReport} from './services/Reports/report_services.js';
-
-import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
 //import {addEmployee} from './services/emplyees/employee_services.js'
 
 import { getAccountDetails } from './services/Accounts/account_services.js';    
@@ -49,12 +46,6 @@ app.listen(8800, () => {
 });
 
 // Logout route
-
-
-// Routes
-// app.use('/auth', authRoutes);
-// app.use('/api', protectedRoutes);
-
 app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
@@ -65,14 +56,12 @@ app.get("/accounts", getAccounts);
 app.get("/accounts_summary", getAccountSummary);
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
-
+app.get("/savings_accounts", getSavingsAccounts);
 
 app.get("/recent_transactions/:customerId", getRecentTransactions);
 app.get("/transaction_History/:customerId", getTransactionsHistory);
 
-// Reports
-
-//app.get("/recent_transactions/:customerId", getRecentTransactions);
+app.get("/manager-loans", getPendingLoans);
 
 
 // User info
@@ -113,6 +102,7 @@ app.post("/logout", logout);
 app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);
 app.post("/money_transfer", money_transfer);
+app.post("/employee_loans",employee_loans);
 
 // Account details
 app.post("/account_details", getAccountDetails);
@@ -123,20 +113,5 @@ app.get("/", (req, res) => {
     res.json("Hello this is the backend");
 });
 
-
-// app.post('/money-transfer', (req, res) => {
-//     const { sender_account_id, receiver_account_id, transfer_amount,description} = req.body;
-  
-//     const query = `CALL MoneyTransfer(?, ?, ?)`;
-  
-//     db.query(query, [sender_account_id, receiver_account_id, transfer_amount,description], (err, result) => {
-//       if (err) {
-//         console.error('Error during money transfer:', err);
-//         res.status(500).send('Money transfer failed');
-//       } else {
-//         res.status(200).json({ message: 'Money transfer successful', result });
-//       }
-//     });
-//   });
 
 

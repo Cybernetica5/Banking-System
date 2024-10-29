@@ -33,6 +33,13 @@ import UpdateEmployeeBranch from '../employees/updatebranchDetails';
 import CreateAccount from '../employees/CreateAccount';
 
 
+
+import EmployeeLoans from '../../admin/Loans/EmployeeLoans/employeeLoans';
+import ManagerLoans from '../../admin/Loans/ManagerLoans/managerLoans';
+
+
+
+
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
   const navigate = useNavigate();
@@ -67,8 +74,12 @@ const DashboardSidebar = () => {
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
     { path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
-    { path: '/', icon: faSackDollar, text: 'Loans' },
-    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
+    { path: '/admin-dashboard/loans', icon: faSackDollar, text: 'Loans' },
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers
+    {path: '/admin-dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
+    {path: '/admin-dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
+    
+
   ];
 
   return (
@@ -165,6 +176,8 @@ const DashboardSidebar = () => {
           <Route path="settings" element={<Settings />} />
           <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> 
           <Route path="createaccount" element={<CreateAccount />} />
+          <Route path="employee-loans" element={<EmployeeLoans />} />
+          <Route path="manager-loans" element={<ManagerLoans />} />
         </Routes>
       </section>
     </div>

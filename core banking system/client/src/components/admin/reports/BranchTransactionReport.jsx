@@ -6,11 +6,12 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import { Bar } from 'react-chartjs-2'; // Import Bar chart from react-chartjs-2
 import api from '../../../services/api';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import Cookies from 'js-cookie';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const branchId = 1; // TODO: Get branch ID dynamically
+const branchId = Cookies.get('branchId');
 
 const TransactionsReport = () => {
   const [reportData, setReportData] = useState([]);
