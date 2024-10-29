@@ -69,10 +69,9 @@ const DashboardSidebar = () => {
 
   const menuItems = [
     { path: '/admin-dashboard/customers/get-customer-details', icon: faUsers, text: 'Customers' },
-    ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
-    { path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/admin-dashboard/loans', icon: faSackDollar, text: 'Loans' },
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers
@@ -160,7 +159,6 @@ const DashboardSidebar = () => {
           </Route>
           <Route path="transactions" element={<Transactions />} />
 
-          <Route index element={<Employee />} />
           <Route path="employee" element={<Employee />}>
             <Route path="add-employee" element={<AddEmployeeForm />} />
             <Route path="remove-employee" element={<RemoveEmployee />} />
