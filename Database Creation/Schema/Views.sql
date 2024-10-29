@@ -25,6 +25,7 @@ FROM customer c
     LEFT JOIN savings_account sa ON a.account_id = sa.account_id
     LEFT JOIN fixed_deposit fd ON sa.savings_account_id = fd.savings_account_id
 GROUP BY c.customer_id;
+
 CREATE VIEW `transaction_history` AS
 SELECT c.customer_id,
     t.transaction_id,

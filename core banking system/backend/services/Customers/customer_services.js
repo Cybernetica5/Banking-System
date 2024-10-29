@@ -1,12 +1,12 @@
 import db from '../../services/Config/database.js';
 
 async function addIndividualCustomer(req, res) {
-    const { branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType } = req.body;
+    const { branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType, savingsPlanId } = req.body;
 
     try {
         await db.query(
-            `CALL add_individual_customer(?, ?, ?, ?, ?, ?, ?, ?, @account_number);`,
-            [branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType]
+            `CALL add_individual_customer(?, ?, ?, ?, ?, ?, ?, ?, ?, @account_number);`,
+            [branchId, fullName, dateOfBirth, NIC, address, mobileNumber, landlineNumber, accountType, savingsPlanId]
         );
 
         // get the account number
@@ -40,4 +40,21 @@ async function addOrganizationCustomer(req, res) {
     }
 }
 
-export { addIndividualCustomer, addOrganizationCustomer };
+async function getCustomerDetails(req, res) {
+    const { NIC_or_licenseNumber } = req.body;
+
+    try {
+        const [details] = await db.query(
+            `CALL GetCustomerDetailsByNICOrLicense(?);`,
+            [NIC_or_licenseNumber]
+        );
+
+        res.json({ success: true, details: details[0] });
+    }
+    catch (err) {
+        console.error('Customer not found:', err);
+        res.status(404).json({ success: false, error: 'Customer not found' });
+    }
+}
+
+export { addIndividualCustomer, addOrganizationCustomer, getCustomerDetails };

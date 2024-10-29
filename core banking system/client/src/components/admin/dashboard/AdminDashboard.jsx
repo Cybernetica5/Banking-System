@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import cookies from 'js-cookie';
 import { 
   faMoneyBillTransfer, faWallet, faGear, 
   faArrowRightFromBracket, faCircleQuestion, 
@@ -7,19 +8,37 @@ import {
   faUsers, faFileInvoiceDollar, faCoins
 } from '@fortawesome/free-solid-svg-icons';
 
-import {Routes, Link, useNavigate, Route} from 'react-router-dom';
+import {Routes, Link, useNavigate, Route, Navigate} from 'react-router-dom';
 import { logout } from '../../../services/auth';
 
 import './AdminDashboard.css';
 // import Notification from './notification/Notification';
 
 import AddCustomers from '../customers/AddCustomers';
+import GetCustomerDetails from '../customers/GetCustomerDetails';
+import Customers from '../customers/Customers';
+import Reports from '../reports/Reports';
 import BranchTransactionReport from '../reports/BranchTransactionReport';
+import BranchLatePaymentsReport from '../reports/BranchLatePaymentsReport';
 import Transactions from '../transactions/Transactions';
-import Settings from '../../common/settings/Settings';
-import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits'; // Import the FixedDeposits component
-import cookies from 'js-cookie';
+import Settings from '../../admin/settings/Settings';
+import ApplyFixedDeposit from '../FixedDeposits/fixedDeposits';
+import Employee from '../employees/Employees';
+import AddEmployeeForm from '../employees/AddEmployees';
+import RemoveEmployee from '../employees/removeEmployee';
+import UpdateEmployee from '../employees/updateStaffDetails';
+import UpdateEmployeeUserDetails from '../employees/updateUserDetails';
+import UpdateEmployeeBranch from '../employees/updatebranchDetails';
+
 import CreateAccount from '../employees/CreateAccount';
+
+
+
+import EmployeeLoans from '../../admin/Loans/EmployeeLoans/employeeLoans';
+import ManagerLoans from '../../admin/Loans/ManagerLoans/managerLoans';
+
+
+
 
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
@@ -49,13 +68,18 @@ const DashboardSidebar = () => {
   };
 
   const menuItems = [
-    { path: '/admin-dashboard/customers', icon: faUsers, text: 'Customers' },
-    ...(userRole === 'manager' ? [{ path: '/', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
+    { path: '/admin-dashboard/customers/get-customer-details', icon: faUsers, text: 'Customers' },
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
+    { path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
-    { path: '/', icon: faSackDollar, text: 'Loans' },
-    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
+    { path: '/admin-dashboard/loans', icon: faSackDollar, text: 'Loans' },
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers
+    {path: '/admin-dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
+    {path: '/admin-dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
+    
+
   ];
 
   return (
@@ -129,13 +153,30 @@ const DashboardSidebar = () => {
         </div>
 
         <Routes>
-          <Route index element={<AddCustomers />} />
-          <Route path="customers" element={<AddCustomers />} />
+          <Route path="/" element={<Navigate to="customers/get-customer-details" replace />} />
+          <Route path="customers" element={<Customers />}>
+            <Route path="get-customer-details" element={<GetCustomerDetails />} />
+            <Route path="add-new-customer" element={<AddCustomers />} />
+          </Route>
           <Route path="transactions" element={<Transactions />} />
-          <Route path="reports" element={<BranchTransactionReport />} />
+
+          <Route path="employee" element={<Employee />}>
+            <Route path="add-employee" element={<AddEmployeeForm />} />
+            <Route path="remove-employee" element={<RemoveEmployee />} />
+            <Route path="update-staff-detail" element={<UpdateEmployee />} />
+            <Route path="update-staff-user-detail" element={<UpdateEmployeeUserDetails />} />
+            <Route path="update-staff-branch-detail" element={<UpdateEmployeeBranch />} />
+          </Route>
+
+          <Route path="reports" element={<Reports />}>
+            <Route path="transaction-report" element={<BranchTransactionReport />} />
+            <Route path="late-loan-payment-report" element={<BranchLatePaymentsReport />} />
+          </Route>
           <Route path="settings" element={<Settings />} />
-          <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> {/* Add the route for FixedDeposits */}
+          <Route path="fixed-deposits" element={<ApplyFixedDeposit />} /> 
           <Route path="createaccount" element={<CreateAccount />} />
+          <Route path="employee-loans" element={<EmployeeLoans />} />
+          <Route path="manager-loans" element={<ManagerLoans />} />
         </Routes>
       </section>
     </div>

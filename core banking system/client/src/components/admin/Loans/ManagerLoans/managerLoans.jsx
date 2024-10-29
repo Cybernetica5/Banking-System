@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 import "./managerLoans.css";
 import api from '../../../../services/api';   
+import "./managerLoans.css";
+import api from '../../../../services/api';   
 
 const ManagerLoans = () => {
   const [pendingLoans, setPendingLoans] = useState([]);
@@ -26,7 +28,12 @@ const ManagerLoans = () => {
         setPendingLoans(data);
         console.log('Pending loans:', data);
       } catch (error) {
+      } catch (error) {
         console.error('Error fetching loans:', error);
+      }
+    };
+
+    fetchLoans();
       }
     };
 
@@ -46,6 +53,7 @@ const ManagerLoans = () => {
       setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); 
     } catch (error) {
       console.error('Error approving loan:', error);
+    }
     }
   };
 

@@ -3,12 +3,9 @@ import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Selec
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
-import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
 import './CreateAccount.css';
-
-// const staffID = 1; // TODO: make this dynamic
 
 const CreateAccount = () => {
   const [customerType, setCustomerType] = useState('');
@@ -20,15 +17,6 @@ const CreateAccount = () => {
   const [idNumber, setIdNumber] = useState('');
   const [licenseNumber, setLicenseNumber] = useState('');
   const [generatedAccountNumber, setGeneratedAccountNumber] = useState('');
-  /*
-  const [fdDetails, setFdDetails] = useState({
-    savingsAccountNumber: '',
-    fdAmount: '',
-    fdPlan: '',
-    startDate: '',
-    endDate: ''
-  });
-  */
 
   // Snackbar alert
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -45,26 +33,6 @@ const CreateAccount = () => {
     setSnackbarOpen(false);
   };
 
-  // Confirmation dialog
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const handleConfirm = () => {
-    handleCloseDialog();
-    handleSubmit();
-  };
-
-  const handleCancelDialog = () => {
-    setDialogOpen(false);
-  };
-
   const handleCancel = () => {
     setCustomerType('');
     setAccountType('');
@@ -78,7 +46,7 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validate initial deposit for savings accounts
     if (accountType === 'savings') {
       const minDeposit = getMinimumDeposit(savingsPlanType);
@@ -87,24 +55,29 @@ const CreateAccount = () => {
         return;
       }
     }    
-
+  
     try {
       const accountData = {
         customerType,
         accountType,
         branchId,
-        savingsPlanTypeId : getPlanTypeId(savingsPlanType),
+        savingsPlanTypeId: getPlanTypeId(savingsPlanType),
         initialDeposit,
         idNumber,
         licenseNumber
       };
       console.log('Account Data:', accountData);
       const response = await api.post('staff/create_account', accountData);
-      setGeneratedAccountNumber(response.data.accountNumber);
-      showMessage(response.data.message, 'success');
+      
+      if (response && response.data) {
+        setGeneratedAccountNumber(response.data.accountNumber);
+        showMessage(response.data.message, 'success');
+      } else {
+        showMessage('Failed to create account: No response data', 'error');
+      }
     } catch (error) {
       console.error('Error creating account:', error);
-      showMessage(error.response.data.message || 'Failed to create account', 'error');
+      showMessage(error.response?.data?.message || 'Failed to create account', 'error');
     }
   };
 
@@ -184,6 +157,15 @@ const CreateAccount = () => {
               onChange={(e) => setIdNumber(e.target.value)}
             />
           )}
+          {customerType === 'individual' && (
+            <FormControl fullWidth margin="normal">
+            <InputLabel>Account Type</InputLabel>
+            <Select value={accountType} onChange={(e) => setAccountType(e.target.value)}>
+              <MenuItem value="savings">Savings</MenuItem>
+              <MenuItem value="checking">Checking</MenuItem>
+            </Select>
+          </FormControl>
+          )}
           {customerType === 'organization' && (
             <TextField
               fullWidth
@@ -193,13 +175,14 @@ const CreateAccount = () => {
               onChange={(e) => setLicenseNumber(e.target.value)}
             />
           )}
-          <FormControl fullWidth margin="normal">
+          {customerType === 'organization' && (
+            <FormControl fullWidth margin="normal">
             <InputLabel>Account Type</InputLabel>
             <Select value={accountType} onChange={(e) => setAccountType(e.target.value)}>
-              <MenuItem value="savings">Savings</MenuItem>
               <MenuItem value="checking">Checking</MenuItem>
             </Select>
           </FormControl>
+          )}
           <TextField
             fullWidth
             margin="normal"
@@ -207,17 +190,19 @@ const CreateAccount = () => {
             value={branchName}
             disabled
           />
-          {accountType === 'savings' && (
+          {accountType === 'savings' && customerType === 'individual' && (
+            <FormControl fullWidth margin="normal">
+            <InputLabel>Savings Plan Type</InputLabel>
+            <Select value={savingsPlanType} onChange={(e) => setSavingsPlanType(e.target.value)}>
+              <MenuItem value="child">Children - 12%, no minimum</MenuItem>
+              <MenuItem value="teen">Teen - 11%, $500 minimum</MenuItem>
+              <MenuItem value="adult">Adult (18+) - 10%, $1000 minimum</MenuItem>
+              <MenuItem value="senior">Senior (60+) - 13%, $1000 minimum</MenuItem>
+            </Select>
+            </FormControl>)
+          }
+          {accountType === 'savings' &&(
             <>
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Savings Plan Type</InputLabel>
-                <Select value={savingsPlanType} onChange={(e) => setSavingsPlanType(e.target.value)}>
-                  <MenuItem value="child">Children - 12%, no minimum</MenuItem>
-                  <MenuItem value="teen">Teen - 11%, $500 minimum</MenuItem>
-                  <MenuItem value="adult">Adult (18+) - 10%, $1000 minimum</MenuItem>
-                  <MenuItem value="senior">Senior (60+) - 13%, $1000 minimum</MenuItem>
-                </Select>
-              </FormControl>
               <TextField
                 fullWidth
                 margin="normal"
@@ -242,7 +227,14 @@ const CreateAccount = () => {
               label="Initial Deposit"
               type="number"
               value={initialDeposit}
-              onChange={(e) => setInitialDeposit(e.target.value)}
+              onChange={(e) => setInitialDeposit(e.target.value)}            
+              sx={{
+                height: '56px', 
+                '& input': { 
+                height: '56px',
+                fontSize: '16px'
+                }
+              }}
             />
           )}
           <div className="button-container">
@@ -271,14 +263,6 @@ const CreateAccount = () => {
           </Typography>
         )}
       </div>
-
-      <ConfirmationDialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        message={"Are you sure you want to create this account?"}
-        onConfirm={handleConfirm}
-        onCancel={handleCancelDialog}
-      />
 
       <SnackbarAlert
         open={snackbarOpen}

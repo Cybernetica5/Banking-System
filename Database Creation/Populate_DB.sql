@@ -66,6 +66,7 @@ INSERT INTO transaction (account_id, transaction_type, amount, date, description
 (1, 'deposit', 1000.00, '2023-06-01 10:00:00', 'Initial deposit'),
 (2, 'withdrawal', 500.00, '2023-06-02 14:30:00', 'ATM withdrawal');
 
+
 -- Populate penalty_types table
 INSERT INTO penalty_types (penalty_amount, penalty_type) VALUES
 (50.00, 'Late payment'),

@@ -13,7 +13,8 @@ CREATE VIEW `branch_transaction_details` AS
         t.date,
         t.amount,
         t.transaction_type,
-        a.account_number
+        a.account_number,
+        COALESCE(w.branch_id, d.branch_id) AS branch_id
     FROM transaction t
     JOIN account a ON t.account_id = a.account_id
     LEFT JOIN withdrawal w ON t.transaction_id = w.transaction_id
