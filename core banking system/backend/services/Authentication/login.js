@@ -108,12 +108,27 @@ router.post('/login', validateLoginInput, async (req, res) => {
       const staff_id = staff[0].staff_id;
       console.log('Staff:', staff_id, staff_role);
 
+      // Get branch id
+      let branch_id;
+
+      if (staff_role === 'manager') {
+        const [rows] = await db.execute('SELECT b.branch_id FROM manager m JOIN branch b ON m.manager_id = b.manager_id WHERE m.staff_id = ?', [staff_id]);
+        branch_id = rows[0].branch_id;
+        console.log('manager branch:', branch_id);
+      } else if (staff_role === 'employee') {
+        const [rows] = await db.execute('SELECT branch_id FROM employee WHERE staff_id = ?', [staff_id]);
+        branch_id = rows[0].branch_id;
+        console.log('employee branch:', branch_id);
+      }
+
       res.cookie('staffId', staff_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
       res.cookie('role', staff_role, { httpOnly: true, secure: true, sameSite: 'Strict' });
+      res.cookie('branchId', branch_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
       
-      res.status(200).json({ message: 'Login successful', userId: user[0].id, role: staff_role, accessToken, refreshToken, staff_id });
+      res.status(200).json({ message: 'Login successful', userId: user[0].id, role: staff_role, branch_id: branch_id, accessToken, refreshToken, staff_id });
      
     }
+    
     
     console.log('/////////////Login successful///////////////');
   } catch (error) {

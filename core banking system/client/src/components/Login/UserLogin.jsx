@@ -42,6 +42,7 @@ const UserLogin = () => {
         Cookies.set('refreshToken', response.data.refreshToken, { secure: true, sameSite: 'Strict' });
         Cookies.set('staffId', response.data.staff_id, { secure: true, sameSite: 'Strict' });
         Cookies.set('role', response.data.role, { secure: true, sameSite: 'Strict' });
+        Cookies.set('branchId', response.data.branch_id, { secure: true, sameSite: 'Strict' });
 
         console.log('Cookies:', Cookies.get());
         console.log('Local Storage:', localStorage.getItem('user'));
