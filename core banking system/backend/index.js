@@ -12,7 +12,7 @@ import { getPendingLoans } from './services/ManagerLoans/manager-loans.js';
 import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
-import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
+import { getAccounts,getUserAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import { addIndividualCustomer, addOrganizationCustomer, getCustomerDetails } from './services/Customers/customer_services.js';
 import { getTransactionReport, getLateLoanPaymentReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
@@ -54,7 +54,9 @@ app.use('/staff', staffServices);
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
+app.get("/user_accounts", getUserAccounts);
 app.get("/accounts_summary", getAccountSummary);
+
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 app.get("/savings_accounts", getSavingsAccounts);
@@ -78,6 +80,8 @@ app.put("/change_password/:userId", changeUserPassword);
 
 //Loan
 app.post("/apply_loan", applyLoan);
+app.post("/pay_loan", payLoanInstallment);
+app.get("/installment", getInstallmentAmount);
 
 // Reports
 app.post("/report/transaction", getTransactionReport);

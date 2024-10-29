@@ -29,7 +29,6 @@ const LoanSummary = ({ accountNumber, loanAmount, loanDuration, loanType, onClos
   const totalPaybackAmount = loanAmount + totalInterest;
   const monthlyPayment = totalPaybackAmount / loanDuration;
 
-
   const handleAccept = () => {
     const customerId = Cookies.get('customerId');
     const loanStartDate = new Date().toISOString().split('T')[0];
@@ -94,28 +93,38 @@ const ApplyLoan = () => {
   const [loanDuration, setLoanDuration] = useState('');
   const [loanType, setLoanType] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
+  const [accountNumbers, setAccountNumbers] = useState([]);
   const [creditLimit, setCreditLimit] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSummary, setShowSummary] = useState(false);
 
   useEffect(() => {
-    const fetchCreditLimit = async () => {
+    const fetchCreditLimitAndAccounts = async () => {
       try {
         const userId = Cookies.get('userId'); // Get the user ID from the user object
-        console.log('Fetching credit limit...');
-        console.log('User ID:', userId);
+        const customerId = Cookies.get('customerId'); // Get the customer ID from the user object
+        console.log('Fetching credit limit and account numbers...');
+        console.log('user ID:', userId);
+        console.log('customer ID:', customerId);
 
-        const response = await api.get(`/credit-limit`, { params: { userId } });
-        const creditLimit = response.data.creditLimit;
-        setCreditLimit(creditLimit);
+        const [creditLimitResponse, accountsResponse] = await Promise.all([
+          api.get(`/credit-limit`, { params: { userId } }),
+          api.get(`/user_accounts`, { params: { customerId } })
+        ]);
+
+        console.log('Credit Limit Response:', creditLimitResponse.data); // Log the credit limit response
+        console.log('Accounts Response:', accountsResponse.data); // Log the entire accounts response
+
+        setCreditLimit(creditLimitResponse.data.creditLimit);
+        setAccountNumbers(accountsResponse.data.map(account => account.account_number));
       } catch (error) {
-        console.error('Error fetching credit limit:', error);
+        console.error('Error fetching credit limit or account numbers:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCreditLimit();
+    fetchCreditLimitAndAccounts();
   }, []);
 
   const handleSubmit = (event) => {
@@ -163,19 +172,22 @@ const ApplyLoan = () => {
             </Select>
           </FormControl>
           
-          <TextField
-            label="Account Number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            required
-            inputProps={{
-              maxLength: 13, // Limit the number of characters to 13
-              pattern: "SAV-\\d{9}", // Ensure the format is SAV- followed by 9 digits
-            }}
-          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Account Number</InputLabel>
+            <Select
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              label="Account Number"
+              align="left"
+            >
+              {accountNumbers.map((account) => (
+                <MenuItem key={account} value={account}>
+                  {account}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <TextField
             label="Loan Amount"
             variant="outlined"

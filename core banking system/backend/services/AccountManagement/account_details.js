@@ -10,6 +10,19 @@ async function getAccounts(req, res) {
     }
 }
 
+async function getUserAccounts(req, res) {
+    try {
+        console.log('Fetching user accounts...');
+        console.log('User ID:', req.query.customerId);
+        const [rows] = await db.query("SELECT account_number FROM account WHERE customer_id = ?", [req.query.customerId]);
+        console.log('User accounts:', rows);
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching user accounts:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 async function getAccountSummary(req, res) {
     try {
         const [rows] = await db.query(
@@ -23,4 +36,4 @@ async function getAccountSummary(req, res) {
     }
 }
 
-export { getAccounts, getAccountSummary };
+export { getAccounts, getAccountSummary, getUserAccounts };
