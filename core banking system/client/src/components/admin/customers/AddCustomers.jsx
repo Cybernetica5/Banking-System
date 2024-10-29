@@ -7,7 +7,7 @@ import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDia
 import api from '../../../services/api';
 import Cookies from 'js-cookie';
 
-const branchId = 1; // TODO: Get the branch ID from the logged-in user
+const branchId = Cookies.get('branchId');
 
 const AddCustomer = () => {
   const [individualCustomerInfo, setIndividualCustomerInfo] = useState({

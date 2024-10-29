@@ -3,8 +3,9 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress, Card
 } from '@mui/material';
 import api from '../../../services/api'; // Assuming you have an API service for backend calls
+import Cookies from 'js-cookie';
 
-const branchId = 1; // TODO: Get the branch ID from the logged-in user
+const branchId = Cookies.get('branchId');
 
 const LatePaymentsReport = () => {
   const [latePayments, setLatePayments] = useState([]); // State to store the report data
