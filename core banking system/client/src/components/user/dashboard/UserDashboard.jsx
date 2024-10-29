@@ -11,7 +11,6 @@ import { logout } from '../../../services/auth';
 import Cookies from 'js-cookie';
 
 import './UserDashboard.css';
-import Notification from './notification/Notification';
 import Home from '../home/Home';
 import MoneyTransfer from '../MoneyTransfer/MoneyTransfer1';
 
@@ -63,13 +62,7 @@ const DashboardSidebar = () => {
     { path: '/dashboard/account-details', icon: faWallet, text: 'Account Details' },
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
-    {path: '/dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
-    {path: '/dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
-    { 
-      path: '/dashboard/loans/apply', 
-      icon: faSackDollar, 
-      text: 'Loans',
-    },
+    { path: '/dashboard/loans/apply', icon: faSackDollar, text: 'Loans',},
   ];
 
   return (
@@ -139,7 +132,6 @@ const DashboardSidebar = () => {
       <section className="home">
         <div className="top-bar">
           <div className="text">Welcome, {userName}</div>
-          <div className="notification"><Notification /></div>
         </div>
 
         <Routes>
