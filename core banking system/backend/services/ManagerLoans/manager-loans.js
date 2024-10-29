@@ -1,30 +1,31 @@
 import db from '../Config/database.js';
 
-
-async function getPendingLoans(req, res) {
+async function getPendingLoans() {
     try {
         const [rows] = await db.query('CALL GetPendingLoans()');
-        res.json(rows); 
+        return rows[0]; 
     } catch (err) {
         console.error('Error fetching pending loans:', err);
-        res.status(500).json({ error: 'Internal server error' });
+        throw err;
     }
 }
 
-
-async function approveLoan(req, res) {
-    const loanId = req.body.loanId;
-
+async function approveLoan(loanId,approvedDate) {
     try {
-        const [result] = await db.query(`UPDATE loan SET status = 'approved' WHERE loan_id = ?`, [loanId]);
+        // Call the stored procedure and pass loanId as a parameter
+        console.log('Approving loan:', loanId, approvedDate);
+        const [result] = await db.query('CALL ManagerApproveLoan(?,?)', [loanId,approvedDate]);
+        console.log('ApproveLoan result:', result);
+
+        // Check if the stored procedure affected any rows
         if (result.affectedRows === 0) {
-            res.status(404).json({ error: 'Loan not found or already approved' });
+            return { error: 'Loan not found or already approved' };
         } else {
-            res.json({ message: 'Loan approved successfully' });
+            return { message: 'Loan approved successfully' };
         }
     } catch (err) {
         console.error(`Error approving loan with ID ${loanId}:`, err);
-        res.status(500).json({ error: 'Internal server error' });
+        return { error: 'Internal server error' };
     }
 }
 

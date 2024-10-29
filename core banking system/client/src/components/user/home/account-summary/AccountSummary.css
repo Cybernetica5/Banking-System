@@ -1,13 +1,16 @@
 .chart-card {
   max-width: 800px;
   margin: 20px auto;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 16px;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+              0 0 15px rgba(0, 0, 255, 0.5); /* Base 3D glow color */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-  
-.graph-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+.chart-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.15), 
+              0px 0px 30px rgba(173, 216, 230, 0.8), /* Brighter blue glow on hover */
+              0px 0px 45px rgba(173, 216, 230, 0.5); /* Enhanced glow effect */
 }
-  

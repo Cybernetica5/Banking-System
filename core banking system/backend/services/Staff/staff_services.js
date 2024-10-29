@@ -78,8 +78,6 @@ await db.query(
   }
 });
 
-console.log('stage 1');
-
 router.get('/branch_name', async (req, res) => {
   const { staffId, staff_role } = req.query;
   console.log("staffID: ", staffId);

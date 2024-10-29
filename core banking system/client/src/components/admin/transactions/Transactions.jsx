@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Cookies from 'js-cookie';
 import {
   TextField,
   Button,
@@ -16,7 +17,7 @@ import api from '../../../services/api';
 import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
 
-const branchId = 1; // TODO: Get the branch ID from the logged-in user
+const branchId = Cookies.get('branchId');
 
 const Transactions = () => {
   const [transactionType, setTransactionType] = useState('deposit'); // 'deposit' or 'withdrawal'
@@ -103,7 +104,7 @@ const Transactions = () => {
 
   return (
     <div className='transactions-container'>
-      <Card className="form-container" sx={{ marginTop: '50px', maxWidth: '600px' }}>
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <CardContent>
           <Typography variant="h6">{transactionType === 'deposit' ? 'Deposit' : 'Withdrawal'}</Typography>
 

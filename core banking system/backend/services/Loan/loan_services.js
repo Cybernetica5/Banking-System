@@ -5,6 +5,7 @@ async function getLoanDetails(req, res) {
     const userId = req.query.userId;
     try {
         const [rows] = await db.query('CALL GetLoanDetails(?)', [userId]);
+        console.log("loan details: ", rows[0]);
         res.json(rows[0]); // The result of a CALL statement is an array of arrays
     } catch (err) {
         console.error('Error fetching loan details:', err);
@@ -27,6 +28,7 @@ async function getCreditLimit(req, res) {
 
         if (rows.length > 0 && rows[0].credit_limit !== null) {
             const creditLimit = rows[0].credit_limit; // Assuming function returns correct value
+            console.log('Credit limit:', creditLimit);
             res.json({ creditLimit });
         } else {
             res.json({ creditLimit: 0, message: "No fixed deposits found." });

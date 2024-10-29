@@ -13,7 +13,7 @@ import {
   Button 
 } from '@mui/material';
 import "./managerLoans.css";
-import api from '../../../../services/api';   
+import api from '../../../../services/api';      
 
 const ManagerLoans = () => {
   const [pendingLoans, setPendingLoans] = useState([]);
@@ -21,28 +21,37 @@ const ManagerLoans = () => {
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const response = await api.get('/manager-loans');
+        const response = await api.get('manager/manager-loans');
         const data = response.data;
         setPendingLoans(data);
         console.log('Pending loans:', data);
+   
       } catch (error) {
         console.error('Error fetching loans:', error);
       }
     };
 
+  
+
     fetchLoans();
   }, []);
-
+  
   const handleApprove = async (loanId) => {
+    const approvedDate = new Date().toISOString().split("T")[0]; // Get the current date as approved date
+    console.log('Approving loan:', loanId, approvedDate);
+
     try {
-      // Call backend to approve the loan
-      const response = await api.post(`/manager-loans/approve/${loanId}`);
+      // Call backend to approve the loan with approvedDate
+      const response = await api.post(`manager/manager-loans/approve`, {param:{ loanId, approvedDate }});
       console.log('Loan approval response:', response.data);
       
-      setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); // Remove the approved loan
+      // Remove the approved loan from the list
+      setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); 
     } catch (error) {
       console.error('Error approving loan:', error);
     }
+    
+    
   };
 
   return (
@@ -56,23 +65,23 @@ const ManagerLoans = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Applicant name</TableCell>
-                  <TableCell>Account Number</TableCell>
+                  <TableCell>Loan ID</TableCell>
+                  <TableCell>Account ID</TableCell>
                   <TableCell align="right">Amount</TableCell>
-                  <TableCell>Action</TableCell>
+                  <TableCell>Start Date</TableCell>
+                  <TableCell>Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {pendingLoans.length > 0 ? (
                   pendingLoans.map((loan) => (
                     <TableRow key={loan.loan_id}>
-                      <TableCell>{loan.start_date}</TableCell>
-                      <TableCell>{loan.applicant || 'Unknown Applicant'}</TableCell>
-                      <TableCell>{loan.account_id}</TableCell>
+                      <TableCell>{loan.loan_id}</TableCell>
+                      <TableCell>{loan.account_id !== null ? loan.account_id : 'Unknown Applicant'}</TableCell>
                       <TableCell align="right">
-                        {loan.amount !== undefined && !isNaN(loan.amount) ? `$${loan.amount.toFixed(2)}` : 'N/A'}
+                        {loan.amount !== undefined && !isNaN(loan.amount) ? `$${parseFloat(loan.amount).toFixed(2)}` : 'N/A'}
                       </TableCell>
+                      <TableCell>{loan.start_date ? new Date(loan.start_date).toLocaleDateString() : 'N/A'}</TableCell>
                       <TableCell>
                         <Button 
                           variant="contained" 

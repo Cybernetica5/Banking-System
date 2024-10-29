@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faMoneyBillTransfer, faWallet, faClockRotateLeft, faGear, 
@@ -22,20 +22,11 @@ import LoanPayment from '../loans/LoanPayment';
 import LoanDetails from '../loans/LoanDetails';
 import Settings from '../../user/settings/Settings';
 
+ const userName = Cookies.get('username');
+
 const DashboardSidebar = () => {
   const [isSidebarClosed, setSidebarClosed] = useState(true);
-  const [userName, setUserName] = useState('User'); // Set initial fallback value
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedUserId = Cookies.get('userId');
-    const storedEmail = Cookies.get('email');
-    console.log('Stored User ID:', storedUserId);
-    console.log('Stored Email:', storedEmail);
-    if (storedUserId) {
-      setUserName(storedUserId);
-    }
-  }, []); // Fetch user data once when component mounts
 
   const toggleSidebar = () => setSidebarClosed(!isSidebarClosed);
 
@@ -62,11 +53,7 @@ const DashboardSidebar = () => {
     { path: '/dashboard/account-details', icon: faWallet, text: 'Account Details' },
     { path: '/dashboard/money-transfer', icon: faMoneyBillTransfer, text: 'Money Transfer' },
     { path: '/dashboard/transaction-history', icon: faClockRotateLeft, text: 'Transaction History' },
-    { 
-      path: '/dashboard/loans/apply', 
-      icon: faSackDollar, 
-      text: 'Loans',
-    },
+    { path: '/dashboard/loans/apply', icon: faSackDollar, text: 'Loans',},
   ];
 
   return (

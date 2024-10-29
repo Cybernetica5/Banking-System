@@ -1,161 +1,184 @@
-import { TextField, Button, Typography, Card, CardContent } from "@mui/material";
-import React, { useState } from "react";
-import "./MoneyTransfer1.css";
+import React, { useState, useEffect } from "react";
+import { Card, Typography, TextField, Autocomplete, FormControl, Button, Grid, Box } from "@mui/material";
+import Cookies from 'js-cookie';
+import api from '../../../services/api';
+import './MoneyTransfer1.css';
 
 function MoneyTransfer1() {
-  const [selectedAccount, setSelectedAccount] = useState("");
-  const [beneficiaryName, setBeneficiaryName] = useState("");
-  const [bankName, setBankName] = useState("Seychelles Trust Bank");
-  const [beneficiaryAccount, setBeneficiaryAccount] = useState("");
-  const [transferAmount, setTransferAmount] = useState("");
-  const [description, setDescription] = useState("");
+    const [selectedAccount, setSelectedAccount] = useState("");
+    const [userAccounts, setUserAccounts] = useState([]);
+    const [beneficiaryName, setBeneficiaryName] = useState("");
+    const [bankName, setBankName] = useState("Seychells Trust Bank");
+    const [beneficiaryAccount, setBeneficiaryAccount] = useState("");
+    const [transferAmount, setTransferAmount] = useState("");
+    const [description, setDescription] = useState("");
+    const [transferDetails, setTransferDetails] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const transferDetails = {
-      selectedAccount,
-      beneficiaryAccount,
-      transferAmount,
-      description,
+    const customerId = Cookies.get('customerId');
+
+    useEffect(() => {
+        const submitTransfer = async () => {
+            if (transferDetails) {
+                try {
+                    const response = await api.post("/money_transfer", transferDetails);
+                    if (response.status === 200) {
+                        console.log("Money transfer successful");
+                    } else {
+                        console.error("Money transfer failed");
+                    }
+                } catch (error) {
+                    console.error("Error during transfer:", error);
+                }
+            }
+        };
+
+        submitTransfer();
+    }, [transferDetails]);
+
+    useEffect(() => {
+        const fetchUserAccounts = async () => {
+          try {
+            const response = await api.get('/user_accounts', { params: { customerId } });
+            const data = Array.isArray(response.data) ? response.data : [];
+            setUserAccounts(data);
+          } catch (error) {
+            console.error('Error fetching accounts:', error);
+            setUserAccounts([]);
+          }
+        };
+
+        fetchUserAccounts();
+    }, []);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setTransferDetails({
+            selectedAccount,
+            beneficiaryAccount,
+            transferAmount,
+            description,
+        });
     };
-    try {
-      const response = await fetch("/api/money-transfer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(transferDetails),
-      });
 
-      if (response.ok) {
-        console.log("Money transfer successful");
-      } else {
-        console.error("Money transfer failed");
-      }
-    } catch (error) {
-      console.error("Error during transfer:", error);
-    }
-  };
+    const handleReset = () => {
+        setSelectedAccount("");
+        setBeneficiaryAccount("");
+        setTransferAmount("");
+        setDescription("");
+        setBeneficiaryName("");
+        setBankName("Seychells Trust Bank");
+    };
 
-  const handleReset = () => {
-    setSelectedAccount("");
-    setBeneficiaryAccount("");
-    setTransferAmount("");
-    setDescription("");
-    setBeneficiaryName("");
-    setBankName("");
-  };
-
-  return (
-    <Card style={{ maxWidth: '600px', margin: 'auto', padding: '20px' }}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Money Transfer
-        </Typography>
-
-        <form onSubmit={handleSubmit}>
-
-          <TextField
-            label="Account Number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={selectedAccount}
-            onChange={(e) => setSelectedAccount(e.target.value)}
-            required
-          />
-
-          <TextField
-            label="Beneficiary Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={beneficiaryName}
-            onChange={(e) => setBeneficiaryName(e.target.value)}
-            required
-          />
-          <TextField
-            label="To Account"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={beneficiaryAccount}
-            onChange={(e) => setBeneficiaryAccount(e.target.value)}
-            required
-          />
-
-          <TextField
-            label="Bank Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={bankName}
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-
-          <TextField
-            label="Currency"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value="$"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-          <TextField
-            label="Transfer Amount"
-            type="number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{
-                height: '56px', 
-                '& input': { 
-                  height: '56px',
-                  fontSize: '16px'
-                  }
-                }}
-            value={transferAmount}
-            onChange={(e) => setTransferAmount(e.target.value)}
-            required
-          />
-
-          <TextField
-            label="Enter Description"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={4}
-            margin="normal"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-
-          {/* Action Buttons */}
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleReset}
-            style={{ marginRight: '10px', marginTop: '20px' }}
-          >
-            Reset
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            style={{ marginTop: '20px' }}
-          >
-            Submit
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
+    return (
+        <Box p={3}>
+            <Card className="shadow" sx={{ p: 3, maxWidth: 600, margin: "0 auto" }}>
+                <Typography variant="h4" color="primary" gutterBottom>
+                    Money Transfer
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Autocomplete
+                                options={userAccounts}
+                                getOptionLabel={(option) => option.account_number}
+                                value={userAccounts.find(account => account.account_number === selectedAccount) || null}
+                                onChange={(event, newValue) => {
+                                    setSelectedAccount(newValue ? newValue.account_number : '');
+                                }}
+                                renderInput={(params) => (
+                                    <TextField 
+                                        {...params} 
+                                        label="Select Account" 
+                                        fullWidth 
+                                        required 
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Beneficiary Name"
+                                value={beneficiaryName}
+                                onChange={(e) => setBeneficiaryName(e.target.value)}
+                                fullWidth
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Beneficiary Account"
+                                value={beneficiaryAccount}
+                                onChange={(e) => setBeneficiaryAccount(e.target.value)}
+                                fullWidth
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Beneficiary Bank"
+                                value={bankName}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Currency"
+                                value="SCR"
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                type="number"
+                                label="Transfer Amount"
+                                value={transferAmount}
+                                onChange={(e) => setTransferAmount(e.target.value)}
+                                fullWidth
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                multiline
+                                rows={4}
+                                fullWidth
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                fullWidth
+                                onClick={handleReset}
+                            >
+                                Reset
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                            >
+                                Submit
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            </Card>
+        </Box>
+    );
 }
 
 export default MoneyTransfer1;

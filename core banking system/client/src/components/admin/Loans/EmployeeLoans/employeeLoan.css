@@ -1,97 +1,95 @@
-.body {
-    background: #f6f3f3;
+/* MoneyTransfer1.css */
+
+.App1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120vh;
+
+    width:75%;
+}
+
+h1 {
     text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #4a4a4a;
+    margin-bottom: 20px;
 }
 
-.App2 {
-    background-color: #210a4c;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    transition: transform 0.2s;
-    width: 60%;
-    margin: auto;
-    margin-top: 20px;
-    height: 100%;
-}
-
-.App2 h1{
-    font-size: xx-large;
-    text-align: center;
-    color:#5649e7;
-
-}
-
-.App2 h2 {
-    font-size: large;
-    text-align: center;
-    color: #5e208e;
-}
-
-.App2 fieldset {
+fieldset {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     border: none;
 }
 
-input[type="number"],
-input[type="email"],
-.App2 textarea {
-    display: block;
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    font-size: 12px;
+form {
+    display: flex;
+    flex-direction: column;
 }
 
-.App2 select {
-    display: block;
+input[type="text"],
+input[type="number"],
+textarea,
+.MuiFormControl-root {
     width: 100%;
     margin-bottom: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+.MuiTextField-root {
+    font-size: 16px;
     padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    border: 1px solid #cfd8dc;
+    border-radius: 4px;
 }
 
-.App2 label {
+input[readonly] {
+    background-color: #f0f4f8;
+}
+
+label {
+    color: #5649e7;
     font-size: 15px;
-    display: block;
-    margin-top: 8px;
-    margin-bottom: 5px;
-    text-align: left;
-    color: #555;
     font-weight: bold;
+    margin: 10px 0 5px;
 }
 
-.App2 button {
-    padding: 5px;
-    border-radius: 10px;
-    margin: 15px 0;
-    margin-right: 10px;
+button[type="reset"],
+button[type="submit"] {
+    width: 100px;
+    height: 40px;
+    margin-top: 15px;
     border: none;
-    color: white;
-    cursor: pointer;
-    background-color: #5649e7;
-    width: 30%;
+    border-radius: 5px;
+    color: #ffffff;
     font-size: 16px;
-}
-.App2 button1 {
-    padding: 5px;
-    border-radius: 10px;
-    margin: 15px 0;
-    margin-right: 10px;
-    border: none;
-    color: white;
     cursor: pointer;
-    background-color: #2b2475;
-    width: 30%;
-    font-size: 16px;
 }
 
-.App2 textarea {
-    resize: none;
-    width: 98%;
-    min-height: 100px;
-    max-height: 120px;
+button[type="reset"] {
+    background-color: #9c27b0;
+    margin-right: 10px;
+}
+
+button[type="submit"] {
+    background-color: #2196f3;
+}
+
+button[type="reset"]:hover {
+    background-color: #ab47bc;
+}
+
+button[type="submit"]:hover {
+    background-color: #1e88e5;
+}
+
+textarea {
+    resize: vertical;
+    font-family: Arial, sans-serif;
 }

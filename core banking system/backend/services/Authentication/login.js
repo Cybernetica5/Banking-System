@@ -88,6 +88,7 @@ router.post('/login', validateLoginInput, async (req, res) => {
     
     await db.execute('INSERT INTO refresh_tokens (token, user_id) VALUES (?, ?)', [refreshToken, user[0].id]);
     console.log('---Refresh token stored in the database---');
+
     // Set cookies
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
@@ -100,7 +101,7 @@ router.post('/login', validateLoginInput, async (req, res) => {
       const [customerId] = await db.execute('SELECT customer_id FROM customer WHERE user_id = ?', [user[0].id]);
       
       res.cookie('customerId', customerId[0].customer_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
-      res.status(200).json({ message: 'Login successful', userId: user[0].id, customerId: customerId[0].customer_id, role: user[0].role, accessToken, refreshToken });
+      res.status(200).json({ message: 'Login successful', userId: user[0].id, username: user[0].user_name, customerId: customerId[0].customer_id, role: user[0].role, accessToken, refreshToken });
     } 
     if (user[0].role === 'staff') {
       const [staff] = await db.execute('SELECT role, staff_id FROM staff WHERE user_id = ?', [user[0].id]);
@@ -123,9 +124,8 @@ router.post('/login', validateLoginInput, async (req, res) => {
 
       res.cookie('staffId', staff_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
       res.cookie('role', staff_role, { httpOnly: true, secure: true, sameSite: 'Strict' });
-      res.cookie('branchId', branch_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
       
-      res.status(200).json({ message: 'Login successful', userId: user[0].id, role: staff_role, branch_id: branch_id, accessToken, refreshToken, staff_id });
+      res.status(200).json({ message: 'Login successful', userId: user[0].id, username: user[0].user_name, role: staff_role, branch_id: branch_id, accessToken, refreshToken, staff_id });
      
     }
     

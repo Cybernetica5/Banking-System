@@ -7,12 +7,13 @@ import protectedRoutes from './routes/protected.js';
 import refreshRoutes from './routes/referesh.js';
 import authenticateToken from './middleware/auth.js';
 import staffServices from './services/Staff/staff_services.js';
+import managerRoutes from './routes/m-loans.js';
 
 import { getPendingLoans } from './services/ManagerLoans/manager-loans.js';   
 import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
 import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInstallmentAmount } from './services/Loan/loan_services.js';
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
-import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
+import { getAccounts,getUserAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import { addIndividualCustomer, addOrganizationCustomer, getCustomerDetails } from './services/Customers/customer_services.js';
 import { getTransactionReport, getLateLoanPaymentReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
@@ -51,10 +52,13 @@ app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
 app.use('/staff', staffServices);
+app.use('/manager', managerRoutes);
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
+app.get("/user_accounts", getUserAccounts);
 app.get("/accounts_summary", getAccountSummary);
+
 app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 app.get("/savings_accounts", getSavingsAccounts);
@@ -78,6 +82,8 @@ app.put("/change_password/:userId", changeUserPassword);
 
 //Loan
 app.post("/apply_loan", applyLoan);
+app.post("/pay_loan", payLoanInstallment);
+app.get("/installment", getInstallmentAmount);
 
 // Reports
 app.post("/report/transaction", getTransactionReport);
@@ -105,7 +111,6 @@ app.post("/customer-details", getCustomerDetails);
 
 //logout
 app.post("/logout", logout);
-
 // Transactions
 app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);

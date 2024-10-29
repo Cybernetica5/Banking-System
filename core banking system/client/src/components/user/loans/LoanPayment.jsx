@@ -57,7 +57,7 @@ const LoanPayment = () => {
   };
 
   return (
-    <Card sx={{ maxWidth: 600, margin: 'auto', mt: 10 }}>
+    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6" component="div">
           Loan Payment

@@ -24,7 +24,6 @@ async function addEmployee(req, res) {
 // Define the function to remove an employee
 async function removeEmployee(req, res) {
     const { staffId } = req.body;
-    console.log(req.body);
     const query = `CALL removeEmployee(?)`;
 
     try {
@@ -39,6 +38,7 @@ async function removeEmployee(req, res) {
 // Define the function to update employee details
 async function updateEmployeeDetails(req, res) {
     const { staff_id, full_name, date_of_birth } = req.body;
+    console.log(req.body);
     const query = `CALL updateEmployee_staff_details(?, ?, ?)`;
 
     try {
