@@ -72,6 +72,7 @@ const DashboardSidebar = () => {
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' }] : []), // Show only to managers
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
+    { path: '/admin-dashboard/employee/add-employee', icon: faPeopleGroup, text: 'Employees' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
     { path: '/admin-dashboard/loans', icon: faSackDollar, text: 'Loans' },
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers

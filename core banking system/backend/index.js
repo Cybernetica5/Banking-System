@@ -7,6 +7,7 @@ import protectedRoutes from './routes/protected.js';
 import refreshRoutes from './routes/referesh.js';
 import authenticateToken from './middleware/auth.js';
 import staffServices from './services/Staff/staff_services.js';
+import managerRoutes from './routes/m-loans.js';
 
 import { getPendingLoans } from './services/ManagerLoans/manager-loans.js';   
 import { employee_loans } from './services/EmployeeLoans/employee-loans.js';
@@ -51,6 +52,7 @@ app.use('/auth', authRoutes);
 app.use('/api', authenticateToken, protectedRoutes);
 app.use('/refresh', refreshRoutes);
 app.use('/staff', staffServices);
+app.use('/manager', managerRoutes);
 
 // Define routes using async functions
 app.get("/accounts", getAccounts);
@@ -98,11 +100,17 @@ app.post("/updateStaffUserDetails",updateUserDetails);
 app.post("/updateStaffBranch",updateEmployeeBranch);
 
 
+app.post("/addEmployee",addEmployee);
+app.post("/removeEmployee",removeEmployee);
+app.post("/updateStaffDetails",updateEmployeeDetails);
+app.post("/updateStaffUserDetails",updateUserDetails);
+app.post("/updateStaffBranch",updateEmployeeBranch);
+
+
 app.post("/customer-details", getCustomerDetails);
 
 //logout
 app.post("/logout", logout);
-
 // Transactions
 app.post("/deposit", depositFunds);
 app.post("/withdraw", withdrawFunds);
@@ -110,7 +118,7 @@ app.post("/money_transfer", money_transfer);
 app.post("/employee_loans",employee_loans);
 
 // Account details
-app.post("/account_details", getAccountDetails);
+//app.post("/account_details", getAccountDetails);
 app.post("/create_fixed_deposit", createFixedDeposit);
 
 // Existing routes...

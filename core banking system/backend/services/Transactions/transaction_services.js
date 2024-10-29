@@ -87,6 +87,8 @@ async function withdrawFunds(req, res) {
 //     }
 // }
 
+
+
 async function getRecentTransactions(req, res) {
     const customerId = req.params.customerId;
     try {
@@ -98,7 +100,7 @@ async function getRecentTransactions(req, res) {
     } catch (err) {
         console.error('Error fetching account summary:', err);
         res.status(500).json({ error: 'Internal server error' });
-    }
+    } 
 }
 async function getTransactionsHistory(req, res) {
     const customerId = req.params.customerId;
