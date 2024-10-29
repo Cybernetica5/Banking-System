@@ -16,6 +16,8 @@ async function createFixedDeposit(req, res) {
       console.log('Account ID:', accountId);
       const startDate = new Date().toISOString().slice(0, 10);
       const endDate = new Date(new Date().setMonth(new Date().getMonth() + duration)).toISOString().slice(0, 10);
+      console.log('Start date:', startDate);
+      console.log('End date:', endDate);
     
       // Create fixed deposit
       const [results] = await db.query(
