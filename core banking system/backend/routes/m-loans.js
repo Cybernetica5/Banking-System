@@ -1,16 +1,39 @@
-const express = require('express');
+import express from 'express';
+import { getPendingLoans, approveLoan } from '../services/ManagerLoans/manager-loans.js';
 const router = express.Router();
-const { getPendingLoans } = require('../services/ManagerLoans/manager-loans.js');
-
 
 // Route for fetching pending loans
-router.get('/api/manager-loans', async (req, res) => {
+router.get('/manager-loans', async (req, res) => {
   try {
-    const pendingLoans = await getPendingLoans(); // Fetch from your database
-    res.json(pendingLoans); // Send the loans as a JSON response
+    const pendingLoans = await getPendingLoans(); 
+    res.json(pendingLoans); 
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch loans' });
   }
 });
 
-module.exports = router;
+router.post('/manager-loans/approve', async (req, res) => {
+  console.log('Approving loan:', req.body); // Log the request body
+  let { loanId, approvedDate } = req.body.param;
+  console.log(`Received loanId: ${loanId}, approvedDate: ${approvedDate}`); // Log the parameters
+  loanId = parseInt(loanId);
+
+  if (isNaN(loanId)) {
+    return res.status(400).json({ error: 'Invalid loan ID' });
+  }
+
+  try {
+    const result = await approveLoan(loanId, approvedDate);
+    console.log(`approveLoan result:`, result); // Log the result
+
+    if (result.error) {
+      return res.status(500).json(result);
+    }
+    res.json(result);
+  } catch (error) {
+    console.error(`Error approving loan with ID ${loanId}:`, error);
+    res.status(500).json({ error: 'Failed to approve loan' });
+  }
+});
+
+export default router;

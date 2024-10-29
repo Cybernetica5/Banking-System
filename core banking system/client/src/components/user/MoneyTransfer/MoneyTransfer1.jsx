@@ -1,46 +1,72 @@
-// Filename - MoneyTransfer.jsx
-// It contains the Form, its Structure
-// and Basic Form Functionalities
-
-import { OutlinedInput } from "@mui/material";
-import "./MoneyTransfer1.css";   
-import React, { useState } from "react";
-//import { Input, Page, setOptions } from '@mobiscroll/react';
-
+// import "./MoneyTransfer1.css";   
+import React, { useState, useEffect } from "react";
+import { FormControl, TextField, Autocomplete } from "@mui/material";
+import Cookies from 'js-cookie';
+import api from '../../../services/api';
 
 function MoneyTransfer1() {
     const [selectedAccount, setSelectedAccount] = useState("");
+    const [userAccounts, setUserAccounts] = useState([]);
     const [beneficiaryName, setBeneficiaryName] = useState("");
     const [BankName, setBankName] = useState("Seychells Trust Bank");
     const [beneficiaryAccount, setBeneficiaryAccount] = useState("");
     const [transferAmount, setTransferAmount] = useState("");
     const [description, setDescription] = useState("");
+    const [transferDetails, setTransferDetails] = useState(null);
 
-    const handleSubmit = async(e) => {
+    const customerId = Cookies.get('customerId');
+    console.log('Customer ID:', customerId);
+
+    useEffect(() => {
+        const submitTransfer = async () => {
+            if (transferDetails) {
+                try {
+                    const response = await api.post("/money_transfer", transferDetails); // Using api.post
+                    if (response.status === 200) {
+                        console.log("Money transfer successful");
+                    } else {
+                        console.error("Money transfer failed");
+                    }
+                } catch (error) {
+                    console.error("Error during transfer:", error);
+                }
+            }
+        };
+
+        submitTransfer();
+    }, [transferDetails]); // Runs whenever transferDetails changes
+
+    useEffect(() => {
+        const fetchUserAccounts = async () => {
+          try {
+            console.log('Fetching user accounts for customer ID:', customerId);
+            const response = await api.get('/user_accounts',{params:{customerId}});
+
+            console.log('API Response:', response.data); // Log the raw response
+      
+            const data = Array.isArray(response.data) ? response.data : [];
+            console.log('User Accounts:', data);
+            setUserAccounts(data);
+      
+          } catch (error) {
+            console.error('Error fetching savings accounts:', error);
+            setUserAccounts([]); // Set as empty array on error to avoid null issues
+          }
+        };
+      
+        fetchUserAccounts();
+      }, []);
+
+      console.log('User Accounts:', userAccounts);
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const transferDetails = {
+        setTransferDetails({
             selectedAccount,
             beneficiaryAccount,
             transferAmount,
             description,
-        };
-    try {
-        const response = await fetch("/api/money-transfer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(transferDetails),
         });
-
-        if (response.ok) {
-            console.log("Money transfer successful");
-        } else {
-            console.error("Money transfer failed");
-        }
-    } catch (error) {
-        console.error("Error during transfer:", error);
-    }
     };
 
     const handleReset = () => {
@@ -50,7 +76,6 @@ function MoneyTransfer1() {
         setDescription("");
         setBeneficiaryName("");
         setBankName("");
-       
     };  
 
     return (
@@ -58,22 +83,29 @@ function MoneyTransfer1() {
             <h1>Money Transfer</h1>
             <fieldset>
                 <form onSubmit={handleSubmit}>
-                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="selectAccount">Payment To</label>
-                    <br />
-
-                    <input Beneficiary Name
-                        name="selectAccount"
-                        id="selectAccount"
-                        value={selectedAccount}
-                        onChange={(e) => setSelectedAccount(e.target.value)}
-                        placeholder="Account Number"
-                        required
-                    />
-
-
-<label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="beneficiaryAccount">Beneficiary Details</label>
-    
-                    <input Beneficiary Name
+                    <FormControl fullWidth margin="normal">
+                        <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="selectAccount">Select an account</label>
+                        <Autocomplete
+                            options={userAccounts}
+                            getOptionLabel={(option) => option.account_number}
+                            value={userAccounts.find(account => account.account_number === selectedAccount) || null}
+                            onChange={(event, newValue) => {
+                                if (newValue) {
+                                    setSelectedAccount(newValue.account_number);
+                                    console.log('Selected account:', newValue.account_number);
+                                } else {
+                                    setSelectedAccount('');
+                                    console.log('No account selected');
+                                }
+                            }}
+                            renderInput={(params) => {
+                                console.log('Rendering Autocomplete with options:', userAccounts);
+                                return <TextField {...params} label="Selected Account Number" />;
+                            }}
+                        />
+                    </FormControl>
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="beneficiaryName">Beneficiary Details</label>
+                    <input
                         name="beneficiaryName"
                         id="beneficiaryName"
                         value={beneficiaryName}
@@ -83,32 +115,24 @@ function MoneyTransfer1() {
                     />
                     <br />
                     <br />
-
-                     <input
+                    <input
                         name="beneficiaryAccount"
                         id="beneficiaryAccount"
                         value={beneficiaryAccount}
                         onChange={(e) => setBeneficiaryAccount(e.target.value)}
                         placeholder="To Account"
                         required
-                     />   
-                     <br />
-                     
-                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="beneficiaryAccount">Beneficiary Bank Details</label>
-    
-                        <input type="text"  name="bank name" value="Seychelles Trust Bank"></input>
-                        <br />
-                        <br />
-                       
-                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="paymentMethod">Payment Details</label>
-                    
-                    
-                    
-                      <input type="text"  name="currency" value="LKR"></input>
-                      <br />
-                      <br />
-
-                        <input
+                    />   
+                    <br />
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="bankName">Beneficiary Bank Details</label>
+                    <input type="text" name="bankName" value={BankName} readOnly />
+                    <br />
+                    <br />
+                    <label style={{ color: '#5649e7', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="currency">Payment Details</label>
+                    <input type="text" name="currency" value="SCR" readOnly />
+                    <br />
+                    <br />
+                    <input
                         type="number"
                         name="transferAmount"
                         id="transferAmount"
@@ -116,9 +140,8 @@ function MoneyTransfer1() {
                         onChange={(e) => setTransferAmount(e.target.value)}
                         placeholder="Transfer Amount"
                         required
-                        />
-
-                    <label style={{ color: '#5649e6', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }}htmlFor="description">Description Details</label>
+                    />
+                    <label style={{ color: '#5649e6', fontSize: '15px', fontWeight: 'bold', marginTop: '10px', marginBottom: '10px' }} htmlFor="description">Description Details</label>
                     <textarea
                         name="description"
                         id="description"
@@ -135,14 +158,12 @@ function MoneyTransfer1() {
                     >
                         Reset
                     </button>
-                    
                     <button
                         type="submit"
-                        onClick={handleSubmit}
                     >
                         Submit
                     </button>
-                    <br/>
+                    <br />
                 </form>
             </fieldset>
         </div>
