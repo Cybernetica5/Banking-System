@@ -68,10 +68,9 @@ const DashboardSidebar = () => {
     { path: '/admin-dashboard/createaccount', icon: faWallet, text: 'Create Account' },
     { path: '/admin-dashboard/transactions', icon: faMoneyBillTransfer, text: 'Transactions' },
     { path: '/admin-dashboard/fixed-deposits', icon: faCoins, text: 'Fixed Deposits' },
-    { path: '/admin-dashboard/loans', icon: faSackDollar, text: 'Loans' },
-    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers
-    {path: '/admin-dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
-    {path: '/admin-dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/manager-loans', icon: faSackDollar, text: 'Loans' }] : []), // Show only to managers
+    ...(userRole === 'employee' ? [{ path: '/admin-dashboard/employee-loans', icon: faSackDollar, text: 'Loans' }] : []), // Show only to employees
+    ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []) // Show only to managers
   ];
 
   return (

@@ -159,13 +159,13 @@ const AddEmployee = () => {
           value={employeeData.branchId}
           fullWidth
           disabled
-          sx={{
-            height: '56px', 
-            '& input': { 
-              height: '56px',
-              fontSize: '16px'
-              }
-          }}
+          // sx={{
+          //   height: '56px', 
+          //   '& input': { 
+          //     height: '56px',
+          //     fontSize: '16px'
+          //     }
+          // }}
 
           margin="normal"
           onChange={handleInputChange}

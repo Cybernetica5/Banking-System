@@ -138,13 +138,13 @@ const Transactions = () => {
               margin="normal"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              sx={{
-                height: '56px',
-                '& input': {
-                  height: '56px',
-                  fontSize: '16px'
-                }
-              }}
+              // sx={{
+              //   height: '56px',
+              //   '& input': {
+              //     height: '56px',
+              //     fontSize: '16px'
+              //   }
+              // }}
             />
             <TextField
               label="Description"

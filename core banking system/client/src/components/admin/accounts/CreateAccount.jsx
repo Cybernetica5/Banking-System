@@ -79,6 +79,7 @@ const CreateAccount = () => {
       console.error('Error creating account:', error);
       showMessage(error.response?.data?.message || 'Failed to create account', 'error');
     }
+
   };
 
   const getMinimumDeposit = (planType) => {
@@ -228,13 +229,13 @@ const CreateAccount = () => {
               type="number"
               value={initialDeposit}
               onChange={(e) => setInitialDeposit(e.target.value)}            
-              sx={{
-                height: '56px', 
-                '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-              }}
+              // sx={{
+              //   height: '56px', 
+              //   '& input': { 
+              //   height: '56px',
+              //   fontSize: '16px'
+              //   }
+              // }}
             />
           )}
           <div className="button-container">

@@ -89,7 +89,7 @@ const AddCustomer = () => {
       address: '',
       mobileNumber: '',
       landlineNumber: '',
-      accountType: 'savings'
+      accountType: ''
     });
   };
 
@@ -147,6 +147,7 @@ const AddCustomer = () => {
         showMessage('Error adding customer', 'error');
       }
     };
+    handleCancel();
   };
 
   return (

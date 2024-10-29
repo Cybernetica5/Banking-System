@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TextField, Button, Switch, FormControlLabel, Typography, Grid, Dialog, DialogActions, DialogContent, DialogTitle, Card } from '@mui/material';
@@ -124,13 +123,13 @@ const Settings = () => {
             fullWidth
             margin="normal"
             onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-            sx={{
-              height: '56px', 
-              '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-            }}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
           />
 
           <div className="button-container">

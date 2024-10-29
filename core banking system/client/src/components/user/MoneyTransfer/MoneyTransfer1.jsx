@@ -22,16 +22,20 @@ function MoneyTransfer1() {
                     const response = await api.post("/money_transfer", transferDetails);
                     if (response.status === 200) {
                         console.log("Money transfer successful");
+                        alert("Money transfer successful");
                     } else {
                         console.error("Money transfer failed");
+                        alert("Money transfer failed");
                     }
                 } catch (error) {
                     console.error("Error during transfer:", error);
+                    alert("Error during transfer", error);
                 }
             }
         };
 
         submitTransfer();
+        handleReset();
     }, [transferDetails]);
 
     useEffect(() => {
@@ -70,8 +74,8 @@ function MoneyTransfer1() {
 
     return (
         <Box p={3}>
-            <Card sx={{ p: 3, maxWidth: 600, margin: "0 auto" }}>
-                <Typography variant="h4" color="primary" gutterBottom>
+            <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
+                <Typography variant="h6" gutterBottom>
                     Money Transfer
                 </Typography>
                 <form onSubmit={handleSubmit}>
@@ -125,7 +129,7 @@ function MoneyTransfer1() {
                         <Grid item xs={12}>
                             <TextField
                                 label="Currency"
-                                value="SCR"
+                                value="$"
                                 InputProps={{
                                     readOnly: true,
                                 }}

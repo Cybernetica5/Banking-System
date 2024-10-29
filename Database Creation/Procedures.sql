@@ -1,5 +1,7 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS `MoneyTransfer`;
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `MoneyTransfer`(
     IN sender_account_number CHAR(15),
     IN receiver_account_number CHAR(15),
@@ -69,6 +71,8 @@ DELIMITER ;
 
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS `GetLoanDetails`;
+
 CREATE PROCEDURE GetLoanDetails(IN userId INT)
 BEGIN
     SELECT 
@@ -101,6 +105,7 @@ END //
 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS `AddLoan`;
 
 DELIMITER ##
 CREATE DEFINER = root @localhost PROCEDURE AddLoan(

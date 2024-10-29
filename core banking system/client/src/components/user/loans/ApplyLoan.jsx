@@ -197,13 +197,13 @@ const ApplyLoan = () => {
             onChange={(e) => setLoanAmount(e.target.value)}
             required
             type="number"
-            sx={{
-              height: '56px', 
-              '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-            }}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
             inputProps={{
               max: creditLimit, // Set the max limit as the credit limit
             }}
@@ -217,13 +217,13 @@ const ApplyLoan = () => {
             onChange={(e) => setLoanDuration(e.target.value)}
             required
             type="number"
-            sx={{
-              height: '56px', 
-              '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-            }}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
           />
           <Button
             type="submit"

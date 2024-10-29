@@ -2,7 +2,7 @@ import db from '../../services/Config/database.js';
 
 async function getAccounts(req, res) {
     try {
-        const [rows] = await db.query("SELECT * FROM account");
+        const [rows] = await db.query("SELECT account_number FROM account");
         res.json(rows);
     } catch (err) {
         console.error('Error fetching accounts:', err);
