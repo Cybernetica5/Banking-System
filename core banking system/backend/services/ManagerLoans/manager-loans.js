@@ -29,4 +29,23 @@ async function approveLoan(loanId,approvedDate) {
     }
 }
 
-export { getPendingLoans, approveLoan };
+async function rejectLoan(loanId) {
+    try {
+        // Call the stored procedure and pass loanId as a parameter
+        console.log('Rejecting loan:', loanId);
+        const [result] = await db.query('CALL ManagerDeclineLoan(?)', [loanId]);
+        console.log('RejectLoan result:', result);
+
+        // Check if the stored procedure affected any rows
+        if (result.affectedRows === 0) {
+            return { error: 'Loan not found or already rejected' };
+        } else {
+            return { message: 'Loan rejected successfully' };
+        }
+    } catch (err) {
+        console.error(`Error rejecting loan with ID ${loanId}:`, err);
+        return { error: 'Internal server error' };
+    }
+}
+
+export { getPendingLoans, approveLoan, rejectLoan };

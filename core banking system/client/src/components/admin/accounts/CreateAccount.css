@@ -16,3 +16,40 @@
     justify-content: flex-end;
     margin-top: 10px;
   }
+  .cancel-button{
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    background-color: white;
+    margin: 10px 0;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+                0 0 15px rgba(0, 0, 255, 0.5); /* Base 3D glow color */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  }
+  .cancel-button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
+    0 0 25px rgba(0, 0, 255, 0.8); /* Brighter 3D glow color on hover */
+    transform: translateY(-3px); /* Lift the box slightly */
+  }
+  .create-account-button{
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    background-color: white;
+    margin: 10px 0;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+                0 0 15px rgba(255, 0, 0, 0.5); /* Base 3D glow color */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .create-account-button:hover{
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
+    0 0 25px rgba(255, 0, 0, 0.8); /* Brighter 3D glow color on hover */
+    transform: translateY(-3px); /* Lift the box slightly */
+  }

@@ -238,20 +238,20 @@ const CreateAccount = () => {
             />
           )}
           <div className="button-container">
-            <Button
+            <Button className="cancel-button"
               variant="contained"
-              startIcon={<CancelIcon />}
-              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
-              style={{ marginRight: '8px' }}
+             // startIcon={<CancelIcon />}
+              // sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+              //style={{ marginRight: '8px' }}
               onClick={handleCancel}
             >
               Cancel
             </Button>
-            <Button
+            <Button className="create-account-button"
               type="submit"
               variant="contained"
-              endIcon={<AddCircleIcon />}
-              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+              //endIcon={<AddCircleIcon />}
+            //  sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
             >
               Create Account
             </Button>
