@@ -35,6 +35,8 @@ export default function PieChartWithCenterLabel() {
   const userId = Cookies.get('userId');
   const customerId = Cookies.get('customerId');
 
+  const colors = ["#FF7043", "#FFCA28", "#FF8A80"];
+
   console.log('User ID:', userId);
   console.log('Customer ID:', customerId);
   
@@ -100,7 +102,19 @@ export default function PieChartWithCenterLabel() {
         <Typography variant="h6">
           Account Summary
         </Typography>
-        <PieChart series={[{ data, innerRadius: 75, outerRadius: 100 }]} {...chartSize}>
+        <PieChart
+          series={[
+            {
+              data: data.map((entry, index) => ({
+                ...entry,
+                color: colors[index % colors.length]  // Assign color from the palette
+              })),
+              innerRadius: 75,
+              outerRadius: 100
+            }
+          ]}
+          {...chartSize}
+        >
           <PieCenterLabel>{`${totalAmount.toFixed(2)} $`}</PieCenterLabel>
         </PieChart>
       </CardContent>
