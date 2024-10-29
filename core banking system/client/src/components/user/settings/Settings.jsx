@@ -132,13 +132,13 @@ const Settings = () => {
             fullWidth
             margin="normal"
             onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-            sx={{
-              height: '56px', 
-              '& input': { 
-                height: '56px',
-                fontSize: '16px'
-                }
-            }}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
           />
 
           <TextField
@@ -235,7 +235,7 @@ const Settings = () => {
             <Button 
                 onClick={handleClose} 
                 startIcon={<CancelIcon />}
-                sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }} 
+                // sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }} 
                 variant="contained"
             >
                 Cancel
