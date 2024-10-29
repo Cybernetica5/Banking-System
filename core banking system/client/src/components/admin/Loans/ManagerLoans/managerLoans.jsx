@@ -13,7 +13,7 @@ import {
   Button 
 } from '@mui/material';
 import "./managerLoans.css";
-import api from '../../../../services/api';     
+import api from '../../../../services/api';      
 
 const ManagerLoans = () => {
   const [pendingLoans, setPendingLoans] = useState([]);
@@ -25,11 +25,14 @@ const ManagerLoans = () => {
         const data = response.data;
         setPendingLoans(data);
         console.log('Pending loans:', data);
-    
+   
       } catch (error) {
         console.error('Error fetching loans:', error);
       }
     };
+
+  
+
     fetchLoans();
   }, []);
   
@@ -47,6 +50,7 @@ const ManagerLoans = () => {
     } catch (error) {
       console.error('Error approving loan:', error);
     }
+    
     
   };
 
