@@ -14,15 +14,15 @@ import { getLoanDetails, getCreditLimit, applyLoan, payLoanInstallment, getInsta
 import { money_transfer } from './services/MoneyTransfer/money_transfer.js';
 import { getAccounts, getAccountSummary } from './services/AccountManagement/account_details.js';
 import { addIndividualCustomer, addOrganizationCustomer,getCustomerDetails } from './services/Customers/customer_services.js';
-import { getTransactionReport, getLateLoanPaymentReport } from './services/Reports/report_services.js';
+//import { getTransactionReport, getLateLoanPaymentReport } from './services/Reports/report_services.js';
 import { depositFunds, withdrawFunds,getRecentTransactions,getTransactionsHistory } from './services/Transactions/transaction_services.js';
 import { addEmployee, removeEmployee,updateEmployeeDetails, updateUserDetails, updateEmployeeBranch } from './services/emplyees/employee_services.js';
 
-import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
+//import { addIndividualCustomer, addOrganizationCustomer ,getCustomerDetails } from './services/Customers/customer_services.js';
 import { getTransactionReport , getLateLoanPaymentReport} from './services/Reports/report_services.js';
 
-import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
-import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
+//import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
+//import { depositFunds, withdrawFunds, getRecentTransactions, getTransactionsHistory } from './services/Transactions/transaction_services.js';
 //import {addEmployee} from './services/emplyees/employee_services.js'
 
 import { getAccountDetails } from './services/Accounts/account_services.js';    
@@ -64,8 +64,8 @@ app.get("/loan_details", getLoanDetails);
 app.get("/credit-limit", getCreditLimit);
 app.get("/savings_accounts", getSavingsAccounts);
 
-app.get("/recent_transactions/:customerId", getRecentTransactions);
-app.get("/transaction_History/:customerId", getTransactionsHistory);
+app.get("/recent_transactions/", getRecentTransactions);
+app.get("/transaction_History", getTransactionsHistory);
 
 app.get("/manager-loans", getPendingLoans);
 
