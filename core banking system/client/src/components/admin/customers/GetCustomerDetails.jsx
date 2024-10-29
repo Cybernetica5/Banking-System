@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Paper, Card, CardContent } from '@mui/material';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
 import api from '../../../services/api';
+import './GetCustomerDetails.css';
 
 const GetCustomerDetails = () => {
   const [NICOrLicenseNumber, setNICOrLicenseNumber] = useState('');
@@ -58,11 +59,12 @@ const GetCustomerDetails = () => {
 
           {/* Search Button */}
           <Button
+              className="search-button"
               variant="contained"
               color="primary"
               onClick={handleSearch}
-              style={{ marginBottom: '20px' }}
-              sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
+              //style={{ marginBottom: '20px' }}
+              //sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
           >
               Search
           </Button>
