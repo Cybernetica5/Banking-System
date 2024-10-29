@@ -12,6 +12,7 @@ import Cookies from 'js-cookie';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const branchId = Cookies.get('branchId');
+console.log('Branch ID:', branchId);
 
 const TransactionsReport = () => {
   const [reportData, setReportData] = useState([]);
@@ -92,7 +93,7 @@ const TransactionsReport = () => {
 
   return (
     <div>
-      <Card style={{ padding: '16px', margin: '16px', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto' }}>
+      <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Transaction Report</Typography>
 
         {/* Date Range Inputs */}

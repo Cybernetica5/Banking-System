@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Typography, TextField, Autocomplete, FormControl, Button, Grid, Box } from "@mui/material";
 import Cookies from 'js-cookie';
 import api from '../../../services/api';
+import './MoneyTransfer1.css';
 
 function MoneyTransfer1() {
     const [selectedAccount, setSelectedAccount] = useState("");
@@ -70,7 +71,7 @@ function MoneyTransfer1() {
 
     return (
         <Box p={3}>
-            <Card sx={{ p: 3, maxWidth: 600, margin: "0 auto" }}>
+            <Card className="shadow" sx={{ p: 3, maxWidth: 600, margin: "0 auto" }}>
                 <Typography variant="h4" color="primary" gutterBottom>
                     Money Transfer
                 </Typography>

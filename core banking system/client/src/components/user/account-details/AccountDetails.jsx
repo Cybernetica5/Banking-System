@@ -68,7 +68,6 @@ const AccountDetails = () => {
 
   return (
     <div className="account-details">
-      <h2 className="heading">Account Details</h2>
       <div className="columns">
         <div className="column">
           <h3>Saving Accounts</h3>
