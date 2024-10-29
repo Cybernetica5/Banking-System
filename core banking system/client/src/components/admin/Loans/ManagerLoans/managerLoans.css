@@ -21,7 +21,7 @@
   .MuiTableCell-root {
     padding: 16px; /* Increased cell padding for better spacing */
     border-bottom: 1px solid #dacdcd; /* Light border for rows */
-    background-color:#a3ca24;;
+    /* background-color:#a3ca24; */
   }
   
   .MuiButton-root {
@@ -39,7 +39,7 @@
   }
   
   .MuiTableHead-root {
-    background-color: #a3ca24; /* Light background for header */
+    /* background-color: #a3ca24; Light background for header */
   }
   
   .MuiTableHead-root .MuiTableCell-root {

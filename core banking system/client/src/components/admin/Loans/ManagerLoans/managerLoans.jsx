@@ -51,6 +51,7 @@ const ManagerLoans = () => {
       console.error('Error approving loan:', error);
     }
     
+    
   };
 
   return (

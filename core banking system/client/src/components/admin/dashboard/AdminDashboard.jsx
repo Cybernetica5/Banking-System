@@ -78,8 +78,6 @@ const DashboardSidebar = () => {
     ...(userRole === 'manager' ? [{ path: '/admin-dashboard/reports/transaction-report', icon: faFileInvoiceDollar, text: 'Reports' }] : []), // Show only to managers
     {path: '/admin-dashboard/employee-loans', icon: faSackDollar, text: 'Employee Loans'},
     {path: '/admin-dashboard/manager-loans', icon: faSackDollar, text: 'Manager Loans'},
-    
-
   ];
 
   return (
