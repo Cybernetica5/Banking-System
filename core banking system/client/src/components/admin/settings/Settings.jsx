@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Switch, FormControlLabel, Typography, Grid, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { TextField, Button, Switch, FormControlLabel, Typography, Grid, Dialog, DialogActions, DialogContent, DialogTitle, Card } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -102,7 +102,7 @@ const Settings = () => {
 
   return (
     <div className='settings-container'>
-      <div className="form-container">
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Personal Information</Typography>
         <form noValidate>
           <TextField
@@ -165,7 +165,7 @@ const Settings = () => {
             </Button>
           </div>
         </form>
-      </div>
+      </Card>
 
       {/* Dialog for changing password */}
       <Dialog open={open} onClose={handleClose}>

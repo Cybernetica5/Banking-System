@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
+import { TextField, Button, Typography, Card } from '@mui/material';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
 import ConfirmationDialog from '../../common/confirmation-dialog/ConfirmationDialog';
 import api from '../../../services/api';
@@ -65,7 +65,7 @@ const RemoveEmployee = () => {
 
   return (
     <div className="remove-employee-container" style={{ paddingBottom: '25px' }}>
-      <div className="form-container">
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Remove Employee</Typography>
 
         <TextField
@@ -86,7 +86,7 @@ const RemoveEmployee = () => {
             Remove Employee
           </Button>
         </div>
-      </div>
+      </Card>
 
       <ConfirmationDialog
         open={dialogOpen}

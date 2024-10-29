@@ -40,7 +40,7 @@ const GetCustomerDetails = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <Card style={{ maxWidth: '600px', margin: 'auto', padding: '20px' }}>
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4}}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Get Customer Details

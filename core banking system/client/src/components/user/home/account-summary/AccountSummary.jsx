@@ -97,7 +97,7 @@ export default function PieChartWithCenterLabel() {
   if (error) return <div>{error}</div>;
 
   return (
-    <Card className="chart-card">
+    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6">
           Account Summary

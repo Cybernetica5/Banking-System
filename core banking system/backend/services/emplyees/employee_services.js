@@ -23,11 +23,11 @@ async function addEmployee(req, res) {
 
 // Define the function to remove an employee
 async function removeEmployee(req, res) {
-    const { staff_id } = req.body;
+    const { staffId } = req.body;
     const query = `CALL removeEmployee(?)`;
 
     try {
-        const [result] = await db.query(query, [staff_id]);
+        const [result] = await db.query(query, [staffId]);
         res.status(200).json({ message: 'Employee removed successfully', result });
     } catch (err) {
         console.error('Error removing employee:', err);
@@ -38,6 +38,7 @@ async function removeEmployee(req, res) {
 // Define the function to update employee details
 async function updateEmployeeDetails(req, res) {
     const { staff_id, full_name, date_of_birth } = req.body;
+    console.log(req.body);
     const query = `CALL updateEmployee_staff_details(?, ?, ?)`;
 
     try {

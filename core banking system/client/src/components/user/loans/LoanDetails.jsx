@@ -26,7 +26,7 @@ const LoanDetails = () => {
   };
 
   return (
-    <Card>
+    <Card sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
         <Typography variant="h6" component="div" gutterBottom>
           Loan Details

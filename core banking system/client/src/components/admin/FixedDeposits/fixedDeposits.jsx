@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; 
-import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Autocomplete} from '@mui/material';
+import { Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Autocomplete, Card } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
@@ -20,8 +20,6 @@ const CreateFixedDeposit = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('');
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  
-  
 
   useEffect(() => {
     const fetchFDPlans = async () => {
@@ -119,7 +117,7 @@ const CreateFixedDeposit = () => {
 
   return (
     <div className="create-account-container">
-      <div className="form-container">
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
         <Typography variant="h6">Create Fixed Deposit</Typography>
         <form onSubmit={handleSubmit} >
           <FormControl fullWidth margin="normal">
@@ -140,6 +138,7 @@ const CreateFixedDeposit = () => {
               }}
               renderInput={(params) => {
                 console.log('Rendering Autocomplete with options:', savingsAccounts);
+                console.log("params: ", params);
                 return <TextField {...params} label="Savings Account Number" />;
               }}
             />
@@ -202,7 +201,7 @@ const CreateFixedDeposit = () => {
             </Button>
           </div>
         </form>
-      </div>
+      </Card>
 
       <ConfirmationDialog
         open={dialogOpen}

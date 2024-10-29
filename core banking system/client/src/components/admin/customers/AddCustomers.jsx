@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, RadioGroup, Radio, FormControlLabel, Typography, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { TextField, Button, RadioGroup, Radio, FormControlLabel, Typography, MenuItem, Select, InputLabel, FormControl, Card } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SnackbarAlert from '../../common/alert/SnackbarAlert';
@@ -150,8 +150,9 @@ const AddCustomer = () => {
   };
 
   return (
-    <div className="add-customer-container" style={{ paddingBottom: '25px' }}>
-      <div className="form-container">
+    <div className="add-customer-container" style={{ padding: '20px' }}>
+      {/* <div className="form-container" style={{borderRadius: '20px'}}> */}
+      <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4}}>
         <Typography variant="h6">Add Customer</Typography>
 
         {/* Customer Type Selector */}
@@ -363,7 +364,7 @@ const AddCustomer = () => {
             Add
           </Button>
         </div>
-      </div>
+      </Card>
 
       <ConfirmationDialog
         open={dialogOpen}
