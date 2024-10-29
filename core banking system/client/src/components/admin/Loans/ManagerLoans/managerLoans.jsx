@@ -46,65 +46,90 @@ const ManagerLoans = () => {
       setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); 
     } catch (error) {
       console.error('Error approving loan:', error);
-    }
+    }    
+    
   };
 
+  const handleReject = async (loanId) => {
+    console.log('Rejecting loan:', loanId);
+    try {
+      // Call backend to reject the loan
+      const response = await api.post(`manager/manager-loans/reject`, {param:{ loanId }});
+      console.log('Loan rejection response:', response.data);
+      
+      // Remove the rejected loan from the list
+      setPendingLoans(pendingLoans.filter(loan => loan.loan_id !== loanId)); 
+    } catch (error) {
+      console.error('Error rejecting loan:', error);
+    }
+  }
+
   return (
-    <Grid container justifyContent="center" alignItems="center" style={{ padding: '20px' }}>
-      <Grid item xs={12} md={10}>
-        <Card sx={{ maxWidth: '600px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
-          <Typography variant="h6" align="center" gutterBottom>
-            Pending Loans
-          </Typography>
-          <CardContent>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Loan ID</TableCell>
-                    <TableCell>Account ID</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell>Start Date</TableCell>
-                    <TableCell>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {pendingLoans.length > 0 ? (
-                    pendingLoans.map((loan) => (
-                      <TableRow key={loan.loan_id}>
-                        <TableCell>{loan.loan_id}</TableCell>
-                        <TableCell>{loan.account_id || 'Unknown Applicant'}</TableCell>
-                        <TableCell align="right">
-                          {loan.amount !== undefined && !isNaN(loan.amount) 
-                            ? `$${parseFloat(loan.amount).toFixed(2)}` 
-                            : 'N/A'}
-                        </TableCell>
-                        <TableCell>{loan.start_date ? new Date(loan.start_date).toLocaleDateString() : 'N/A'}</TableCell>
-                        <TableCell>
-                          <Button 
-                            variant="contained" 
-                            color="primary" 
-                            onClick={() => handleApprove(loan.loan_id)}
+    <div className="loan-approval-container">
+      <Typography variant="h4" gutterBottom>
+        Pending Loans
+      </Typography>
+      <Card>
+        <CardContent>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Loan ID</TableCell>
+                  <TableCell>Account ID</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell>Start Date</TableCell>
+                  <TableCell>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {pendingLoans.length > 0 ? (
+                  pendingLoans.map((loan) => (
+                    <TableRow key={loan.loan_id}>
+                      <TableCell>{loan.loan_id}</TableCell>
+                      <TableCell>{loan.account_id !== null ? loan.account_id : 'Unknown Applicant'}</TableCell>
+                      <TableCell align="right">
+                        {loan.amount !== undefined && !isNaN(loan.amount) ? `$${parseFloat(loan.amount).toFixed(2)}` : 'N/A'}
+                      </TableCell>
+                      <TableCell>{loan.start_date ? new Date(loan.start_date).toLocaleDateString() : 'N/A'}</TableCell>
+                      <TableCell>
+                          <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ marginRight: '10px' }} // Adds gap to the right of the Approve button
+                          onClick={() => handleApprove(loan.loan_id)}
                           >
-                            Approve
+                          Approve
                           </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} align="center">
-                        No pending loans.
+                          <Button
+                          variant="contained"
+                          sx={{
+                          backgroundColor: 'red',
+                          color: 'white',
+                          '&:hover': {
+                          backgroundColor: '#b30000', // Darker shade of red on hover
+                          },
+                          }}
+                          onClick={() => handleReject(loan.loan_id)}
+                          >
+                          Reject
+                        </Button>
                       </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      No pending loans.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

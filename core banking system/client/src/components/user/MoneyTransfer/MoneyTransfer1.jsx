@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Typography, TextField, Autocomplete, FormControl, Button, Grid, Box } from "@mui/material";
 import Cookies from 'js-cookie';
 import api from '../../../services/api';
+import './MoneyTransfer1.css';
 
 function MoneyTransfer1() {
     const [selectedAccount, setSelectedAccount] = useState("");
@@ -168,7 +169,7 @@ function MoneyTransfer1() {
                             </Button>
                         </Grid>
                         <Grid item xs={6}>
-                            <Button
+                            <Button className="button"
                                 type="submit"
                                 variant="contained"
                                 color="primary"

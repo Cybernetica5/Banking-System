@@ -1,3 +1,15 @@
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+              0 0 15px rgba(0, 0, 255, 0.5); /* Base 3D glow color */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.shadow:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
+              0 0 25px rgba(0, 0, 255, 0.8); /* Brighter 3D glow color on hover */
+  transform: translateY(-3px);
+}
+
 .transaction-container {
   margin: 20px auto;
   display: flex;
@@ -26,7 +38,6 @@
 
 .transaction-card {
   width: 80%;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
@@ -39,19 +50,6 @@
   padding: 10px;
   border-radius: 5px;
 }
-
-/* .MuiTablePagination-root {
-  background-color: #695CFE;
-  color: #f9f9f9;
-}
-
-.MuiTablePagination-root .MuiTablePagination-actions button {
-  color: #f9f9f9;
-}
-
-.MuiTablePagination-select {
-  color: #f9f9f9;
-} */
 
 .loading {
   display: flex;

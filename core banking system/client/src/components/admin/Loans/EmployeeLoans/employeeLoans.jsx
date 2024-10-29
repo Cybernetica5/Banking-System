@@ -17,14 +17,20 @@ function EmployeeLoans() {
 
     useEffect(() => {
         const fetchUserAccounts = async () => {
-            try {
-                const response = await api.get('/accounts');
-                const data = Array.isArray(response.data) ? response.data : [];
-                setUserAccounts(data);
-            } catch (error) {
-                console.error('Error fetching savings accounts:', error);
-                setUserAccounts([]); 
-            }
+          try {
+            //console.log('Fetching user accounts for customer ID:', customerId);
+            const response = await api.get('/accounts');
+
+            console.log('API Response:', response.data); // Log the raw response
+      
+            const data = Array.isArray(response.data) ? response.data : [];
+            console.log('User Accounts:', data);
+            setUserAccounts(data);
+      
+          } catch (error) {
+            console.error('Error fetching savings accounts:', error);
+            setUserAccounts([]); // Set as empty array on error to avoid null issues
+          }
         };
         fetchUserAccounts();
     }, []);
