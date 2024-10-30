@@ -3,17 +3,20 @@ import { Card, CardContent, Typography, Table, TableBody, TableCell, TableHead, 
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import './RecentTransactions.css';
+import Cookies from 'js-cookie';
 
 export default function TransactionHistoryCard() {
   const [transactions, setTransactions] = useState([]); // State to hold transaction data
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for errors
-  const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : null;
+
+  const userId = Cookies.get('userId');
+  const customerId = Cookies.get('customerId');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8800/recent_transactions?customer_id=${userId}`);
+        const response = await axios.get(`http://localhost:8800/recent_transactions/${customerId}`);
         setTransactions(response.data.map(transaction => ({
           ...transaction,
           amount: parseFloat(transaction.amount) || 0
@@ -36,9 +39,9 @@ export default function TransactionHistoryCard() {
   if (error) return <div>{error}</div>;
 
   return (
-    <Card className="transaction-card">
+    <Card className='shadow' sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
-        <Typography variant="h5" className="card-title">
+        <Typography variant="h6" >
           Recent Transactions
         </Typography>
 
@@ -48,7 +51,7 @@ export default function TransactionHistoryCard() {
               <TableRow>
                 <TableCell>Date</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Amount (LKR)</TableCell>
+                <TableCell>Amount ($)</TableCell>
                 <TableCell>Description</TableCell>
               </TableRow>
             </TableHead>

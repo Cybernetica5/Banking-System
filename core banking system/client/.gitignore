@@ -22,27 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/package-lock.json
+package-lock.json
 /yarn.lock
 /pnpm-lock.yaml
 /bun.lockb
 
-/src/components/Login
-
-/src/components/user/dashboard
-/src/components/user/account-details
-/src/components/user/money-transfer
-/src/components/user/transaction-history
-
-/src/components/user/settings
-/src/components/user/home
-
-
-
-
-
-package-lock.json
-package-lock.json
-package-lock.json
-package-lock.json
-package.json

@@ -217,19 +217,21 @@ END$$
 DELIMITER ;
 
 
--- Create a new account for a customer
-DROP PROCEDURE IF EXISTS create_account;
+-- Create a new savings account for a customer
+DROP PROCEDURE IF EXISTS create_savings_account;
 
 DELIMITER $$
-CREATE PROCEDURE create_account(
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_savings_account`(
     IN customer_id INT,
     IN branch_id INT,
-    IN account_type ENUM('savings', 'checking'),
-    OUT account_number CHAR(15)
+    IN initial_deposit INT,
+    IN savings_plan_type_id ENUM('1', '2', '3', '4'),
+	OUT account_number CHAR(15)
 )
-
 BEGIN
     DECLARE new_account_number CHAR(15);
+    DECLARE v_account_id INT;
 
     -- Declare a handler for any errors
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -241,16 +243,102 @@ BEGIN
     START TRANSACTION;
 
         -- Generate a new account number based on the account type
-        SET new_account_number = generate_account_number(account_type);
+        SET new_account_number = generate_account_number('savings');
+        
+        -- Debug: Print the generated account number
+        SELECT CONCAT('Generated account number: ', new_account_number) AS debug_message;
 
         -- Insert the new account information into the account table
         INSERT INTO account (account_type, account_number, customer_id, branch_id, balance, status)
-        VALUES (account_type, new_account_number, customer_id, branch_id, 0.00, 'active');
+        VALUES ('savings', new_account_number, customer_id, branch_id, initial_deposit, 'active');
 
-        COMMIT;
-        SET account_number = new_account_number;
+        -- Debug: Print after inserting into account table
+        SELECT 'Inserted into account table' AS debug_message;
+
+        -- Get the last inserted account id
+        SET v_account_id = LAST_INSERT_ID();
+        
+        -- Debug: Print the account ID of the newly inserted account
+        SELECT CONCAT('Newly inserted account_id: ', v_account_id) AS debug_message;
+
+        -- Insert the new account information into the savings_account table
+        INSERT INTO savings_account (account_id, savings_plan_id)
+        VALUES (v_account_id, savings_plan_type_id);
+
+        -- Debug: Print after inserting into savings_account table
+        SELECT 'Inserted into savings_account table' AS debug_message;
+
+    COMMIT;
+
+    -- Debug: Print after committing the transaction
+    SELECT 'Transaction committed successfully' AS debug_message;
+
+    -- Set the output parameter (uncomment if needed)
+    SET account_number = new_account_number;
 
 END $$
+Delimiter ;
+
+-- Create a new checking account for a customer
+DROP PROCEDURE IF EXISTS create_checking_account;
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_checking_account`(
+    IN customer_id INT,
+    IN branch_id INT,
+    IN initial_deposit INT,
+    OUT account_number CHAR(15)
+)
+BEGIN
+    DECLARE new_account_number CHAR(15);
+    DECLARE v_account_id INT;
+
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        ROLLBACK;
+        SELECT 'Error occurred during account creation';
+    END;
+
+    START TRANSACTION;
+
+        -- Generate a new account number for checking account
+        SET new_account_number = generate_account_number('checking');
+        
+        -- Debug: Print the generated account number
+        SELECT CONCAT('Generated account number: ', new_account_number) AS debug_message;
+
+        -- Insert the new account information into the account table
+        INSERT INTO account (account_type, account_number, customer_id, branch_id, balance, status)
+        VALUES ('checking', new_account_number, customer_id, branch_id, initial_deposit, 'active');
+
+        -- Debug: Print after inserting into account table
+        SELECT 'Inserted into account table' AS debug_message;
+
+        -- Get the last inserted account id
+        SET v_account_id = LAST_INSERT_ID();
+        
+        -- Debug: Print the account ID of the newly inserted account
+        SELECT CONCAT('Newly inserted account_id: ', v_account_id) AS debug_message;
+
+        -- Insert into the checking_account table
+        INSERT INTO checking_account (account_id)
+        VALUES (v_account_id);
+
+        -- Debug: Print after inserting into checking_account table
+        SELECT 'Inserted into checking_account table' AS debug_message;
+
+    COMMIT;
+
+    -- Debug: Print after committing the transaction
+    SELECT 'Transaction committed successfully' AS debug_message;
+
+    -- Set the output parameter
+    SET account_number = new_account_number;
+
+END $$
+
 DELIMITER ;
 
 -- Add new individual customer
@@ -351,3 +439,33 @@ BEGIN
 
 END $$
 DELIMITER ;
+
+
+--- Change the password of the user
+
+DROP PROCEDURE IF EXISTS change_user_password;
+DELIMITER $$
+CREATE PROCEDURE change_user_password(
+    IN p_user_id INT,
+    IN new_password VARCHAR(255),
+    OUT result VARCHAR(255)
+)
+
+BEGIN
+    -- Declare a handler for any errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SELECT 'Error occurred during password change';
+    END;
+
+    START TRANSACTION;
+
+        -- Update the user password
+        UPDATE user
+        SET password = new_password
+        WHERE user_id = p_user_id;
+
+        COMMIT;
+        SET result = 'Password changed successfully';
+
+END $$

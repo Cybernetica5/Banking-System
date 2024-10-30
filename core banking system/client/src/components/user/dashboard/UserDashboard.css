@@ -261,7 +261,7 @@ header .image-text .profession{
     transition: var(--tran-04);
 }
 
-.home{
+.home {
     position: absolute;
     top: 0;
     left: 250px;
@@ -269,6 +269,12 @@ header .image-text .profession{
     width: calc(100% - 250px);
     background-color: var(--body-color);
     transition: var(--tran-05);
+    background-image: url('./../../../assets/dashboard-background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed; /* Ensures the background doesn't scroll */
+    overflow-y: auto; /* Enables content scrolling while keeping the background fixed */
 }
 
 .home .text{

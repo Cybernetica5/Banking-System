@@ -1,97 +1,12 @@
-.body {
-    background: #f6f3f3;
-    text-align: center;
-}
-
-.App1 {
-    background-color: #99abd3;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    transition: transform 0.2s;
-    width: 60%;
-    margin: auto;
-    margin-top: 20px;
-    height: 110%;
-}
-
-.App1 h1{
-    font-size: xx-large;
-    text-align: center;
-    color:#5649e7;
-
-}
-
-.App1 h2 {
-    font-size: large;
-    text-align: center;
-    color: #555;
-}
-
-.App1 fieldset {
-    border: none;
-}
-
-input[type="number"],
-input[type="email"],
-.App1 textarea {
-    display: block;
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    font-size: 12px;
-}
-
-.App1 select {
-    display: block;
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.App1 label {
-    font-size: 15px;
-    display: block;
-    margin-top: 8px;
-    margin-bottom: 5px;
-    text-align: left;
-    color: #555;
-    font-weight: bold;
-}
-
-.App1 button {
-    padding: 5px;
-    border-radius: 10px;
-    margin: 15px 0;
-    margin-right: 10px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    background-color: #5649e7;
-    width: 30%;
-    font-size: 16px;
-}
-.App1 button1 {
-    padding: 5px;
-    border-radius: 10px;
-    margin: 15px 0;
-    margin-right: 10px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    background-color: #2b2475;
-    width: 30%;
-    font-size: 16px;
-}
-
-.App1 textarea {
-    resize: none;
-    width: 98%;
-    min-height: 100px;
-    max-height: 120px;
-}
+/* MoneyTransfer1.css */
+.shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+                0 0 15px rgba(0, 0, 255, 0.5); /* Base 3D glow color */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+.shadow:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2),
+                0 0 25px rgba(0, 0, 255, 0.8); /* Brighter 3D glow color on hover */
+    transform: translateY(-3px);
+  }

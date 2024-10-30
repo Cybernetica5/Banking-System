@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Card, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import api from '../../../services/api';
+import Cookies from 'js-cookie';
+import './Loans.css';
 
 const LoanDetails = () => {
   const [loanDetails, setLoanDetails] = useState([]);
@@ -8,7 +10,7 @@ const LoanDetails = () => {
   useEffect(() => {
     const fetchLoanDetails = async () => {
       try {
-        const userId = JSON.parse(localStorage.getItem('user')).id;
+        const userId = Cookies.get('userId');
         const response = await api.get('/loan_details', { params: { userId } });
         setLoanDetails(response.data);
       } catch (error) {
@@ -25,9 +27,9 @@ const LoanDetails = () => {
   };
 
   return (
-    <Card>
+    <Card className="shadow" sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
-        <Typography variant="h5" component="div" gutterBottom>
+        <Typography variant="h6" component="div" gutterBottom>
           Loan Details
         </Typography>
         {loanDetails.length > 0 ? (
@@ -39,6 +41,7 @@ const LoanDetails = () => {
                   <TableCell>Loan Type</TableCell>
                   <TableCell>Amount</TableCell>
                   <TableCell>Interest Rate</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Penalty</TableCell>
                 </TableRow>
               </TableHead>
@@ -49,6 +52,7 @@ const LoanDetails = () => {
                     <TableCell>{loan.loan_type}</TableCell>
                     <TableCell>${formatCurrency(loan.amount)}</TableCell>
                     <TableCell>{formatCurrency(loan.interest_rate)}%</TableCell>
+                    <TableCell>{loan.status}</TableCell>
                     <TableCell>${formatCurrency(loan.penalty_amount)}</TableCell>
                   </TableRow>
                 ))}

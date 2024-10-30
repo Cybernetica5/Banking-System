@@ -1,11 +1,12 @@
 import * as React from 'react';
-import axios from 'axios';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { styled } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 import './AccountSummary.css';
+import { account_summary } from '../../../../services/auth';
+import Cookies from 'js-cookie';
 
 const StyledText = styled('text')(({ theme }) => ({
   fill: theme.palette.text.primary,
@@ -29,12 +30,21 @@ export default function PieChartWithCenterLabel() {
   const [error, setError] = useState(null); // State to handle errors
   const [loading, setLoading] = useState(true); // State to handle loading
   const [chartSize, setChartSize] = useState({ width: 500, height: 250 }); // Responsive chart size
-  const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : null;
+  //const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : null;
+  //const customerId = localStorage.getItem('customerId') ? JSON.parse(localStorage.getItem('user')).customer_id : null;
+  const userId = Cookies.get('userId');
+  const customerId = Cookies.get('customerId');
+
+  const colors = ["#FF7043", "#FFCA28", "#FF8A80"];
+
+  console.log('User ID:', userId);
+  console.log('Customer ID:', customerId);
+  
   // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8800/accounts_summary?customer_id=${userId}`);
+        const response = await account_summary(customerId);
         const fetchedData = response.data;
 
         // Transform the data
@@ -59,10 +69,10 @@ export default function PieChartWithCenterLabel() {
       }
     };
 
-    if (userId) {
+    if (customerId) {
       fetchData();
     }
-  }, [userId]);
+  }, [customerId]);
 
   // Adjust chart size based on window size
   useEffect(() => {
@@ -87,13 +97,25 @@ export default function PieChartWithCenterLabel() {
   if (error) return <div>{error}</div>;
 
   return (
-    <Card className="chart-card">
+    <Card className='shadow' sx={{ maxWidth: '800px', margin: 'auto', padding: '20px', borderRadius: 4, marginTop: '20px'}}>
       <CardContent>
-        <Typography variant="h5" className="card-title">
+        <Typography variant="h6">
           Account Summary
         </Typography>
-        <PieChart series={[{ data, innerRadius: 75, outerRadius: 100 }]} {...chartSize}>
-          <PieCenterLabel>{`${totalAmount.toFixed(2)} LKR`}</PieCenterLabel>
+        <PieChart
+          series={[
+            {
+              data: data.map((entry, index) => ({
+                ...entry,
+                color: colors[index % colors.length]  // Assign color from the palette
+              })),
+              innerRadius: 75,
+              outerRadius: 100
+            }
+          ]}
+          {...chartSize}
+        >
+          <PieCenterLabel>{`${totalAmount.toFixed(2)} $`}</PieCenterLabel>
         </PieChart>
       </CardContent>
     </Card>

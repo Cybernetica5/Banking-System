@@ -5,9 +5,13 @@ import { TextField, Button, Switch, FormControlLabel, Typography, Grid, Dialog, 
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PasswordIcon from '@mui/icons-material/Password';
 import './Settings.css';
+import api from '../../../services/api';
+import Cookies from 'js-cookie';
+import _ from 'lodash';
 
-const userId = 1; // TODO: make this dynamic
+const userId = Cookies.get('userId');
 
 const Settings = () => {
   const [open, setOpen] = useState(false);
@@ -35,9 +39,14 @@ const Settings = () => {
   };
 
   const handleSave = async () => {
-    // TODO: Add validation logic here
+    // Check if the user has made any changes
+    if (_.isEqual(personalInfo, initialInfo)) {
+      console.log('No changes made');
+      return;
+    }
+
     try {
-      const response = await axios.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
+      const response = await api.put(`http://localhost:8800/user_info/${userId}`, personalInfo);
       console.log('Personal Info updated successfully:', response.data);
     } catch (error) {
       console.error('Error updating personal info:', error.response ? error.response.data : error.message);
@@ -46,17 +55,35 @@ const Settings = () => {
     }
   };
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = async () => {
     console.log('Current Password:', currentPassword);
     console.log('New Password:', newPassword);
-    // Add logic here for handling the password change (e.g., API call)
-    setOpen(false); // Close the dialog after the password is changed
+
+    try {
+        const response = await axios.put(`http://localhost:8800/change_password/${userId}`, { currentPassword, newPassword });
+        console.log(response.data);
+        // Handle success response
+        alert('Password changed successfully');
+    } catch (error) {
+        console.error('Error changing password:', error);
+        // Handle error response
+        if (error.response && error.response.data) {
+            alert(`Error: ${error.response.data.error}`);
+        } else {
+            alert('An error occurred while changing the password. Please try again.');
+        }
+    } finally {
+        // Clear the text fields
+        setCurrentPassword('');
+        setNewPassword('');
+        setOpen(false); // Close the dialog after the password is changed
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8800/user_info/${userId}`); 
+        const response = await api.get(`http://localhost:8800/user_info/${userId}`);
         const data = response.data[0]; // Assuming the response is an array with a single object
         setPersonalInfo({
           username: data.username,
@@ -82,7 +109,7 @@ const Settings = () => {
   console.log('Personal Info:', personalInfo);
 
   return (
-    <div className='settings-container'>
+    <div className='settings-container-shadow'>
       <div className="form-container">
         <Typography variant="h6">Personal Information</Typography>
         <form noValidate>
@@ -105,16 +132,14 @@ const Settings = () => {
             fullWidth
             margin="normal"
             onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+            // sx={{
+            //   height: '56px', 
+            //   '& input': { 
+            //     height: '56px',
+            //     fontSize: '16px'
+            //     }
+            // }}
           />
-
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
-            style={{ marginRight: '8px' }}
-            onClick={handleClickOpen}
-          >
-            Change Password
-          </Button>
 
           <TextField
             label="Address"
@@ -154,6 +179,16 @@ const Settings = () => {
           <div className="button-container">
             <Button
               variant="contained"
+              startIcon={<PasswordIcon />}
+              sx={{ backgroundColor: '#695CFE',display: 'flex', ':hover': { backgroundColor: '#5648CC' } }}
+              style={{ marginRight: '8px' }}
+              onClick={handleClickOpen}
+            >
+              Change Password
+            </Button>
+
+            <Button
+              variant="contained"
               startIcon={<CancelIcon />}
               sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
               style={{ marginRight: '8px' }}
@@ -164,7 +199,7 @@ const Settings = () => {
 
             <Button
               variant="contained"
-              endIcon={<SaveIcon />}
+              startIcon={<SaveIcon />}
               sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }}
               onClick={handleSave} // save (update) the user information
             >
@@ -172,15 +207,6 @@ const Settings = () => {
             </Button>
           </div>
         </form>
-      </div>
-
-      <div className="form-container">
-        <Grid container justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Notifications</Typography>
-          <FormControlLabel
-            control={<Switch color="primary" defaultChecked />}
-          />
-        </Grid>
       </div>
 
       {/* Dialog for changing password */}
@@ -209,7 +235,7 @@ const Settings = () => {
             <Button 
                 onClick={handleClose} 
                 startIcon={<CancelIcon />}
-                sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }} 
+                // sx={{ backgroundColor: '#695CFE', ':hover': { backgroundColor: '#5648CC' } }} 
                 variant="contained"
             >
                 Cancel

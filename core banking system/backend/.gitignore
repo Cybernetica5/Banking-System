@@ -7,7 +7,7 @@
 
 # Ignore package-lock.json
 package-lock.json
-
+package.json
 
 # Ignore debug logs
 npm-debug.log*
