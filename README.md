@@ -91,10 +91,6 @@ The Core Banking Solution (CBS) is an advanced banking platform designed to mana
 ```
 5. **Open a Pull Request** 🔗
 
-## License 📝
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Contributors 🧑🏻‍💻👩🏻‍💻
 
 - **WADUGE S.S.** - [Platinum-Saber](https://github.com/Platinum-Saber)
