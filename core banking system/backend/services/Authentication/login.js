@@ -68,71 +68,96 @@ router.post('/login', validateLoginInput, async (req, res) => {
   try {
     const [user] = await db.execute('SELECT user_id as id, user_name, email, password as password_hash, role FROM user WHERE email = ?', [email]);
     if (user.length === 0) {
-      return res.status(401).json({ error: '**Invalid email**' });
+      console.log('Invalid email');
+      return res.status(401).json({ error: 'Invalid email' });
     }
+
     console.log('User:', user);
-    
-    
 
     const isMatch = await bcrypt.compare(password, user[0].password_hash);
     if (!isMatch) {
-      console.log('**Invalid password**');
+      console.log('Invalid password');
       return res.status(401).json({ error: 'Invalid password' });
     }
-    console.log('**User authenticated**');
+    console.log('User authenticated');
 
     const accessToken = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ userId: user[0].id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
     // Store refresh token in the database
-    
     await db.execute('INSERT INTO refresh_tokens (token, user_id) VALUES (?, ?)', [refreshToken, user[0].id]);
-    console.log('---Refresh token stored in the database---');
+    console.log('Refresh token stored in the database');
 
     // Set cookies
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
-    res.cookie('userId', user[0].id, { httpOnly: true, secure: true, sameSite: 'Strict' });
-    res.cookie('email', user[0].email, { httpOnly: true, secure: true, sameSite: 'Strict' });
-    
-    console.log("Cookies successfully set");
 
     if (user[0].role === 'customer') {
       const [customerId] = await db.execute('SELECT customer_id FROM customer WHERE user_id = ?', [user[0].id]);
-      
+      if (!customerId || customerId.length === 0) {
+        console.error('Customer ID not found for user:', user[0].id);
+        return res.status(500).json({ error: 'Customer ID not found' });
+      }
+
       res.cookie('customerId', customerId[0].customer_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
-      res.status(200).json({ message: 'Login successful', userId: user[0].id, username: user[0].user_name, customerId: customerId[0].customer_id, role: user[0].role, accessToken, refreshToken });
-    } 
-    if (user[0].role === 'staff') {
+      return res.status(200).json({
+        message: 'Login successful',
+        customerId: customerId[0].customer_id,
+        accessToken
+      });
+    } else if (user[0].role === 'staff') {
       const [staff] = await db.execute('SELECT role, staff_id FROM staff WHERE user_id = ?', [user[0].id]);
+      if (!staff || staff.length === 0) {
+        console.error('Staff ID not found for user:', user[0].id);
+        return res.status(500).json({ error: 'Staff ID not found' });
+      }
+
       const staff_role = staff[0].role;
       const staff_id = staff[0].staff_id;
       console.log('Staff:', staff_id, staff_role);
 
-      // Get branch id
       let branch_id;
 
       if (staff_role === 'manager') {
         const [rows] = await db.execute('SELECT b.branch_id FROM manager m JOIN branch b ON m.manager_id = b.manager_id WHERE m.staff_id = ?', [staff_id]);
-        branch_id = rows[0].branch_id;
+        branch_id = rows[0]?.branch_id;
+        if (!branch_id) {
+          console.error('Branch ID not found for manager:', staff_id);
+          return res.status(500).json({ error: 'Branch ID not found for manager' });
+        }
         console.log('manager branch:', branch_id);
       } else if (staff_role === 'employee') {
         const [rows] = await db.execute('SELECT branch_id FROM employee WHERE staff_id = ?', [staff_id]);
-        branch_id = rows[0].branch_id;
+        branch_id = rows[0]?.branch_id;
+        if (!branch_id) {
+          console.error('Branch ID not found for employee:', staff_id);
+          return res.status(500).json({ error: 'Branch ID not found for employee' });
+        }
         console.log('employee branch:', branch_id);
       }
 
       res.cookie('staffId', staff_id, { httpOnly: true, secure: true, sameSite: 'Strict' });
       res.cookie('role', staff_role, { httpOnly: true, secure: true, sameSite: 'Strict' });
-      
-      res.status(200).json({ message: 'Login successful', userId: user[0].id, username: user[0].user_name, role: staff_role, branch_id: branch_id, accessToken, refreshToken, staff_id });
-     
+
+      return res.status(200).json({
+        message: 'Login successful',
+        userId: user[0].id,
+        username: user[0].user_name,
+        role: staff_role,
+        branch_id,
+        accessToken,
+        refreshToken,
+        staff_id
+      });
+    } else {
+      console.error('Invalid role for user:', user[0].id, user[0].role);
+      return res.status(400).json({ error: 'Invalid role' });
     }
-    
-    
+
     console.log('/////////////Login successful///////////////');
   } catch (error) {
     console.log('/////////////Error logging in user///////////////');
+    console.error('Unexpected error during login:', error.message);
     res.status(500).json({ error: 'Error logging in user', details: error.message });
   }
 });
